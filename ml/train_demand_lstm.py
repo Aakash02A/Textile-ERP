@@ -1,62 +1,79 @@
-"""
-Simple LSTM demand forecast training script.
-Assumes you have a CSV with columns: date, demand
-Saves model to ml/models/demand_lstm.h5 and scaler to ml/models/demand_scaler.pkl
-"""
-import os
 import pandas as pd
 import numpy as np
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense
-from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.layers import LSTM, Dense, Dropout
 from sklearn.preprocessing import MinMaxScaler
 import joblib
+import os
 
-DATA_PATH = "ml/data/demand.csv"
-MODEL_DIR = "ml/models"
-os.makedirs(MODEL_DIR, exist_ok=True)
-
-def load_data():
-    df = pd.read_csv(DATA_PATH, parse_dates=['date'])
-    df = df.sort_values('date')
-    series = df['demand'].astype(float).values
-    return series
-
-def create_sequences(data, seq_len=30):
-    X, y = [], []
-    for i in range(len(data) - seq_len):
-        X.append(data[i:i+seq_len])
-        y.append(data[i+seq_len])
-    X = np.array(X)
-    y = np.array(y)
-    return X, y
-
-def build_model(input_shape):
-    model = Sequential()
-    model.add(LSTM(64, input_shape=input_shape, return_sequences=False))
-    model.add(Dense(32, activation='relu'))
-    model.add(Dense(1))
-    model.compile(optimizer='adam', loss='mse')
+def create_lstm_model(input_shape):
+    """Create LSTM model for demand forecasting."""
+    model = Sequential([
+        LSTM(50, return_sequences=True, input_shape=input_shape),
+        Dropout(0.2),
+        LSTM(50, return_sequences=False),
+        Dropout(0.2),
+        Dense(25),
+        Dense(1)
+    ])
+    
+    model.compile(optimizer='adam', loss='mean_squared_error')
     return model
 
-def main():
-    seq_len = 30
-    data = load_data().reshape(-1,1)
-    scaler = MinMaxScaler()
-    data_scaled = scaler.fit_transform(data).flatten()
+def prepare_data(data, lookback=60):
+    """Prepare data for LSTM training."""
+    # Scale the data
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    scaled_data = scaler.fit_transform(data)
+    
+    # Create training data
+    X, y = [], []
+    for i in range(lookback, len(scaled_data)):
+        X.append(scaled_data[i-lookback:i])
+        y.append(scaled_data[i, 0])
+    
+    X, y = np.array(X), np.array(y)
+    return X, y, scaler
 
-    X, y = create_sequences(data_scaled, seq_len)
+def train_demand_forecast_model(csv_file_path, model_save_path):
+    """Train LSTM model for demand forecasting."""
+    # Load data
+    df = pd.read_csv(csv_file_path)
+    
+    # Assume the first column is date and second is demand
+    data = df.iloc[:, 1:2].values
+    
+    # Prepare data
+    X, y, scaler = prepare_data(data)
+    
+    # Split data
+    split = int(0.8 * len(X))
+    X_train, X_test = X[:split], X[split:]
+    y_train, y_test = y[:split], y[split:]
+    
+    # Create and train model
+    model = create_lstm_model((X_train.shape[1], 1))
+    model.fit(X_train, y_train, batch_size=32, epochs=20, validation_data=(X_test, y_test))
+    
+    # Save model and scaler
+    model.save(model_save_path)
+    joblib.dump(scaler, model_save_path.replace('.h5', '_scaler.pkl'))
+    
+    print(f"Model saved to {model_save_path}")
+    return model, scaler
 
-    X = X.reshape((X.shape[0], X.shape[1], 1))
-
-    model = build_model((seq_len, 1))
-    es = EarlyStopping(patience=5, restore_best_weights=True)
-
-    model.fit(X, y, epochs=100, batch_size=16, validation_split=0.1, callbacks=[es])
-
-    model.save(os.path.join(MODEL_DIR, 'demand_lstm.h5'))
-    joblib.dump(scaler, os.path.join(MODEL_DIR, 'demand_scaler.pkl'))
-    print("Saved model and scaler to", MODEL_DIR)
-
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    # Example usage
+    csv_file = "demand_data.csv"  # Replace with actual path
+    model_path = "../backend/ml_models/demand_lstm_v1.h5"
+    
+    # Create sample data if file doesn't exist
+    if not os.path.exists(csv_file):
+        print("Creating sample data...")
+        dates = pd.date_range('2020-01-01', periods=500, freq='D')
+        demand = np.random.randint(100, 1000, size=500) + np.sin(np.arange(500) * 0.1) * 100
+        sample_df = pd.DataFrame({'date': dates, 'demand': demand})
+        sample_df.to_csv(csv_file, index=False)
+    
+    # Train model
+    train_demand_forecast_model(csv_file, model_path)

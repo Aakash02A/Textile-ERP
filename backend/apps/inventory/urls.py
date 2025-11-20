@@ -1,11 +1,10 @@
-from rest_framework.routers import DefaultRouter
 from django.urls import path, include
-from .views import InventoryItemViewSet, StockTransactionViewSet, InventoryAggregateViewSet
+from rest_framework.routers import DefaultRouter
+from .views import RawMaterialViewSet, StockLotViewSet
 
 router = DefaultRouter()
-router.register(r'items', InventoryItemViewSet, basename='inventory-item')
-router.register(r'transactions', StockTransactionViewSet, basename='stock-transaction')
-router.register(r'aggregates', InventoryAggregateViewSet, basename='inventory-aggregate')
+router.register(r'rawmaterials', RawMaterialViewSet, basename='rawmaterial')
+router.register(r'stocklots', StockLotViewSet, basename='stocklot')
 
 urlpatterns = [
     path('', include(router.urls)),

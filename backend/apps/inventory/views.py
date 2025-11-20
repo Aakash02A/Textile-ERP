@@ -1,84 +1,106 @@
-from rest_framework import viewsets, permissions, status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import InventoryItem, StockTransaction, InventoryAggregate
-from .serializers import InventoryItemSerializer, StockTransactionSerializer, InventoryAggregateSerializer
+from django.shortcuts import get_object_or_404
 from django.db import transaction
+from .models import RawMaterial, StockLot
+from .serializers import RawMaterialSerializer, StockLotSerializer, StockLotReceiveSerializer, StockTransferSerializer
 
-class IsProcurementOrInventory(permissions.BasePermission):
-    def has_permission(self, request, view):
-        # allow users with inventory or procurement role or admin
-        if not request.user or not request.user.is_authenticated:
-            return False
-        return request.user.role in ('inventory','procurement','admin')
 
-class InventoryItemViewSet(viewsets.ModelViewSet):
-    queryset = InventoryItem.objects.select_related('raw_material').all()
-    serializer_class = InventoryItemSerializer
-    permission_classes = [permissions.IsAuthenticated, IsProcurementOrInventory]
+class RawMaterialViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for managing Raw Materials.
+    """
+    queryset = RawMaterial.objects.all()
+    serializer_class = RawMaterialSerializer
 
-    @action(detail=True, methods=['get'])
-    def aggregate(self, request, pk=None):
-        item = self.get_object()
-        try:
-            agg = item.aggregate
-            serializer = InventoryAggregateSerializer(agg)
-            return Response(serializer.data)
-        except InventoryAggregate.DoesNotExist:
-            return Response({'quantity': 0.0}, status=status.HTTP_200_OK)
 
-class StockTransactionViewSet(viewsets.ModelViewSet):
-    queryset = StockTransaction.objects.select_related('inventory_item__raw_material').all()
-    serializer_class = StockTransactionSerializer
-    permission_classes = [permissions.IsAuthenticated, IsProcurementOrInventory]
-    http_method_names = ['get','post','head','options']
-
-    def get_queryset(self):
-        qs = super().get_queryset().order_by('-created_at')
-        # optional filters via query params
-        sku = self.request.query_params.get('sku')
-        if sku:
-            qs = qs.filter(inventory_item__raw_material__sku=sku)
-        return qs
-
+class StockLotViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for managing Stock Lots.
+    """
+    queryset = StockLot.objects.all()
+    serializer_class = StockLotSerializer
+    
     @action(detail=False, methods=['post'])
-    def bulk_receive(self, request):
+    def receive(self, request):
         """
-        Accepts bulk receipt list:
-        { "items":[ {"inventory_item": id, "quantity": 10, "reference": "PO-1"}, ... ] }
+        Receive stock lot into inventory.
         """
-        items = request.data.get('items', [])
-        created = []
-        errors = []
-        for idx, it in enumerate(items):
-            serializer = self.get_serializer(data={
-                'inventory_item': it.get('inventory_item'),
-                'quantity': float(it.get('quantity', 0)),
-                'txn_type': 'receipt',
-                'reference': it.get('reference',''),
-                'notes': it.get('notes','')
-            }, context={'request': request})
-            if serializer.is_valid():
-                tx = serializer.save()
-                created.append(self.get_serializer(tx).data)
-            else:
-                errors.append({ 'index': idx, 'errors': serializer.errors })
-        if errors:
-            return Response({'created': created, 'errors': errors}, status=status.HTTP_207_MULTI_STATUS)
-        return Response({'created': created}, status=status.HTTP_201_CREATED)
-
-class InventoryAggregateViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = InventoryAggregate.objects.select_related('inventory_item__raw_material').all()
-    serializer_class = InventoryAggregateSerializer
-    permission_classes = [permissions.IsAuthenticated, IsProcurementOrInventory]
-
-    @action(detail=False, methods=['get'])
-    def low_stock(self, request):
+        serializer = StockLotReceiveSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            stock_lot = serializer.save()
+            response_serializer = StockLotSerializer(stock_lot)
+            return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=False, methods=['post'])
+    def transfer(self, request):
         """
-        Returns items where quantity <= reorder_point + safety_stock
+        Transfer stock between locations.
         """
-        aggs = self.get_queryset().filter(
-            quantity__lte=models.F('inventory_item__reorder_point') + models.F('inventory_item__safety_stock')
-        )
-        serializer = self.get_serializer(aggs, many=True)
-        return Response(serializer.data)
+        serializer = StockTransferSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            data = serializer.validated_data
+            rawmaterial_id = data['rawmaterial_id']
+            batch_no = data['batch_no']
+            from_location = data['from_location']
+            to_location = data['to_location']
+            quantity = data['quantity']
+            
+            try:
+                with transaction.atomic():
+                    # Find the source stock lot
+                    source_lot = StockLot.objects.get(
+                        rawmaterial_id=rawmaterial_id,
+                        batch_no=batch_no,
+                        location=from_location
+                    )
+                    
+                    # Check if sufficient quantity is available
+                    if source_lot.quantity_on_hand < quantity:
+                        return Response(
+                            {'error': 'Insufficient quantity in source location'},
+                            status=status.HTTP_400_BAD_REQUEST
+                        )
+                    
+                    # Reduce quantity in source location
+                    source_lot.quantity_on_hand -= quantity
+                    source_lot.save()
+                    
+                    # Check if destination lot already exists
+                    dest_lot, created = StockLot.objects.get_or_create(
+                        rawmaterial_id=rawmaterial_id,
+                        batch_no=batch_no,
+                        location=to_location,
+                        defaults={
+                            'received_date': source_lot.received_date,
+                            'expiry_date': source_lot.expiry_date,
+                            'unit_cost': source_lot.unit_cost,
+                            'quantity_on_hand': 0
+                        }
+                    )
+                    
+                    # Increase quantity in destination location
+                    dest_lot.quantity_on_hand += quantity
+                    dest_lot.save()
+                    
+                    return Response({
+                        'message': f'Successfully transferred {quantity} units from {from_location} to {to_location}'
+                    }, status=status.HTTP_200_OK)
+                    
+            except StockLot.DoesNotExist:
+                return Response(
+                    {'error': 'Source stock lot not found'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            except Exception as e:
+                return Response(
+                    {'error': str(e)},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

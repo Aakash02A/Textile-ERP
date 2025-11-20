@@ -1,24 +1,20 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './components/auth/Login';
-import Dashboard from './components/dashboard/Dashboard';
-import { setAuthToken } from './api/api';
+import React from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import Login from './routes/auth/Login'
+import Dashboard from './routes/dashboard/Dashboard'
 
-const token = localStorage.getItem('access');
-if (token) setAuthToken(token);
-
-function PrivateRoute({ children }) {
-  const access = localStorage.getItem('access');
-  return access ? children : <Navigate to="/login" replace />;
-}
-
-export default function App() {
+function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login/>} />
-        <Route path="/" element={<PrivateRoute><Dashboard/></PrivateRoute>} />
-      </Routes>
-    </BrowserRouter>
-  );
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/" element={<Dashboard />} />
+        </Routes>
+      </div>
+    </Router>
+  )
 }
+
+export default App

@@ -1,58 +1,45 @@
-from django.db import models, transaction
-from django.conf import settings
-from apps.procurement.models import RawMaterial
+from django.db import models
+import uuid
+from django.utils import timezone
 
-class InventoryItem(models.Model):
-    """
-    Thin wrapper to reference a stock-managed item.
-    If you already use procurement.RawMaterial as the canonical item,
-    this model provides inventory-specific meta (like reorder rules).
-    """
-    raw_material = models.OneToOneField(RawMaterial, on_delete=models.CASCADE, related_name='inventory_item')
-    min_level = models.FloatField(default=0.0)
-    max_level = models.FloatField(default=0.0)
-    reorder_point = models.FloatField(default=0.0)
-    safety_stock = models.FloatField(default=0.0)
+
+class RawMaterial(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    code = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    unit = models.CharField(max_length=32)
+    safety_stock_level = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    reorder_point = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Inventory for {self.raw_material.sku}"
-
-class StockTransaction(models.Model):
-    """
-    Append-only transactions. Use positive quantity for receipts and negative for consumption.
-    Keep audit trail.
-    """
-    TYPE_CHOICES = [
-        ('receipt', 'Receipt'),        # from procurement PO
-        ('consumption', 'Consumption'),# used in production
-        ('adjustment', 'Adjustment'),  # manual adjustments
-        ('transfer_in', 'Transfer In'),
-        ('transfer_out', 'Transfer Out'),
-        ('scrap', 'Scrap'),
-    ]
-
-    inventory_item = models.ForeignKey(InventoryItem, on_delete=models.CASCADE, related_name='transactions')
-    quantity = models.FloatField()  # positive or negative
-    txn_type = models.CharField(max_length=32, choices=TYPE_CHOICES)
-    reference = models.CharField(max_length=255, blank=True, help_text="Optional reference (PO number, WO id)")
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    notes = models.TextField(blank=True)
+        return f"{self.name} ({self.code})"
 
     class Meta:
-        ordering = ['-created_at']
+        db_table = 'inventory_rawmaterial'
+        verbose_name = 'Raw Material'
+        verbose_name_plural = 'Raw Materials'
+
+
+class StockLot(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    rawmaterial = models.ForeignKey(RawMaterial, on_delete=models.CASCADE)
+    batch_no = models.CharField(max_length=50)
+    quantity_on_hand = models.DecimalField(max_digits=10, decimal_places=2)
+    location = models.CharField(max_length=100)
+    received_date = models.DateField()
+    expiry_date = models.DateField(null=True, blank=True)
+    unit_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.txn_type} {self.quantity} for {self.inventory_item.raw_material.sku}"
+        return f"{self.rawmaterial.name} - {self.batch_no}"
 
-class InventoryAggregate(models.Model):
-    """
-    Cached / materialized current stock levels per InventoryItem.
-    This is updated transactionally when StockTransaction is created.
-    """
-    inventory_item = models.OneToOneField(InventoryItem, on_delete=models.CASCADE, related_name='aggregate')
-    quantity = models.FloatField(default=0.0)
-    last_updated = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.inventory_item.raw_material.sku}: {self.quantity}"
+    class Meta:
+        db_table = 'inventory_stocklot'
+        verbose_name = 'Stock Lot'
+        verbose_name_plural = 'Stock Lots'
+        unique_together = ('rawmaterial', 'batch_no')
