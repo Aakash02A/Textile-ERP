@@ -3,25 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Textile ERP & ML Intelligence Hub (API Integrated)</title>
+    <title>Textile ERP & ML Intelligence Hub (Advanced)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
     
     <style>
-        /* Custom styling for a professional look */
+        /* Custom font and scrollbar styling (Improved from original) */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
+            background-color: #f3f4f6; /* Light gray background */
         }
+        /* Hide scrollbar for aesthetic purposes, but keep scroll functionality */
+        .overflow-y-auto::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+        
+        /* Ensures the active nav-link has primary background without hover clash */
         .nav-link.active-link {
-            background-color: #10b981; 
+            background-color: #10b981; /* primary-smart */
             color: white;
             box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.1), 0 2px 4px -2px rgba(16, 185, 129, 0.1);
         }
         .nav-link.active-link:hover {
-             background-color: #059669;
+             background-color: #059669; /* Emerald 600 - slightly darker on hover */
         }
+        /* Base Nav-link styling */
         .nav-link {
             display: flex;
             align-items: center;
@@ -36,16 +44,23 @@
             background-color: #f3f4f6;
             color: #10b981;
         }
+
+        /* Common styles for module content */
         .module-content {
             display: none;
         }
         .dashboard-card {
             background-color: white;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Stronger shadow for better lift */
             padding: 1.5rem;
             transition: transform 0.2s;
         }
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+        }
+
+        /* ML Card Specific Styling */
         .ml-card-icon {
             font-size: 24px;
             width: 50px;
@@ -83,10 +98,12 @@
     </button>
 
     <aside id="sidebar" class="transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-white border-r border-gray-200 shadow-xl fixed lg:relative z-40 flex flex-col h-full">
+        
         <div class="p-6 border-b border-gray-100 flex items-center space-x-3 h-[70px]">
             <i class="fas fa-industry w-8 h-8 text-primary-smart text-2xl"></i>
             <span class="text-xl font-extrabold text-gray-800">Tex-Smart ERP</span>
         </div>
+
         <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
             <div class="text-xs font-semibold uppercase text-gray-400 px-3 pt-3 pb-1">Intelligent Hub</div>
             <a href="#" data-module="ml_hub" class="nav-link active-link">
@@ -94,6 +111,7 @@
                 <span>ML Intelligence Hub</span>
                 <span class="ml-auto text-xs font-bold bg-white text-primary-smart px-2 py-0.5 rounded-full">AI</span>
             </a>
+            
             <div class="text-xs font-semibold uppercase text-gray-400 px-3 pt-6 pb-1">Core Modules</div>
             <a href="#" data-module="erp_overview" class="nav-link">
                 <i class="fas fa-tachometer-alt w-5 h-5"></i>
@@ -120,6 +138,7 @@
                 <span>Sales & Orders</span>
             </a>
         </nav>
+        
         <div class="p-4 border-t border-gray-100">
             <a href="#" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-100 transition duration-150">
                 <img class="h-10 w-10 rounded-full object-cover border-2 border-primary-smart" src="https://i.pravatar.cc/150?img=12" alt="User Profile">
@@ -150,28 +169,28 @@
         <main class="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-8 space-y-8">
 
             <section id="ml_hub_content" class="module-content">
-                <h2 class="text-3xl font-bold text-gray-800 mb-6">ML Intelligence Hub</h2>
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">ML Intelligence Hub 🧠</h2>
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" id="ml-summary-cards">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <div class="dashboard-card border-b-4 border-primary-smart">
                         <p class="text-sm font-medium text-gray-500">Demand Forecast Accuracy</p>
-                        <p class="text-4xl font-extrabold text-primary-smart mt-2" id="df-accuracy">--</p>
-                        <p class="text-xs text-gray-600 mt-2" id="df-model-info">Fetching...</p>
+                        <p class="text-4xl font-extrabold text-primary-smart mt-2">94.2%</p>
+                        <p class="text-xs text-gray-600 mt-2">LSTM Model Score (+$12k saved)</p>
                     </div>
                     <div class="dashboard-card border-b-4 border-accent-ml">
                         <p class="text-sm font-medium text-gray-500">Inventory Optimization Score</p>
-                        <p class="text-4xl font-extrabold text-accent-ml mt-2" id="io-score">--</p>
-                        <p class="text-xs text-gray-600 mt-2" id="io-model-info">Fetching...</p>
+                        <p class="text-4xl font-extrabold text-accent-ml mt-2">B+</p>
+                        <p class="text-xs text-gray-600 mt-2">RF Regression Metric (-5% stockouts)</p>
                     </div>
                     <div class="dashboard-card border-b-4 border-risk-high">
                         <p class="text-sm font-medium text-gray-500">Predicted Supplier Risk</p>
-                        <p class="text-4xl font-extrabold text-risk-high mt-2" id="sr-risk">--</p>
-                        <p class="text-xs text-gray-600 mt-2" id="sr-model-info">Fetching...</p>
+                        <p class="text-4xl font-extrabold text-risk-high mt-2">12% High</p>
+                        <p class="text-xs text-gray-600 mt-2">SVM Model Alert (2 key suppliers)</p>
                     </div>
                     <div class="dashboard-card border-b-4 border-secondary-data">
                         <p class="text-sm font-medium text-gray-500">Automated Defect Rate</p>
-                        <p class="text-4xl font-extrabold text-secondary-data mt-2" id="qc-defect-rate">--</p>
-                        <p class="text-xs text-gray-600 mt-2" id="qc-model-info">Fetching...</p>
+                        <p class="text-4xl font-extrabold text-secondary-data mt-2">0.87%</p>
+                        <p class="text-xs text-gray-600 mt-2">CNN/LR Classification (Line 3)</p>
                     </div>
                 </div>
 
@@ -193,7 +212,7 @@
                         <ul id="inventory-list" class="space-y-3">
                             <li class="p-3 bg-yellow-50 rounded-lg">Loading items...</li>
                         </ul>
-                        <button onclick="fetchInventoryOptimization(true)" class="w-full mt-6 bg-accent-ml text-white p-3 rounded-xl font-medium hover:bg-amber-600 transition duration-150 shadow-md">
+                        <button onclick="fetchInventoryOptimization()" class="w-full mt-6 bg-accent-ml text-white p-3 rounded-xl font-medium hover:bg-amber-600 transition duration-150 shadow-md">
                             Run Optimization & View Full Report
                         </button>
                     </div>
@@ -225,7 +244,7 @@
                         </div>
                         <div class="text-lg font-semibold mb-2">Defect Detection</div>
                         <div class="text-sm text-gray-500 mb-4">CNN/Logistic Regression for automated defect classification.</div>
-                        <button onclick="showDefectData()" class="w-full bg-risk-high text-white p-2 rounded-lg font-medium hover:bg-red-600 transition">Analyze Quality</button>
+                        <button class="w-full bg-risk-high text-white p-2 rounded-lg font-medium hover:bg-red-600 transition">Analyze Quality</button>
                     </div>
 
                     <div class="dashboard-card flex flex-col items-center">
@@ -234,7 +253,7 @@
                         </div>
                         <div class="text-lg font-semibold mb-2">Supplier Scoring</div>
                         <div class="text-sm text-gray-500 mb-4">SVM for supplier performance prediction and evaluation.</div>
-                        <button onclick="fetchSupplierRisk()" class="w-full bg-accent-ml text-white p-2 rounded-lg font-medium hover:bg-amber-600 transition">Score Suppliers</button>
+                        <button class="w-full bg-accent-ml text-white p-2 rounded-lg font-medium hover:bg-amber-600 transition">Score Suppliers</button>
                     </div>
                 </div>
             </section>
@@ -308,6 +327,7 @@
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#PO-4823</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Polyester Jacket</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1,200 units</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Nov 25, 2023</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
@@ -318,7 +338,8 @@
                     </div>
                 </div>
             </section>
-             <section id="procurement_content" class="module-content">
+
+            <section id="procurement_content" class="module-content">
                 <h2 class="text-3xl font-bold text-gray-800 mb-6">Procurement & Suppliers 🤝</h2>
                 <div class="p-8 dashboard-card border-l-4 border-indigo-500">
                     <p class="text-xl font-medium text-indigo-700 mb-4">Purchase Order (PO) Management & Risk</p>
@@ -327,6 +348,7 @@
                     <button class="mt-4 bg-indigo-500 text-white p-2 rounded-lg text-sm hover:bg-indigo-600 transition">Create New PO</button>
                 </div>
             </section>
+
             <section id="inventory_content" class="module-content">
                 <h2 class="text-3xl font-bold text-gray-800 mb-6">Inventory & Traceability 📦</h2>
                 <div class="p-8 dashboard-card border-l-4 border-yellow-500">
@@ -336,6 +358,7 @@
                     <button class="mt-4 bg-yellow-500 text-white p-2 rounded-lg text-sm hover:bg-yellow-600 transition">View Stock Lots</button>
                 </div>
             </section>
+
             <section id="production_content" class="module-content">
                 <h2 class="text-3xl font-bold text-gray-800 mb-6">Production & BOM ⚙️</h2>
                 <div class="p-8 dashboard-card border-l-4 border-blue-500">
@@ -345,6 +368,7 @@
                     <button class="mt-4 bg-blue-500 text-white p-2 rounded-lg text-sm hover:bg-blue-600 transition">View Production Schedule</button>
                 </div>
             </section>
+
             <section id="qc_content" class="module-content">
                 <h2 class="text-3xl font-bold text-gray-800 mb-6">Quality Control ✅</h2>
                 <div class="p-8 dashboard-card border-l-4 border-risk-high">
@@ -354,6 +378,7 @@
                     <button class="mt-4 bg-risk-high text-white p-2 rounded-lg text-sm hover:bg-red-600 transition">Log New Defect</button>
                 </div>
             </section>
+
             <section id="sales_content" class="module-content">
                 <h2 class="text-3xl font-bold text-gray-800 mb-6">Sales & Orders 💰</h2>
                 <div class="p-8 dashboard-card border-l-4 border-fuchsia-500">
@@ -363,13 +388,12 @@
                     <button class="mt-4 bg-fuchsia-500 text-white p-2 rounded-lg text-sm hover:bg-fuchsia-600 transition">Manage Sales Orders</button>
                 </div>
             </section>
-            </main>
+
+        </main>
     </div>
     
     <script>
-        const API_BASE_URL = 'http://127.0.0.1:5000/api/ml'; // Flask API base URL
-        
-        // --- Navigation Logic (Same as previous output) ---
+        // --- Navigation and Module Switching Logic ---
         const moduleMap = {
             'ml_hub': { title: 'ML Intelligence Hub', contentId: 'ml_hub_content' },
             'erp_overview': { title: 'ERP Overview', contentId: 'erp_overview_content' },
@@ -379,169 +403,117 @@
             'qc': { title: 'Quality Control', contentId: 'qc_content' },
             'sales': { title: 'Sales & Orders', contentId: 'sales_content' }
         };
+
         const pageTitle = document.getElementById('page-title');
         const contentSections = document.querySelectorAll('.module-content');
         const navLinks = document.querySelectorAll('.nav-link');
         const sidebar = document.getElementById('sidebar');
         const sidebarToggle = document.getElementById('sidebarToggle');
+        
         let demandChart;
 
         function switchModule(moduleId) {
-            navLinks.forEach(link => link.classList.remove('active-link'));
+            // 1. Update Navigation Styles
+            navLinks.forEach(link => {
+                link.classList.remove('active-link');
+            });
             const activeLink = document.querySelector(`[data-module="${moduleId}"]`);
-            if (activeLink) activeLink.classList.add('active-link');
+            if (activeLink) {
+                activeLink.classList.add('active-link');
+            }
 
-            contentSections.forEach(section => section.style.display = 'none');
+            // 2. Update Content Visibility and Title
+            contentSections.forEach(section => {
+                section.style.display = 'none';
+            });
+
             const moduleInfo = moduleMap[moduleId];
             if (moduleInfo) {
                 const activeContent = document.getElementById(moduleInfo.contentId);
-                if (activeContent) activeContent.style.display = 'block';
+                if (activeContent) {
+                    activeContent.style.display = 'block';
+                }
                 pageTitle.textContent = moduleInfo.title;
             }
 
-            if (window.innerWidth < 1024) sidebar.classList.add('-translate-x-full');
+            // 3. Close sidebar on mobile after navigation
+            if (window.innerWidth < 1024) {
+                sidebar.classList.add('-translate-x-full');
+            }
 
-            // Trigger real API data fetch on the ML Hub load
+            // 4. Trigger Dynamic Data Fetch/Chart Rendering (only for the active ML Hub)
             if (moduleId === 'ml_hub') {
-                fetchAllMLData();
+                fetchMLDemandForecast();
+                fetchInventoryOptimization();
+                renderDemandForecastChart();
             }
         }
 
+        // Attach listeners to navigation links
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const moduleId = e.currentTarget.getAttribute('data-module');
-                if (moduleId) switchModule(moduleId);
+                if (moduleId) {
+                    switchModule(moduleId);
+                }
             });
         });
 
         // Initialize to the default module
         switchModule('ml_hub');
 
-        // --- Core ML Data Fetching Functions ---
+        // --- Mock API Fetch Functions (Python Backend Simulation) ---
 
-        async function fetchMLSummaryCards() {
-            try {
-                // 1. Demand Forecast
-                const dfResponse = await fetch(`${API_BASE_URL}/demand_forecast`);
-                const dfData = await dfResponse.json();
-                document.getElementById('df-accuracy').textContent = dfData.accuracy;
-                document.getElementById('df-model-info').textContent = `Model: ${dfData.model_type} (${dfData.surge} trend)`;
-
-                // 2. Inventory Optimization (Score is generated here for mock purpose)
-                document.getElementById('io-score').textContent = 'B+';
-                document.getElementById('io-model-info').textContent = 'RF Regression Metric';
-
-                // 3. Supplier Risk
-                const srResponse = await fetch(`${API_BASE_URL}/supplier_risk`);
-                const srData = await srResponse.json();
-                document.getElementById('sr-risk').textContent = `${srData.risk_percentage} ${srData.risk_level}`;
-                document.getElementById('sr-model-info').textContent = `Model: SVM (Score: ${srData.risk_score})`;
-
-                // 4. Defect Classification
-                const qcResponse = await fetch(`${API_BASE_URL}/defect_classification`);
-                const qcData = await qcResponse.json();
-                document.getElementById('qc-defect-rate').textContent = qcData.defect_rate;
-                document.getElementById('qc-model-info').textContent = `Model Confidence: ${qcData.model_confidence}`;
-            } catch (error) {
-                console.error("Error fetching ML summary data:", error);
-                document.getElementById('df-accuracy').textContent = 'API Error';
-            }
-        }
-
+        /**
+         * Simulates fetching ML insight from the Python API
+         * Endpoint: /api/ml/demand_forecast
+         */
         async function fetchMLDemandForecast() {
             const insightElement = document.getElementById('dynamic-insight');
             insightElement.textContent = 'Contacting Python API for LSTM data...';
 
-            try {
-                const response = await fetch(`${API_BASE_URL}/demand_forecast`);
-                const data = await response.json();
+            // Simulate network delay and data structure from Python
+            await new Promise(resolve => setTimeout(resolve, 800));
 
-                insightElement.innerHTML = `⚠️ ${data.insight} (Last Update: ${data.timestamp})`;
-            } catch (error) {
-                insightElement.textContent = `Error: Could not connect to Flask API at ${API_BASE_URL}/demand_forecast. Is the server running?`;
-                console.error(error);
-            }
+            const mockData = {
+                surge: "22%",
+                production_adj: "+15%",
+                product: "Premium Denim",
+                timestamp: new Date().toLocaleTimeString()
+            };
+
+            insightElement.innerHTML = `⚠️ The model predicts a <span class="font-bold text-primary-smart">${mockData.surge}</span> surge in Q4 orders for <span class="font-bold">${mockData.product}</span>. Adjust Production Capacity (WO-2025-01) by <span class="font-bold text-primary-smart">${mockData.production_adj}</span> now to prepare. (Last Update: ${mockData.timestamp})`;
         }
 
-        async function fetchInventoryOptimization(showAlert = false) {
+        /**
+         * Simulates fetching Inventory Optimization list from the Python API (PostgreSQL data)
+         * Endpoint: /api/ml/inventory_optimization
+         */
+        async function fetchInventoryOptimization() {
             const inventoryList = document.getElementById('inventory-list');
-            inventoryList.innerHTML = `<li class="p-3 bg-gray-50 rounded-lg text-gray-500 flex items-center"><i class="fas fa-spinner fa-spin mr-2"></i> Fetching Optimization Data...</li>`;
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/inventory_optimization`);
-                const data = await response.json();
-                
-                inventoryList.innerHTML = data.map(item => {
-                    let badgeClass, statusColor;
-                    if (item.status === 'CRITICAL LOW') {
-                        badgeClass = 'bg-risk-high/10 text-risk-high';
-                        statusColor = 'bg-red-50';
-                    } else if (item.status === 'OVERSTOCK') {
-                        badgeClass = 'bg-accent-ml/10 text-accent-ml';
-                        statusColor = 'bg-yellow-50';
-                    } else {
-                        badgeClass = 'bg-primary-smart/10 text-primary-smart';
-                        statusColor = 'bg-green-50';
-                    }
+            inventoryList.innerHTML = `<li class="p-3 bg-gray-50 rounded-lg text-gray-500 flex items-center"><i class="fas fa-spinner fa-spin mr-2"></i> Fetching PostgreSQL data...</li>`;
 
-                    return `
-                        <li class="p-3 ${statusColor} rounded-lg flex justify-between items-center border border-gray-100">
-                            <div>
-                                <p class="font-medium text-gray-800">${item.sku}</p>
-                                <p class="text-xs text-gray-500">RF Suggests: ${item.action}</p>
-                            </div>
-                            <span class="text-sm font-semibold px-3 py-1 rounded-full ${badgeClass}">${item.status}</span>
-                        </li>
-                    `;
-                }).join('');
+            await new Promise(resolve => setTimeout(resolve, 1200));
 
-                if (showAlert) {
-                    alert('Inventory Optimization Run Complete! See top 3 recommendations.');
-                }
-            } catch (error) {
-                inventoryList.innerHTML = `<li class="p-3 bg-red-100 rounded-lg text-red-600">Error fetching inventory data.</li>`;
-                console.error("Error fetching inventory optimization:", error);
-            }
+            const mockOptimizationData = [
+                { sku: 'Raw Cotton (RC-S1)', action: 'CRITICAL LOW', suggestion: 'Safety Stock 8,000kg', statusClass: 'bg-red-50 text-risk-high', badgeClass: 'bg-risk-high/10 text-risk-high' },
+                { sku: 'Silk Thread (ST-T4)', action: 'OVERSTOCK', suggestion: 'Min Stock 1,500 units', statusClass: 'bg-yellow-50 text-accent-ml', badgeClass: 'bg-accent-ml/10 text-accent-ml' },
+                { sku: 'Synthetic Dye (DYE-B)', action: 'Optimal', suggestion: 'Order 450 liters', statusClass: 'bg-green-50 text-primary-smart', badgeClass: 'bg-primary-smart/10 text-primary-smart' },
+            ];
+
+            inventoryList.innerHTML = mockOptimizationData.map(item => `
+                <li class="p-3 ${item.statusClass} rounded-lg flex justify-between items-center border border-gray-100">
+                    <div>
+                        <p class="font-medium text-gray-800">${item.sku}</p>
+                        <p class="text-xs text-gray-500">RF Suggests: ${item.suggestion}</p>
+                    </div>
+                    <span class="text-sm font-semibold px-3 py-1 rounded-full ${item.badgeClass}">${item.action}</span>
+                </li>
+            `).join('');
         }
-
-        async function fetchSupplierRisk() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/supplier_risk`);
-                const data = await response.json();
-
-                alert(`Supplier ${data.supplier_id} Risk Score: ${data.risk_score} (${data.risk_level})\n\nRecommendation: ${data.recommendation}`);
-            } catch (error) {
-                alert('Error fetching supplier risk data.');
-                console.error("Error fetching supplier risk:", error);
-            }
-        }
-
-        async function showDefectData() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/defect_classification`);
-                const data = await response.json();
-                
-                let defectAlert = `Quality Control Summary:\n\nTotal Defects Found: ${data.total_defects}\nDefect Rate: ${data.defect_rate}\nModel Confidence: ${data.model_confidence}\n\nClassification Breakdown:\n`;
-                for (const [key, value] of Object.entries(data.classifications)) {
-                    defectAlert += `- ${key}: ${value} instances\n`;
-                }
-                
-                alert(defectAlert);
-            } catch (error) {
-                alert('Error fetching defect classification data.');
-                console.error("Error fetching defect classification:", error);
-            }
-        }
-
-        function fetchAllMLData() {
-            fetchMLSummaryCards();
-            fetchMLDemandForecast();
-            fetchInventoryOptimization();
-            renderDemandForecastChart();
-        }
-
-        // --- Chart.js Rendering Function (Same as previous output) ---
+        
+        // --- Chart.js Rendering Function ---
 
         function renderDemandForecastChart() {
             if (demandChart) {
@@ -550,8 +522,8 @@
             
             const ctx = document.getElementById('demandForecastChart').getContext('2d');
             const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov (F)', 'Dec (F)'];
-            const actualData = [120, 150, 130, 180, 210, 240, 200, 230, 250, 280, 300, 320];
-            const forecastData = [null, null, null, null, null, null, null, null, null, 280, 340, 380];
+            const actualData = [120, 150, 130, 180, 210, 240, 200, 230, 250, 280, null, null];
+            const forecastData = [null, null, null, null, null, null, null, null, 250, 280, 340, 380];
             
             demandChart = new Chart(ctx, {
                 type: 'line',
@@ -561,18 +533,18 @@
                         {
                             label: 'Actual Sales (Units)',
                             data: actualData,
-                            borderColor: '#3b82f6',
+                            borderColor: '#3b82f6', // secondary-data
                             backgroundColor: 'rgba(59, 130, 246, 0.1)',
                             fill: true,
                             tension: 0.3,
                             pointRadius: 5,
                             pointBackgroundColor: '#3b82f6',
-                            spanGaps: true
+                            spanGaps: true // Ensures the line continues where data exists
                         },
                         {
                             label: 'ML Forecast',
                             data: forecastData,
-                            borderColor: '#f59e0b',
+                            borderColor: '#f59e0b', // accent-ml
                             borderDash: [5, 5],
                             backgroundColor: 'transparent',
                             fill: false,
@@ -587,8 +559,12 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'top' },
-                        title: { display: false }
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: false,
+                        }
                     },
                     scales: {
                         y: {
@@ -604,7 +580,7 @@
         }
 
 
-        // --- Mobile Sidebar Toggle (Same as previous output) ---
+        // --- Mobile Sidebar Toggle ---
         sidebarToggle.addEventListener('click', () => {
             sidebar.classList.toggle('-translate-x-full');
         });
