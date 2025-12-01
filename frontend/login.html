@@ -88,8 +88,8 @@
             event.preventDefault();
             
             const formData = new FormData(event.target);
-            const username = formData.get('username');
-            const password = formData.get('password');
+            const username = formData.get('username').trim();
+            const password = formData.get('password').trim();
 
             // Hide previous error
             document.getElementById('errorMessage').classList.add('hidden');

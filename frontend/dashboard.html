@@ -44,31 +44,31 @@
             <div class="p-4">
                 <h3 class="text-sm font-semibold text-gray-400 mb-4">MAIN MENU</h3>
                 <nav class="space-y-2">
-                    <a href="/frontend/dashboard.html" class="flex items-center space-x-3 p-3 rounded hover:bg-gray-700">
+                    <a href="dashboard.html" class="flex items-center space-x-3 p-3 rounded hover:bg-gray-700">
                         <i class="fas fa-home"></i>
                         <span>Dashboard</span>
                     </a>
-                    <a href="/frontend/procurement/supplier-list.html" class="flex items-center space-x-3 p-3 rounded hover:bg-gray-700">
+                    <a href="procurement/supplier-list.html" class="flex items-center space-x-3 p-3 rounded hover:bg-gray-700">
                         <i class="fas fa-shopping-cart"></i>
                         <span>Procurement</span>
                     </a>
-                    <a href="/frontend/inventory/stock-dashboard.html" class="flex items-center space-x-3 p-3 rounded hover:bg-gray-700">
+                    <a href="inventory/stock-dashboard.html" class="flex items-center space-x-3 p-3 rounded hover:bg-gray-700">
                         <i class="fas fa-boxes"></i>
                         <span>Inventory</span>
                     </a>
-                    <a href="/frontend/production/work-order-list.html" class="flex items-center space-x-3 p-3 rounded hover:bg-gray-700">
+                    <a href="production/work-orders.html" class="flex items-center space-x-3 p-3 rounded hover:bg-gray-700">
                         <i class="fas fa-cogs"></i>
                         <span>Production</span>
                     </a>
-                    <a href="/frontend/quality/quality-dashboard.html" class="flex items-center space-x-3 p-3 rounded hover:bg-gray-700">
+                    <a href="quality/qc-form.html" class="flex items-center space-x-3 p-3 rounded hover:bg-gray-700">
                         <i class="fas fa-check-circle"></i>
                         <span>Quality</span>
                     </a>
-                    <a href="/frontend/sales/sales-dashboard.html" class="flex items-center space-x-3 p-3 rounded hover:bg-gray-700">
+                    <a href="sales/sales-orders.html" class="flex items-center space-x-3 p-3 rounded hover:bg-gray-700">
                         <i class="fas fa-chart-line"></i>
                         <span>Sales</span>
                     </a>
-                    <a href="/frontend/reports/kpi-dashboard.html" class="flex items-center space-x-3 p-3 rounded hover:bg-gray-700">
+                    <a href="reports/reports-procurement.html" class="flex items-center space-x-3 p-3 rounded hover:bg-gray-700">
                         <i class="fas fa-file-alt"></i>
                         <span>Reports</span>
                     </a>
@@ -218,7 +218,7 @@
         // Logout function
         function logout() {
             localStorage.removeItem('token');
-            localStorage.removeItem('user');
+               localStorage.removeItem('user');
             window.location.href = 'login.html';
         }
 
