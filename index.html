@@ -3,12 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Textile ERP - Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="/assets/css/main.css">
-    <link rel="stylesheet" href="/modules/procurement/styles.css">
-    
-    <style>
+    <title>Textile ERP - Redirecting...</title>
+    <script>
+        // Check if user is authenticated
+        const token = localStorage.getItem('authToken');
+        
+        if (token) {
+            // User is logged in, redirect to dashboard
+            window.location.href = '/frontend/index.html';
+        } else {
+            // User is not logged in, redirect to login
+            window.location.href = '/frontend/login.html';
+        }
+    </script>
+</head>
+<body>
+    <div style="display: flex; align-items: center; justify-content: center; height: 100vh; font-family: system-ui, -apple-system, sans-serif;">
+        <div style="text-align: center;">
+            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);">
+                <span style="color: white; font-weight: bold; font-size: 28px;">TE</span>
+            </div>
+            <h1 style="color: #111827; font-size: 24px; margin: 0 0 0.5rem 0;">Textile ERP</h1>
+            <p style="color: #6b7280;">Redirecting...</p>
+        </div>
+    </div>
+</body>
+</html>
         /* Custom styling for a professional look */
         body {
             font-family: 'Inter', sans-serif;
