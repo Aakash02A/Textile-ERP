@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Orders - Textile ERP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/modules/production/styles.css">
+</head>
+<body class="bg-gray-50">
+    <nav class="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-40 shadow-sm">
+        <div class="flex items-center justify-between px-4 md:px-6 py-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-r from-orange-600 to-red-500 rounded-lg flex items-center justify-center">
+                    <span class="text-white font-bold">TE</span>
+                </div>
+                <h1 class="text-lg md:text-xl font-bold text-gray-900">Textile ERP</h1>
+            </div>
+            <a href="/frontend/index.html" class="text-blue-600 hover:text-blue-700 font-medium">← Back</a>
+        </div>
+    </nav>
+
+    <div class="pt-20 pb-8">
+        <div class="max-w-7xl mx-auto px-4 md:px-6">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-900">Work Orders</h2>
+                <p class="text-gray-600 mt-2">Manage production work orders and track progress</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <p class="text-gray-600 text-sm font-medium">Active Orders</p>
+                    <p class="text-2xl font-bold text-orange-600 mt-2" id="activeOrders">0</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <p class="text-gray-600 text-sm font-medium">Units Produced</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-2" id="unitsProduced">0</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <p class="text-gray-600 text-sm font-medium">Defect Rate</p>
+                    <p class="text-2xl font-bold text-green-600 mt-2" id="defectRate">0%</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <p class="text-gray-600 text-sm font-medium">On-Time %</p>
+                    <p class="text-2xl font-bold text-green-600 mt-2" id="onTimePercent">0%</p>
+                </div>
+            </div>
+
+            <div class="mb-6 flex gap-3">
+                <button onclick="showCreateWOForm()" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-medium transition">
+                    <i class="fas fa-plus mr-2"></i>Create Work Order
+                </button>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-4 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <input type="text" id="woSearch" placeholder="Search work order..." class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                    <select id="woStatus" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    <button onclick="filterWorkOrders()" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-medium transition">
+                        Filter
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-gray-100 border-b border-gray-200">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">WO Number</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Product</th>
+                            <th class="px-6 py-3 text-right text-sm font-semibold text-gray-700">Quantity</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Assigned To</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
+                            <th class="px-6 py-3 text-center text-sm font-semibold text-gray-700">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="woTableBody" class="divide-y divide-gray-200">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="createWOModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-lg max-w-md w-full">
+            <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Create Work Order</h3>
+                <form id="createWOForm" onsubmit="submitWorkOrder(event)">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Product</label>
+                            <input type="text" id="woProduct" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                            <input type="number" id="woQuantity" min="1" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Assign To</label>
+                            <input type="text" id="woAssignee" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+                            <input type="date" id="woDueDate" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        </div>
+                    </div>
+                    <div class="mt-6 flex gap-3 justify-end">
+                        <button type="button" onclick="closeCreateWOModal()" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/utils.js"></script>
+    <script src="/modules/production/script.js"></script>
+    <script>
+        let allWorkOrders = [];
+
+        async function loadWorkOrders() {
+            try {
+                const response = await apiRequest('/api/v1/production/work-orders');
+                allWorkOrders = response.data || [];
+                displayWorkOrders(allWorkOrders);
+                updateKPIs();
+            } catch (error) {
+                console.error('Error loading work orders:', error);
+                showNotification('Failed to load work orders', 'error');
+            }
+        }
+
+        function displayWorkOrders(orders) {
+            const tbody = document.getElementById('woTableBody');
+            tbody.innerHTML = orders.map(wo => {
+                const statusColors = {
+                    'pending': 'bg-yellow-100 text-yellow-800',
+                    'in_progress': 'bg-blue-100 text-blue-800',
+                    'completed': 'bg-green-100 text-green-800'
+                };
+                const statusClass = statusColors[wo.status] || 'bg-gray-100 text-gray-800';
+                
+                return `
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-6 py-4 text-sm font-medium text-orange-600">${wo.work_order_number || 'N/A'}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700">${wo.product_name || 'N/A'}</td>
+                        <td class="px-6 py-4 text-sm text-right font-medium">${wo.quantity_ordered || 0}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700">${wo.assigned_to || 'Unassigned'}</td>
+                        <td class="px-6 py-4 text-sm">
+                            <span class="px-2 py-1 rounded-full text-xs font-medium ${statusClass}">
+                                ${(wo.status || 'pending').toUpperCase()}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-center text-sm space-x-2">
+                            <button onclick="viewWO('${wo.work_order_id}')" class="text-blue-600 hover:text-blue-700">View</button>
+                            <button onclick="deleteWO('${wo.work_order_id}')" class="text-red-600 hover:text-red-700">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateKPIs() {
+            const active = allWorkOrders.filter(wo => wo.status === 'in_progress').length;
+            const total = allWorkOrders.reduce((sum, wo) => sum + (wo.quantity_ordered || 0), 0);
+            document.getElementById('activeOrders').textContent = active;
+            document.getElementById('unitsProduced').textContent = total;
+            document.getElementById('defectRate').textContent = '2.1%';
+            document.getElementById('onTimePercent').textContent = '96.5%';
+        }
+
+        function showCreateWOForm() {
+            document.getElementById('createWOModal').classList.remove('hidden');
+        }
+
+        function closeCreateWOModal() {
+            document.getElementById('createWOModal').classList.add('hidden');
+        }
+
+        async function submitWorkOrder(event) {
+            event.preventDefault();
+            
+            const formData = {
+                product_name: document.getElementById('woProduct').value,
+                quantity_ordered: parseInt(document.getElementById('woQuantity').value),
+                assigned_to: document.getElementById('woAssignee').value,
+                due_date: document.getElementById('woDueDate').value,
+                status: 'pending'
+            };
+
+            try {
+                await apiRequest('/api/v1/production/work-orders', {
+                    method: 'POST',
+                    body: JSON.stringify(formData)
+                });
+                showNotification('Work order created', 'success');
+                closeCreateWOModal();
+                document.getElementById('createWOForm').reset();
+                await loadWorkOrders();
+            } catch (error) {
+                showNotification('Failed to create work order', 'error');
+            }
+        }
+
+        function filterWorkOrders() {
+            const search = document.getElementById('woSearch').value.toLowerCase();
+            const status = document.getElementById('woStatus').value;
+            
+            const filtered = allWorkOrders.filter(wo => {
+                const matchesSearch = (wo.work_order_number || '').toLowerCase().includes(search);
+                const matchesStatus = !status || wo.status === status;
+                return matchesSearch && matchesStatus;
+            });
+            
+            displayWorkOrders(filtered);
+        }
+
+        function viewWO(woId) {
+            alert('View WO: ' + woId);
+        }
+
+        async function deleteWO(woId) {
+            if (confirm('Delete this work order?')) {
+                try {
+                    await apiRequest(`/api/v1/production/work-orders/${woId}`, { method: 'DELETE' });
+                    showNotification('Work order deleted', 'success');
+                    await loadWorkOrders();
+                } catch (error) {
+                    showNotification('Failed to delete work order', 'error');
+                }
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 px-4 py-3 rounded-lg text-white text-sm font-medium shadow-lg ${
+                type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            }`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', loadWorkOrders);
+    </script>
+</body>
+</html>

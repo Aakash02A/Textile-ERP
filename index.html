@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Textile ERP & ML Intelligence Hub (API Integrated)</title>
+    <title>Textile ERP - Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/modules/procurement/styles.css">
     
     <style>
         /* Custom styling for a professional look */
@@ -35,6 +35,44 @@
         .nav-link:hover:not(.active-link) {
             background-color: #f3f4f6;
             color: #10b981;
+        }
+        .nav-toggle {
+            cursor: pointer;
+            background-color: transparent;
+            border: none;
+            width: 100%;
+            padding: 0.75rem;
+        }
+        .nav-submenu {
+            transition: all 150ms ease-in-out;
+        }
+        .nav-submenu.show {
+            display: block !important;
+        }
+        .nav-submenu.hidden {
+            display: none;
+        }
+        .nav-sublink {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-decoration: none;
+            transition: all 150ms ease-in-out;
+        }
+        .nav-sublink:hover {
+            background-color: #f0fdf4;
+            color: #10b981;
+            padding-left: 1rem;
+        }
+        .toggle-icon {
+            transition: transform 300ms ease-in-out;
+        }
+        .toggle-icon.rotate {
+            transform: rotate(90deg);
         }
         .module-content {
             display: none;
@@ -99,26 +137,149 @@
                 <i class="fas fa-tachometer-alt w-5 h-5"></i>
                 <span>ERP Overview</span>
             </a>
-            <a href="#" data-module="procurement" class="nav-link">
-                <i class="fas fa-handshake w-5 h-5"></i>
-                <span>Procurement & Suppliers</span>
-            </a>
-            <a href="#" data-module="inventory" class="nav-link">
-                <i class="fas fa-warehouse w-5 h-5"></i>
-                <span>Inventory & Optimization</span>
-            </a>
-            <a href="#" data-module="production" class="nav-link">
-                <i class="fas fa-cogs w-5 h-5"></i>
-                <span>Production & BOM</span>
-            </a>
-            <a href="#" data-module="qc" class="nav-link">
-                <i class="fas fa-check-circle w-5 h-5"></i>
-                <span>Quality Control</span>
-            </a>
-            <a href="#" data-module="sales" class="nav-link">
-                <i class="fas fa-shopping-cart w-5 h-5"></i>
-                <span>Sales & Orders</span>
-            </a>
+            
+            <!-- Procurement Module with Submenu -->
+            <!-- Note: Updated to use data-operation-id for embedded sections -->
+            <div class="nav-module-group">
+                <button class="nav-link nav-toggle w-full text-left" data-module="procurement">
+                    <i class="fas fa-handshake w-5 h-5"></i>
+                    <span>Procurement & Suppliers</span>
+                    <i class="fas fa-chevron-right w-4 h-4 ml-auto toggle-icon transition-transform duration-200"></i>
+                </button>
+                <div class="nav-submenu hidden pl-4 space-y-1">
+                    <a href="#" data-operation="po-list" class="nav-sublink operation-link">
+                        <i class="fas fa-list w-4 h-4"></i>
+                        <span>PO List</span>
+                    </a>
+                    <a href="#" data-operation="create-po" class="nav-sublink operation-link">
+                        <i class="fas fa-plus-circle w-4 h-4"></i>
+                        <span>Create PO</span>
+                    </a>
+                    <a href="#" data-operation="supplier-list" class="nav-sublink operation-link">
+                        <i class="fas fa-users w-4 h-4"></i>
+                        <span>Supplier List</span>
+                    </a>
+                    <a href="#" data-operation="po-details" class="nav-sublink operation-link">
+                        <i class="fas fa-file-details w-4 h-4"></i>
+                        <span>PO Details</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Inventory Module with Submenu -->
+            <div class="nav-module-group">
+                <button class="nav-link nav-toggle w-full text-left" data-module="inventory">
+                    <i class="fas fa-warehouse w-5 h-5"></i>
+                    <span>Inventory & Optimization</span>
+                    <i class="fas fa-chevron-right w-4 h-4 ml-auto toggle-icon transition-transform duration-200"></i>
+                </button>
+                <div class="nav-submenu hidden pl-4 space-y-1">
+                    <a href="#" data-operation="materials" class="nav-sublink operation-link">
+                        <i class="fas fa-box w-4 h-4"></i>
+                        <span>Materials</span>
+                    </a>
+                    <a href="#" data-operation="stock-dashboard" class="nav-sublink operation-link">
+                        <i class="fas fa-chart-bar w-4 h-4"></i>
+                        <span>Stock Dashboard</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Production Module with Submenu -->
+            <div class="nav-module-group">
+                <button class="nav-link nav-toggle w-full text-left" data-module="production">
+                    <i class="fas fa-cogs w-5 h-5"></i>
+                    <span>Production & BOM</span>
+                    <i class="fas fa-chevron-right w-4 h-4 ml-auto toggle-icon transition-transform duration-200"></i>
+                </button>
+                <div class="nav-submenu hidden pl-4 space-y-1">
+                    <a href="#" data-operation="work-orders" class="nav-sublink operation-link">
+                        <i class="fas fa-tasks w-4 h-4"></i>
+                        <span>Work Orders</span>
+                    </a>
+                    <a href="#" data-operation="create-work-order" class="nav-sublink operation-link">
+                        <i class="fas fa-plus-circle w-4 h-4"></i>
+                        <span>Create Work Order</span>
+                    </a>
+                    <a href="#" data-operation="production-log" class="nav-sublink operation-link">
+                        <i class="fas fa-book w-4 h-4"></i>
+                        <span>Production Log</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quality Control Module with Submenu -->
+            <div class="nav-module-group">
+                <button class="nav-link nav-toggle w-full text-left" data-module="qc">
+                    <i class="fas fa-check-circle w-5 h-5"></i>
+                    <span>Quality Control</span>
+                    <i class="fas fa-chevron-right w-4 h-4 ml-auto toggle-icon transition-transform duration-200"></i>
+                </button>
+                <div class="nav-submenu hidden pl-4 space-y-1">
+                    <a href="#" data-operation="qc-form" class="nav-sublink operation-link">
+                        <i class="fas fa-clipboard w-4 h-4"></i>
+                        <span>QC Form</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Sales Module with Submenu -->
+            <div class="nav-module-group">
+                <button class="nav-link nav-toggle w-full text-left" data-module="sales">
+                    <i class="fas fa-shopping-cart w-5 h-5"></i>
+                    <span>Sales & Orders</span>
+                    <i class="fas fa-chevron-right w-4 h-4 ml-auto toggle-icon transition-transform duration-200"></i>
+                </button>
+                <div class="nav-submenu hidden pl-4 space-y-1">
+                    <a href="#" data-operation="sales-orders" class="nav-sublink operation-link">
+                        <i class="fas fa-shopping-bag w-4 h-4"></i>
+                        <span>Sales Orders</span>
+                    </a>
+                    <a href="#" data-operation="create-sales-order" class="nav-sublink operation-link">
+                        <i class="fas fa-plus-circle w-4 h-4"></i>
+                        <span>Create Order</span>
+                    </a>
+                    <a href="#" data-operation="customers" class="nav-sublink operation-link">
+                        <i class="fas fa-users w-4 h-4"></i>
+                        <span>Customers</span>
+                    </a>
+                    <a href="#" data-operation="create-customer" class="nav-sublink operation-link">
+                        <i class="fas fa-user-plus w-4 h-4"></i>
+                        <span>Create Customer</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Reports Module with Submenu -->
+            <div class="nav-module-group">
+                <button class="nav-link nav-toggle w-full text-left" data-module="reports">
+                    <i class="fas fa-file-chart-line w-5 h-5"></i>
+                    <span>Reports</span>
+                    <i class="fas fa-chevron-right w-4 h-4 ml-auto toggle-icon transition-transform duration-200"></i>
+                </button>
+                <div class="nav-submenu hidden pl-4 space-y-1">
+                    <a href="#" data-operation="reports-inventory" class="nav-sublink operation-link">
+                        <i class="fas fa-chart-pie w-4 h-4"></i>
+                        <span>Inventory Reports</span>
+                    </a>
+                    <a href="#" data-operation="reports-procurement" class="nav-sublink operation-link">
+                        <i class="fas fa-chart-column w-4 h-4"></i>
+                        <span>Procurement Reports</span>
+                    </a>
+                    <a href="#" data-operation="reports-production" class="nav-sublink operation-link">
+                        <i class="fas fa-chart-line w-4 h-4"></i>
+                        <span>Production Reports</span>
+                    </a>
+                    <a href="#" data-operation="reports-quality" class="nav-sublink operation-link">
+                        <i class="fas fa-chart-bar w-4 h-4"></i>
+                        <span>Quality Reports</span>
+                    </a>
+                    <a href="#" data-operation="reports-sales" class="nav-sublink operation-link">
+                        <i class="fas fa-chart-area w-4 h-4"></i>
+                        <span>Sales Reports</span>
+                    </a>
+                </div>
+            </div>
         </nav>
         <div class="p-4 border-t border-gray-100">
             <a href="#" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-100 transition duration-150">
@@ -363,8 +524,487 @@
                     <button class="mt-4 bg-fuchsia-500 text-white p-2 rounded-lg text-sm hover:bg-fuchsia-600 transition">Manage Sales Orders</button>
                 </div>
             </section>
-            </main>
-    </div>
+
+            <section id="reports_content" class="module-content">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Reports & Analytics 📊</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="dashboard-card hover:shadow-lg transition duration-200 cursor-pointer" onclick="window.open('frontend/reports/reports-inventory.html')">
+                        <div class="flex items-center mb-4">
+                            <div class="ml-card-icon" style="background: #10b981; margin-bottom: 0;">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-lg font-semibold text-gray-800">Inventory Reports</h3>
+                                <p class="text-xs text-gray-500">Stock levels & trends</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-4">Track inventory movements, stock value, and warehouse utilization metrics.</p>
+                        <button class="w-full bg-primary-smart text-white p-2 rounded-lg font-medium hover:bg-emerald-600 transition text-sm">View Report</button>
+                    </div>
+
+                    <div class="dashboard-card hover:shadow-lg transition duration-200 cursor-pointer" onclick="window.open('frontend/reports/reports-procurement.html')">
+                        <div class="flex items-center mb-4">
+                            <div class="ml-card-icon" style="background: #3b82f6; margin-bottom: 0;">
+                                <i class="fas fa-chart-column"></i>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-lg font-semibold text-gray-800">Procurement Reports</h3>
+                                <p class="text-xs text-gray-500">PO & supplier data</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-4">Analyze purchase orders, supplier performance, and procurement costs.</p>
+                        <button class="w-full bg-secondary-data text-white p-2 rounded-lg font-medium hover:bg-blue-600 transition text-sm">View Report</button>
+                    </div>
+
+                    <div class="dashboard-card hover:shadow-lg transition duration-200 cursor-pointer" onclick="window.open('frontend/reports/reports-production.html')">
+                        <div class="flex items-center mb-4">
+                            <div class="ml-card-icon" style="background: #f59e0b; margin-bottom: 0;">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-lg font-semibold text-gray-800">Production Reports</h3>
+                                <p class="text-xs text-gray-500">Work orders & output</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-4">Monitor production schedules, efficiency, and work order status.</p>
+                        <button class="w-full bg-accent-ml text-white p-2 rounded-lg font-medium hover:bg-amber-600 transition text-sm">View Report</button>
+                    </div>
+
+                    <div class="dashboard-card hover:shadow-lg transition duration-200 cursor-pointer" onclick="window.open('frontend/reports/reports-quality.html')">
+                        <div class="flex items-center mb-4">
+                            <div class="ml-card-icon" style="background: #ef4444; margin-bottom: 0;">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-lg font-semibold text-gray-800">Quality Reports</h3>
+                                <p class="text-xs text-gray-500">Defect & QC data</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-4">Review defect rates, quality metrics, and compliance status.</p>
+                        <button class="w-full bg-risk-high text-white p-2 rounded-lg font-medium hover:bg-red-600 transition text-sm">View Report</button>
+                    </div>
+
+                    <div class="dashboard-card hover:shadow-lg transition duration-200 cursor-pointer" onclick="window.open('frontend/reports/reports-sales.html')">
+                        <div class="flex items-center mb-4">
+                            <div class="ml-card-icon" style="background: #8b5cf6; margin-bottom: 0;">
+                                <i class="fas fa-chart-area"></i>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-lg font-semibold text-gray-800">Sales Reports</h3>
+                                <p class="text-xs text-gray-500">Revenue & orders</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-4">Track sales performance, customer orders, and revenue trends.</p>
+                        <button class="w-full bg-purple-600 text-white p-2 rounded-lg font-medium hover:bg-purple-700 transition text-sm">View Report</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== EMBEDDED OPERATION SECTIONS ========== -->
+
+            <!-- Procurement: PO List -->
+            <section data-operation-content="po-list" data-operation-title="Purchase Orders List" class="module-content" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Purchase Orders 📋</h2>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+                    <div class="dashboard-card border-b-4 border-blue-500">
+                        <p class="text-sm font-medium text-gray-500">Total POs</p>
+                        <p class="text-4xl font-extrabold text-blue-600 mt-2">0</p>
+                        <p class="text-xs text-gray-600 mt-2">Active orders</p>
+                    </div>
+                    <div class="dashboard-card border-b-4 border-green-500">
+                        <p class="text-sm font-medium text-gray-500">Approved</p>
+                        <p class="text-4xl font-extrabold text-green-600 mt-2">0</p>
+                        <p class="text-xs text-gray-600 mt-2">Ready to receive</p>
+                    </div>
+                    <div class="dashboard-card border-b-4 border-yellow-500">
+                        <p class="text-sm font-medium text-gray-500">Draft</p>
+                        <p class="text-4xl font-extrabold text-yellow-600 mt-2">0</p>
+                        <p class="text-xs text-gray-600 mt-2">Not submitted</p>
+                    </div>
+                    <div class="dashboard-card border-b-4 border-purple-500">
+                        <p class="text-sm font-medium text-gray-500">Received</p>
+                        <p class="text-4xl font-extrabold text-purple-600 mt-2">0</p>
+                        <p class="text-xs text-gray-600 mt-2">Completed</p>
+                    </div>
+                    <div class="dashboard-card border-b-4 border-orange-500">
+                        <p class="text-sm font-medium text-gray-500">Total Value</p>
+                        <p class="text-3xl font-extrabold text-orange-600 mt-2">$0</p>
+                        <p class="text-xs text-gray-600 mt-2">All orders</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card p-6 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Recent POs</h3>
+                        <button class="bg-primary-smart text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition">
+                            <i class="fas fa-plus"></i> New PO
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">PO Number</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Supplier</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#PO-2024-001</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Textile Supplier Ltd</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Dec 1, 2024</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">$15,000</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Approved</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#PO-2024-002</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Fabric Wholesale</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Dec 2, 2024</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">$8,500</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Draft</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Inventory: Materials -->
+            <section data-operation-content="materials" data-operation-title="Material Master" class="module-content" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Materials 📦</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="dashboard-card border-b-4 border-blue-500">
+                        <p class="text-sm font-medium text-gray-500">Total Materials</p>
+                        <p class="text-4xl font-extrabold text-blue-600 mt-2">0</p>
+                    </div>
+                    <div class="dashboard-card border-b-4 border-green-500">
+                        <p class="text-sm font-medium text-gray-500">Low Stock</p>
+                        <p class="text-4xl font-extrabold text-green-600 mt-2">0</p>
+                    </div>
+                    <div class="dashboard-card border-b-4 border-red-500">
+                        <p class="text-sm font-medium text-gray-500">Out of Stock</p>
+                        <p class="text-4xl font-extrabold text-red-600 mt-2">0</p>
+                    </div>
+                    <div class="dashboard-card border-b-4 border-purple-500">
+                        <p class="text-sm font-medium text-gray-500">Total Value</p>
+                        <p class="text-3xl font-extrabold text-purple-600 mt-2">$0K</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Material Inventory</h3>
+                        <button class="bg-primary-smart text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition">
+                            <i class="fas fa-plus"></i> Add Material
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Material Code</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Unit Price</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">MAT-001</td>
+                                    <td class="px-6 py-4 text-sm text-gray-700">Premium Cotton Fabric</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">500 m</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold">$12/m</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">In Stock</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sales: Sales Orders -->
+            <section data-operation-content="sales-orders" data-operation-title="Sales Orders" class="module-content" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Sales Orders 🛒</h2>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+                    <div class="dashboard-card border-b-4 border-blue-500">
+                        <p class="text-sm font-medium text-gray-500">Total Orders</p>
+                        <p class="text-4xl font-extrabold text-blue-600 mt-2">0</p>
+                    </div>
+                    <div class="dashboard-card border-b-4 border-green-500">
+                        <p class="text-sm font-medium text-gray-500">Confirmed</p>
+                        <p class="text-4xl font-extrabold text-green-600 mt-2">0</p>
+                    </div>
+                    <div class="dashboard-card border-b-4 border-yellow-500">
+                        <p class="text-sm font-medium text-gray-500">In Production</p>
+                        <p class="text-4xl font-extrabold text-yellow-600 mt-2">0</p>
+                    </div>
+                    <div class="dashboard-card border-b-4 border-purple-500">
+                        <p class="text-sm font-medium text-gray-500">Dispatched</p>
+                        <p class="text-4xl font-extrabold text-purple-600 mt-2">0</p>
+                    </div>
+                    <div class="dashboard-card border-b-4 border-orange-500">
+                        <p class="text-sm font-medium text-gray-500">Total Value</p>
+                        <p class="text-3xl font-extrabold text-orange-600 mt-2">$0</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Recent Sales Orders</h3>
+                        <button class="bg-primary-smart text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition">
+                            <i class="fas fa-plus"></i> New Order
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">SO Number</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total Amount</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#SO-2024-100</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Fashion Retail Co</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Dec 1, 2024</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold">$25,000</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">In Production</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Production: Work Orders -->
+            <section data-operation-content="work-orders" data-operation-title="Work Orders" class="module-content" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Work Orders ⚙️</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="dashboard-card border-b-4 border-blue-500">
+                        <p class="text-sm font-medium text-gray-500">Total WO</p>
+                        <p class="text-4xl font-extrabold text-blue-600 mt-2">0</p>
+                    </div>
+                    <div class="dashboard-card border-b-4 border-yellow-500">
+                        <p class="text-sm font-medium text-gray-500">In Progress</p>
+                        <p class="text-4xl font-extrabold text-yellow-600 mt-2">0</p>
+                    </div>
+                    <div class="dashboard-card border-b-4 border-green-500">
+                        <p class="text-sm font-medium text-gray-500">Completed</p>
+                        <p class="text-4xl font-extrabold text-green-600 mt-2">0</p>
+                    </div>
+                    <div class="dashboard-card border-b-4 border-red-500">
+                        <p class="text-sm font-medium text-gray-500">On Hold</p>
+                        <p class="text-4xl font-extrabold text-red-600 mt-2">0</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Work Order List</h3>
+                        <button class="bg-primary-smart text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition">
+                            <i class="fas fa-plus"></i> New WO
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">WO Number</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Start Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#WO-001</td>
+                                    <td class="px-6 py-4 text-sm text-gray-700">Cotton T-Shirt</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1,000 units</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Dec 1, 2024</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">In Progress</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quality: QC Form -->
+            <section data-operation-content="qc-form" data-operation-title="Quality Control Form" class="module-content" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Quality Control Form ✅</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="dashboard-card border-b-4 border-blue-500">
+                        <p class="text-sm font-medium text-gray-500">Total Inspections</p>
+                        <p class="text-4xl font-extrabold text-blue-600 mt-2">0</p>
+                    </div>
+                    <div class="dashboard-card border-b-4 border-green-500">
+                        <p class="text-sm font-medium text-gray-500">Passed</p>
+                        <p class="text-4xl font-extrabold text-green-600 mt-2">0</p>
+                    </div>
+                    <div class="dashboard-card border-b-4 border-red-500">
+                        <p class="text-sm font-medium text-gray-500">Failed</p>
+                        <p class="text-4xl font-extrabold text-red-600 mt-2">0</p>
+                    </div>
+                    <div class="dashboard-card border-b-4 border-yellow-500">
+                        <p class="text-sm font-medium text-gray-500">Defect Rate</p>
+                        <p class="text-3xl font-extrabold text-yellow-600 mt-2">0%</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card p-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-6">Log Quality Check</h3>
+                    <form class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Work Order</label>
+                                <input type="text" placeholder="WO-001" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-smart">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Product</label>
+                                <input type="text" placeholder="Product name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-smart">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Batch Size</label>
+                                <input type="number" placeholder="Quantity" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-smart">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Defects Found</label>
+                                <input type="number" placeholder="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-smart">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Quality Status</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-smart">
+                                <option>Select Status</option>
+                                <option>Passed</option>
+                                <option>Failed</option>
+                                <option>Rework Required</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Remarks</label>
+                            <textarea rows="4" placeholder="Additional notes..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-smart"></textarea>
+                        </div>
+                        <button type="submit" class="bg-primary-smart text-white px-6 py-2 rounded-lg hover:bg-emerald-600 transition">
+                            <i class="fas fa-save"></i> Submit QC Report
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Additional operation sections placeholder -->
+            <section data-operation-content="create-po" data-operation-title="Create Purchase Order" class="module-content" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Create Purchase Order</h2>
+                <div class="dashboard-card p-6">
+                    <p class="text-gray-600 mb-4">Create PO Form - Coming Soon</p>
+                    <p class="text-sm text-gray-500">This section will contain a comprehensive form for creating new purchase orders.</p>
+                </div>
+            </section>
+
+            <section data-operation-content="supplier-list" data-operation-title="Supplier List" class="module-content" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Supplier Management</h2>
+                <div class="dashboard-card p-6">
+                    <p class="text-gray-600 mb-4">Supplier List - Coming Soon</p>
+                </div>
+            </section>
+
+            <section data-operation-content="stock-dashboard" data-operation-title="Stock Dashboard" class="module-content" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Stock Dashboard</h2>
+                <div class="dashboard-card p-6">
+                    <p class="text-gray-600 mb-4">Stock Dashboard - Coming Soon</p>
+                </div>
+            </section>
+
+            <section data-operation-content="create-work-order" data-operation-title="Create Work Order" class="module-content" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Create Work Order</h2>
+                <div class="dashboard-card p-6">
+                    <p class="text-gray-600 mb-4">Create Work Order Form - Coming Soon</p>
+                </div>
+            </section>
+
+            <section data-operation-content="production-log" data-operation-title="Production Log" class="module-content" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Production Log</h2>
+                <div class="dashboard-card p-6">
+                    <p class="text-gray-600 mb-4">Production Log - Coming Soon</p>
+                </div>
+            </section>
+
+            <section data-operation-content="create-sales-order" data-operation-title="Create Sales Order" class="module-content" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Create Sales Order</h2>
+                <div class="dashboard-card p-6">
+                    <p class="text-gray-600 mb-4">Create Sales Order Form - Coming Soon</p>
+                </div>
+            </section>
+
+            <section data-operation-content="customers" data-operation-title="Customer Management" class="module-content" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Customers</h2>
+                <div class="dashboard-card p-6">
+                    <p class="text-gray-600 mb-4">Customer List - Coming Soon</p>
+                </div>
+            </section>
+
+            <section data-operation-content="create-customer" data-operation-title="Create Customer" class="module-content" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Create Customer</h2>
+                <div class="dashboard-card p-6">
+                    <p class="text-gray-600 mb-4">Create Customer Form - Coming Soon</p>
+                </div>
+            </section>
+
+            <section data-operation-content="reports-inventory" data-operation-title="Inventory Reports" class="module-content" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Inventory Reports</h2>
+                <div class="dashboard-card p-6">
+                    <p class="text-gray-600 mb-4">Inventory Reports - Coming Soon</p>
+                </div>
+            </section>
+
+            <section data-operation-content="reports-procurement" data-operation-title="Procurement Reports" class="module-content" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Procurement Reports</h2>
+                <div class="dashboard-card p-6">
+                    <p class="text-gray-600 mb-4">Procurement Reports - Coming Soon</p>
+                </div>
+            </section>
+
+            <section data-operation-content="reports-production" data-operation-title="Production Reports" class="module-content" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Production Reports</h2>
+                <div class="dashboard-card p-6">
+                    <p class="text-gray-600 mb-4">Production Reports - Coming Soon</p>
+                </div>
+            </section>
+
+            <section data-operation-content="reports-quality" data-operation-title="Quality Reports" class="module-content" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Quality Reports</h2>
+                <div class="dashboard-card p-6">
+                    <p class="text-gray-600 mb-4">Quality Reports - Coming Soon</p>
+                </div>
+            </section>
+
+            <section data-operation-content="reports-sales" data-operation-title="Sales Reports" class="module-content" style="display: none;">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Sales Reports</h2>
+                <div class="dashboard-card p-6">
+                    <p class="text-gray-600 mb-4">Sales Reports - Coming Soon</p>
+                </div>
+            </section>
+
     
     <script>
         const API_BASE_URL = 'http://127.0.0.1:5000/api/ml'; // Flask API base URL
@@ -377,19 +1017,48 @@
             'inventory': { title: 'Inventory & Optimization', contentId: 'inventory_content' },
             'production': { title: 'Production & BOM', contentId: 'production_content' },
             'qc': { title: 'Quality Control', contentId: 'qc_content' },
-            'sales': { title: 'Sales & Orders', contentId: 'sales_content' }
+            'sales': { title: 'Sales & Orders', contentId: 'sales_content' },
+            'reports': { title: 'Reports', contentId: 'reports_content' }
         };
         const pageTitle = document.getElementById('page-title');
         const contentSections = document.querySelectorAll('.module-content');
         const navLinks = document.querySelectorAll('.nav-link');
+        const navToggles = document.querySelectorAll('.nav-toggle');
         const sidebar = document.getElementById('sidebar');
         const sidebarToggle = document.getElementById('sidebarToggle');
         let demandChart;
 
+        // --- Submenu Toggle Functionality ---
+        navToggles.forEach(toggle => {
+            toggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                const moduleGroup = toggle.closest('.nav-module-group');
+                const submenu = moduleGroup.querySelector('.nav-submenu');
+                const toggleIcon = toggle.querySelector('.toggle-icon');
+                
+                // Close other submenus
+                document.querySelectorAll('.nav-submenu').forEach(menu => {
+                    if (menu !== submenu) {
+                        menu.classList.add('hidden');
+                        menu.classList.remove('show');
+                        const icon = menu.closest('.nav-module-group').querySelector('.toggle-icon');
+                        icon.classList.remove('rotate');
+                    }
+                });
+                
+                // Toggle current submenu
+                submenu.classList.toggle('hidden');
+                submenu.classList.toggle('show');
+                toggleIcon.classList.toggle('rotate');
+            });
+        });
+
         function switchModule(moduleId) {
             navLinks.forEach(link => link.classList.remove('active-link'));
             const activeLink = document.querySelector(`[data-module="${moduleId}"]`);
-            if (activeLink) activeLink.classList.add('active-link');
+            if (activeLink && !activeLink.classList.contains('nav-toggle')) {
+                activeLink.classList.add('active-link');
+            }
 
             contentSections.forEach(section => section.style.display = 'none');
             const moduleInfo = moduleMap[moduleId];
@@ -414,6 +1083,32 @@
                 if (moduleId) switchModule(moduleId);
             });
         });
+
+        // --- Operation Link Handlers (for embedded operations) ---
+        const operationLinks = document.querySelectorAll('.operation-link');
+        operationLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const operation = e.currentTarget.getAttribute('data-operation');
+                if (operation) loadOperation(operation);
+            });
+        });
+
+        function loadOperation(operationId) {
+            // Hide all module contents and operation contents
+            contentSections.forEach(section => section.style.display = 'none');
+            document.querySelectorAll('[data-operation-content]').forEach(el => el.style.display = 'none');
+            
+            // Show the requested operation
+            const operationContent = document.querySelector(`[data-operation-content="${operationId}"]`);
+            if (operationContent) {
+                operationContent.style.display = 'block';
+                pageTitle.textContent = operationContent.getAttribute('data-operation-title');
+                window.scrollTo(0, 0);
+            }
+            
+            if (window.innerWidth < 1024) sidebar.classList.add('-translate-x-full');
+        }
 
         // Initialize to the default module
         switchModule('ml_hub');

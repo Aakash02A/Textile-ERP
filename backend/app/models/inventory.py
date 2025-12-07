@@ -42,15 +42,15 @@ class Material(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     
     # Relationships
-    inventory_items = relationship("InventoryItem", back_populates="material")
-    stock_movements = relationship("StockMovement", back_populates="material")
+    inventory_items = relationship("InventoryItem")
+    stock_movements = relationship("StockMovement")
 
 class InventoryItem(Base):
     """Current inventory stock"""
     __tablename__ = "inventory_items"
     
     item_id = Column(Integer, primary_key=True, index=True)
-    material_id = Column(Integer, ForeignKey("materials.material_id"), nullable=False, index=True)
+    material_id = Column(Integer, ForeignKey("materials.material_id", ondelete="CASCADE"), nullable=False, index=True)
     batch_number = Column(String(50), index=True)
     quantity = Column(Numeric(15, 3), nullable=False)
     location = Column(String(100))
@@ -60,14 +60,14 @@ class InventoryItem(Base):
     total_value = Column(Numeric(15, 2))
     manufactured_date = Column(DateTime(timezone=True))
     expiry_date = Column(DateTime(timezone=True))
-    supplier_id = Column(Integer, ForeignKey("suppliers.supplier_id"))
-    po_id = Column(Integer, ForeignKey("purchase_orders.po_id"))
+    supplier_id = Column(Integer)  # Reference only, no FK for now
+    po_id = Column(Integer)  # Reference only, no FK for now
     quality_status = Column(String(50))  # "approved", "quarantine", "rejected"
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     
     # Relationships
-    material = relationship("Material", back_populates="inventory_items")
+    material = relationship("Material", foreign_keys=[material_id])
 
 class StockMovement(Base):
     """Stock movement history"""
@@ -89,7 +89,7 @@ class StockMovement(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
     
     # Relationships
-    material = relationship("Material", back_populates="stock_movements")
+    material = relationship("Material")
 
 class ReorderAlert(Base):
     """Automatic reorder alerts"""

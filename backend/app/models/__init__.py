@@ -4,7 +4,7 @@ Imports all models for SQLAlchemy
 """
 
 from app.models.auth import User, Role, AuditLog
-from app.models.procurement import Supplier, PurchaseOrder, POItem, SupplierRating
+from app.models.procurement import Supplier, PurchaseOrder, POItem  # SupplierRating disabled temporarily
 from app.models.inventory import Material, InventoryItem, StockMovement, ReorderAlert
 from app.models.production import Product, BillOfMaterials, Machine, WorkOrder, MachineAllocation, ProductionLog
 from app.models.quality import QCInspection, DefectLog, DefectType, BatchApproval

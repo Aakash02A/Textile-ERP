@@ -48,7 +48,7 @@ class Supplier(Base):
     
     # Relationships
     purchase_orders = relationship("PurchaseOrder", back_populates="supplier")
-    supplier_ratings = relationship("SupplierRating", back_populates="supplier")
+    # supplier_ratings = relationship("SupplierRating", back_populates="supplier")
 
 class PurchaseOrder(Base):
     """Purchase orders"""
@@ -98,23 +98,24 @@ class POItem(Base):
     purchase_order = relationship("PurchaseOrder", back_populates="items")
     material = relationship("Material")
 
-class SupplierRating(Base):
-    """Supplier performance ratings"""
-    __tablename__ = "supplier_ratings"
-    
-    rating_id = Column(Integer, primary_key=True, index=True)
-    supplier_id = Column(Integer, ForeignKey("suppliers.supplier_id"), nullable=False)
-    po_id = Column(Integer, ForeignKey("purchase_orders.po_id"))
-    quality_score = Column(Numeric(3, 2))  # 0-5
-    delivery_score = Column(Numeric(3, 2))  # 0-5
-    price_score = Column(Numeric(3, 2))  # 0-5
-    communication_score = Column(Numeric(3, 2))  # 0-5
-    overall_score = Column(Numeric(3, 2))  # 0-5
-    delivery_time_days = Column(Integer)
-    defect_rate = Column(Numeric(5, 2))  # Percentage
-    comments = Column(Text)
-    rated_by = Column(Integer, ForeignKey("users.user_id"))
-    rated_at = Column(DateTime(timezone=True), server_default=func.now())
-    
-    # Relationships
-    supplier = relationship("Supplier", back_populates="supplier_ratings")
+# Commented out temporarily to fix foreign key issues
+# class SupplierRating(Base):
+#     """Supplier performance ratings"""
+#     __tablename__ = "supplier_ratings"
+#     
+#     rating_id = Column(Integer, primary_key=True, index=True)
+#     supplier_id = Column(Integer, ForeignKey("suppliers.supplier_id"), nullable=False)
+#     po_id = Column(Integer, ForeignKey("purchase_orders.po_id"))
+#     quality_score = Column(Numeric(3, 2))  # 0-5
+#     delivery_score = Column(Numeric(3, 2))  # 0-5
+#     price_score = Column(Numeric(3, 2))  # 0-5
+#     communication_score = Column(Numeric(3, 2))  # 0-5
+#     overall_score = Column(Numeric(3, 2))  # 0-5
+#     delivery_time_days = Column(Integer)
+#     defect_rate = Column(Numeric(5, 2))  # Percentage
+#     comments = Column(Text)
+#     rated_by = Column(Integer, ForeignKey("users.user_id"))
+#     rated_at = Column(DateTime(timezone=True), server_default=func.now())
+#     
+#     # Relationships
+#     supplier = relationship("Supplier", back_populates="supplier_ratings")

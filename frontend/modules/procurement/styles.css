@@ -1,0 +1,443 @@
+/* Procurement Module - Styling */
+
+/* Procurement specific variables */
+:root {
+    --procurement-primary: #1e40af;
+    --procurement-secondary: #3b82f6;
+    --procurement-success: #10b981;
+    --procurement-warning: #f59e0b;
+    --procurement-danger: #ef4444;
+}
+
+/* PO Form Styling */
+.po-item-row {
+    transition: all 0.3s ease;
+    background: linear-gradient(to right, #f9fafb, #ffffff);
+}
+
+.po-item-row:hover {
+    border-color: var(--procurement-secondary);
+    box-shadow: 0 2px 8px rgba(30, 64, 175, 0.1);
+}
+
+.po-item-row input,
+.po-item-row select {
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.po-item-row input:focus,
+.po-item-row select:focus {
+    border-color: var(--procurement-secondary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* PO Form Submit Button Animation */
+#poForm button[type="submit"] {
+    position: relative;
+    overflow: hidden;
+}
+
+#poForm button[type="submit"]:hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    animation: slideIn 0.5s ease;
+}
+
+/* Supplier Table */
+.supplier-row {
+    transition: background-color 0.2s ease;
+}
+
+.supplier-row:hover {
+    background-color: #f3f4f6;
+}
+
+/* Status Badge Animations */
+.status-badge {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.status-badge.confirmed {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.status-badge.pending {
+    background-color: #fed7aa;
+    color: #ea580c;
+}
+
+.status-badge.received {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-badge.partial {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.status-badge.cancelled {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+/* KPI Cards Enhancement */
+.procurement-kpi-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+    border-left: 4px solid var(--procurement-secondary);
+    transition: all 0.3s ease;
+}
+
+.procurement-kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15);
+}
+
+/* Form Group Styling */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #374151;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--procurement-secondary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Action Buttons */
+.btn-primary-procurement {
+    background-color: var(--procurement-secondary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary-procurement:hover {
+    background-color: #1e40af;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(30, 64, 175, 0.3);
+}
+
+.btn-secondary-procurement {
+    background-color: #e5e7eb;
+    color: #374151;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary-procurement:hover {
+    background-color: #d1d5db;
+}
+
+.btn-danger-procurement {
+    background-color: #ef4444;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-danger-procurement:hover {
+    background-color: #dc2626;
+}
+
+/* Line Total Calculation */
+.po-line-total {
+    color: var(--procurement-secondary);
+    font-size: 1.125rem;
+}
+
+/* PO Summary Box */
+.po-summary {
+    background: linear-gradient(135deg, #f0f9ff 0%, #f9fafb 100%);
+    border: 1px solid #bfdbfe;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.po-summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.po-summary-row:last-child {
+    border-bottom: none;
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: var(--procurement-secondary);
+    padding-top: 0.75rem;
+}
+
+/* Modal Styling */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+    max-width: 500px;
+    width: 90%;
+    animation: slideIn 0.3s ease;
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #111827;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: #374151;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+/* Table Enhancements */
+.procurement-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.procurement-table thead {
+    background-color: #f3f4f6;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.procurement-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.procurement-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.procurement-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.procurement-table tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .po-item-row {
+        padding: 1rem;
+    }
+
+    .po-item-row .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .procurement-table {
+        font-size: 0.875rem;
+    }
+
+    .procurement-table th,
+    .procurement-table td {
+        padding: 0.75rem;
+    }
+
+    .modal-content {
+        width: 95%;
+        max-width: none;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .no-print {
+        display: none;
+    }
+
+    .procurement-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .procurement-table thead {
+        background-color: #f3f4f6;
+    }
+
+    .procurement-table th,
+    .procurement-table td {
+        border: 1px solid #d1d5db;
+        padding: 0.5rem;
+    }
+
+    .po-summary {
+        border: 1px solid #d1d5db;
+    }
+}
+
+/* Loading State */
+.procurement-loading {
+    opacity: 0.6;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.procurement-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f4f6;
+    border-radius: 50%;
+    border-top-color: var(--procurement-secondary);
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Error Messages */
+.procurement-error {
+    background-color: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    color: #991b1b;
+    margin-bottom: 1rem;
+}
+
+.procurement-error strong {
+    font-weight: 600;
+}
+
+/* Success Messages */
+.procurement-success {
+    background-color: #dcfce7;
+    border: 1px solid #bbf7d0;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    color: #15803d;
+    margin-bottom: 1rem;
+}
+
+.procurement-success strong {
+    font-weight: 600;
+}

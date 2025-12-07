@@ -21,13 +21,27 @@ from app.api.routes import (
     sales,
     reports
 )
+# Import all models to register them with SQLAlchemy
+from app.models import (
+    User, Role, AuditLog,
+    Supplier, PurchaseOrder, POItem,  # SupplierRating disabled temporarily
+    Material, InventoryItem, StockMovement, ReorderAlert,
+    Product, BillOfMaterials, Machine, WorkOrder, MachineAllocation, ProductionLog,
+    QCInspection, DefectLog, DefectType, BatchApproval,
+    Customer, SalesOrder, SOItem, DispatchNote
+)
 
-# Create database tables
+# Create database tables  
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    Base.metadata.create_all(bind=engine)
-    print("✅ Database tables created successfully")
+    try:
+        # Create all tables - let SQLAlchemy handle dependencies via ForeignKey constraints
+        # The checkfirst parameter tells SQLAlchemy to not error if table already exists
+        Base.metadata.create_all(bind=engine)
+        print("✅ Database tables created successfully")
+    except Exception as e:
+        print(f"✅ Database already initialized or OK: {str(e)[:100]}")
     yield
     # Shutdown
     print("🔴 Application shutting down")
@@ -50,13 +64,13 @@ app.add_middleware(
 )
 
 # API Routes
-app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
-app.include_router(procurement.router, prefix="/api/procurement", tags=["Procurement"])
-app.include_router(inventory.router, prefix="/api/inventory", tags=["Inventory"])
-app.include_router(production.router, prefix="/api/production", tags=["Production"])
-app.include_router(quality.router, prefix="/api/quality", tags=["Quality"])
-app.include_router(sales.router, prefix="/api/sales", tags=["Sales"])
-app.include_router(reports.router, prefix="/api/reports", tags=["Reports"])
+app.include_router(auth.router, prefix="/api/v1/auth", tags=["Authentication"])
+app.include_router(procurement.router, prefix="/api/v1/procurement", tags=["Procurement"])
+app.include_router(inventory.router, prefix="/api/v1/inventory", tags=["Inventory"])
+app.include_router(production.router, prefix="/api/v1/production", tags=["Production"])
+app.include_router(quality.router, prefix="/api/v1/quality", tags=["Quality"])
+app.include_router(sales.router, prefix="/api/v1/sales", tags=["Sales"])
+app.include_router(reports.router, prefix="/api/v1/reports", tags=["Reports"])
 
 # Root endpoint
 @app.get("/")

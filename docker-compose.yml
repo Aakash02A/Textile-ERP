@@ -1,7 +1,8 @@
+
 services:
   # PostgreSQL Database
   db:
-    image: postgres:14-alpine
+    image: postgres:15-alpine
     container_name: textile_erp_db
     environment:
       POSTGRES_DB: textile_erp
@@ -20,17 +21,25 @@ services:
       retries: 5
     networks:
       - erp_network
+    restart: unless-stopped
 
-  # Redis (for Celery - Phase 2)
+  # Redis Cache & Message Broker
   redis:
     image: redis:7-alpine
     container_name: textile_erp_redis
+    command: redis-server --appendonly yes
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
     networks:
       - erp_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # FastAPI Backend
   backend:
@@ -42,9 +51,12 @@ services:
       DATABASE_URL: postgresql://erp_user:erp_password_2024@db:5432/textile_erp
       SECRET_KEY: ${SECRET_KEY:-your-super-secret-key-min-32-characters-long}
       REDIS_URL: redis://redis:6379/0
-      DEBUG: "True"
+      DEBUG: ${DEBUG:-True}
+      ENABLE_ML: ${ENABLE_ML:-False}
+      ENABLE_CELERY: ${ENABLE_CELERY:-False}
     volumes:
       - ./backend:/app
+      - ./uploads:/app/uploads
       - ml_models:/app/ml_modules/models
     ports:
       - "8000:8000"
