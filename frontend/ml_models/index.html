@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Intelligence Hub - Textile ERP</title>
+    <link rel="stylesheet" href="../shared/styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .breadcrumb a {
+            color: #3b82f6;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .page-header {
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #1f2937;
+            margin: 0 0 0.5rem 0;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            font-size: 1.125rem;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 13px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+        }
+
+        .stat-card h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin: 0 0 1rem 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .value {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: #1f2937;
+            margin: 0.5rem 0;
+        }
+
+        .stat-card .subtext {
+            font-size: 0.875rem;
+            color: #9ca3af;
+            margin-top: 0.75rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon.forecast { background: #eff6ff; }
+        .stat-icon.inventory { background: #f0fdf4; }
+        .stat-icon.supplier { background: #fef3c7; }
+        .stat-icon.defect { background: #fee2e2; }
+        .stat-icon.quality { background: #f3e8ff; }
+
+        .ml-models-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0 0 2rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 2px;
+        }
+
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .model-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 13px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .model-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 16px rgba(0, 0, 0, 0.1), 0 20px 25px rgba(0, 0, 0, 0.08);
+            border-color: #3b82f6;
+        }
+
+        .model-card-header {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        }
+
+        .model-card-body {
+            padding: 1.5rem;
+        }
+
+        .model-card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .model-card-description {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin: 0 0 1rem 0;
+            line-height: 1.5;
+        }
+
+        .model-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #10b981;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .model-status::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary { background: #3b82f6; }
+        .btn-primary:hover { background: #2563eb; }
+
+        .recent-activity {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 13px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+            margin-bottom: 3rem;
+        }
+
+        .recent-activity h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0 0 1.5rem 0;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.forecast { background: #eff6ff; color: #1e40af; }
+        .activity-icon.inventory { background: #f0fdf4; color: #15803d; }
+        .activity-icon.supplier { background: #fef3c7; color: #713f12; }
+        .activity-icon.defect { background: #fee2e2; color: #991b1b; }
+        .activity-icon.quality { background: #f3e8ff; color: #581c87; }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0 0 0.25rem 0;
+            font-size: 0.875rem;
+        }
+
+        .activity-description {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin: 0;
+        }
+
+        .activity-time {
+            font-size: 0.75rem;
+            color: #d1d5db;
+            margin-top: 0.25rem;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .quick-action-btn {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .quick-action-btn:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            transform: translateY(-4px);
+        }
+
+        .quick-action-btn .icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        .performance-overview {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 13px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+        }
+
+        .performance-overview h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0 0 1.5rem 0;
+        }
+
+        .performance-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .performance-item:last-child {
+            border-bottom: none;
+        }
+
+        .performance-label {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 0.875rem;
+        }
+
+        .performance-bar {
+            flex: 1;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            margin: 0 1rem;
+            overflow: hidden;
+        }
+
+        .performance-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            border-radius: 3px;
+        }
+
+        .performance-value {
+            font-weight: 700;
+            color: #1f2937;
+            font-size: 0.875rem;
+            min-width: 50px;
+            text-align: right;
+        }
+
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .models-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #dcfce7;
+            color: #15803d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Breadcrumb Navigation -->
+        <div class="breadcrumb">
+            <a href="/frontend/dashboard.html">Dashboard</a>
+            <span>/</span>
+            <span>ML Intelligence Hub</span>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>🧠 ML Intelligence Hub</h1>
+            <p>Advanced AI-powered analytics and predictions for textile manufacturing</p>
+        </div>
+
+        <!-- Quick Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon forecast">📊</div>
+                <h3>Demand Forecasting</h3>
+                <div class="value">94%</div>
+                <div class="subtext">Forecast Accuracy</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon inventory">📦</div>
+                <h3>Inventory Optimization</h3>
+                <div class="value">₹2.3M</div>
+                <div class="subtext">Potential Savings</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon supplier">🤝</div>
+                <h3>Supplier Risk</h3>
+                <div class="value">12</div>
+                <div class="subtext">High Risk Suppliers</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon defect">🔍</div>
+                <h3>Defect Detection</h3>
+                <div class="value">98.7%</div>
+                <div class="subtext">Detection Rate</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon quality">✓</div>
+                <h3>Quality Prediction</h3>
+                <div class="value">91%</div>
+                <div class="subtext">Pass Rate</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="/frontend/ml_models/demand_forecasting/index.html" class="quick-action-btn">
+                <span class="icon">📈</span>
+                View Forecasts
+            </a>
+            <a href="/frontend/ml_models/inventory_optimization/index.html" class="quick-action-btn">
+                <span class="icon">📊</span>
+                Optimize Stock
+            </a>
+            <a href="/frontend/ml_models/supplier_risk_scoring/index.html" class="quick-action-btn">
+                <span class="icon">⚠️</span>
+                Supplier Risk
+            </a>
+            <a href="/frontend/ml_models/defect_detection/index.html" class="quick-action-btn">
+                <span class="icon">🔬</span>
+                Detect Defects
+            </a>
+        </div>
+
+        <!-- ML Models Section -->
+        <div class="ml-models-section">
+            <h2 class="section-title">AI Models</h2>
+            <div class="models-grid">
+                <!-- Demand Forecasting Model -->
+                <a href="/frontend/ml_models/demand_forecasting/index.html" class="model-card" style="--gradient-start: #60a5fa; --gradient-end: #3b82f6;">
+                    <div class="model-card-header">📊</div>
+                    <div class="model-card-body">
+                        <h3 class="model-card-title">Demand Forecasting</h3>
+                        <p class="model-card-description">LSTM-based time series forecasting for accurate demand predictions</p>
+                        <div class="model-status">
+                            <span>Active</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Inventory Optimization Model -->
+                <a href="/frontend/ml_models/inventory_optimization/index.html" class="model-card" style="--gradient-start: #34d399; --gradient-end: #10b981;">
+                    <div class="model-card-header">📦</div>
+                    <div class="model-card-body">
+                        <h3 class="model-card-title">Inventory Optimization</h3>
+                        <p class="model-card-description">EOQ and ABC analysis for optimal stock level recommendations</p>
+                        <div class="model-status">
+                            <span>Active</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Supplier Risk Scoring Model -->
+                <a href="/frontend/ml_models/supplier_risk_scoring/index.html" class="model-card" style="--gradient-start: #fcd34d; --gradient-end: #f59e0b;">
+                    <div class="model-card-header">⚠️</div>
+                    <div class="model-card-body">
+                        <h3 class="model-card-title">Supplier Risk Scoring</h3>
+                        <p class="model-card-description">Multi-factor risk assessment for supplier performance monitoring</p>
+                        <div class="model-status">
+                            <span>Active</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Defect Detection Model -->
+                <a href="/frontend/ml_models/defect_detection/index.html" class="model-card" style="--gradient-start: #f87171; --gradient-end: #ef4444;">
+                    <div class="model-card-header">🔍</div>
+                    <div class="model-card-body">
+                        <h3 class="model-card-title">Defect Detection</h3>
+                        <p class="model-card-description">Computer vision for real-time textile defect identification</p>
+                        <div class="model-status">
+                            <span>Active</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Quality Prediction Model -->
+                <a href="/frontend/ml_models/quality_prediction/index.html" class="model-card" style="--gradient-start: #c4b5fd; --gradient-end: #a78bfa;">
+                    <div class="model-card-header">✓</div>
+                    <div class="model-card-body">
+                        <h3 class="model-card-title">Quality Prediction</h3>
+                        <p class="model-card-description">Batch quality score prediction with root cause analysis</p>
+                        <div class="model-status">
+                            <span>Active</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Performance Overview -->
+        <div class="performance-overview">
+            <h3>Model Performance Overview</h3>
+            
+            <div class="performance-item">
+                <span class="performance-label">Demand Forecasting Accuracy</span>
+                <div class="performance-bar">
+                    <div class="performance-bar-fill" style="width: 94%"></div>
+                </div>
+                <span class="performance-value">94%</span>
+            </div>
+
+            <div class="performance-item">
+                <span class="performance-label">Inventory Optimization Success</span>
+                <div class="performance-bar">
+                    <div class="performance-bar-fill" style="width: 87%"></div>
+                </div>
+                <span class="performance-value">87%</span>
+            </div>
+
+            <div class="performance-item">
+                <span class="performance-label">Supplier Risk Detection Rate</span>
+                <div class="performance-bar">
+                    <div class="performance-bar-fill" style="width: 91%"></div>
+                </div>
+                <span class="performance-value">91%</span>
+            </div>
+
+            <div class="performance-item">
+                <span class="performance-label">Defect Detection Accuracy</span>
+                <div class="performance-bar">
+                    <div class="performance-bar-fill" style="width: 98.7%"></div>
+                </div>
+                <span class="performance-value">98.7%</span>
+            </div>
+
+            <div class="performance-item">
+                <span class="performance-label">Quality Prediction Precision</span>
+                <div class="performance-bar">
+                    <div class="performance-bar-fill" style="width: 91%"></div>
+                </div>
+                <span class="performance-value">91%</span>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="recent-activity">
+            <h3>📋 Recent Activity</h3>
+
+            <div class="activity-item">
+                <div class="activity-icon forecast">📊</div>
+                <div class="activity-content">
+                    <p class="activity-title">Demand Forecast Updated</p>
+                    <p class="activity-description">New forecast generated for SKU-001 through SKU-050</p>
+                    <p class="activity-time">2 hours ago</p>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon inventory">📦</div>
+                <div class="activity-content">
+                    <p class="activity-title">Inventory Optimization Complete</p>
+                    <p class="activity-description">Identified ₹2.3M in potential cost savings</p>
+                    <p class="activity-time">4 hours ago</p>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon supplier">🤝</div>
+                <div class="activity-content">
+                    <p class="activity-title">High Risk Alert - Supplier-12</p>
+                    <p class="activity-description">Risk score increased to 78% due to delivery delays</p>
+                    <p class="activity-time">6 hours ago</p>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon defect">🔍</div>
+                <div class="activity-content">
+                    <p class="activity-title">Defects Detected in Batch-POL-2024-156</p>
+                    <p class="activity-description">3 critical defects found during quality scan</p>
+                    <p class="activity-time">8 hours ago</p>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon quality">✓</div>
+                <div class="activity-content">
+                    <p class="activity-title">Quality Prediction - Batch Approved</p>
+                    <p class="activity-description">Batch-POL-2024-155 passed quality thresholds (92%)</p>
+                    <p class="activity-time">12 hours ago</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
