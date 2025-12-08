@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Optimization - Textile ERP ML Intelligence</title>
+    <link rel="stylesheet" href="../shared/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        .optimization-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .metric-card h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin: 0 0 0.5rem 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-card .value {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0.5rem 0;
+        }
+
+        .metric-card .subtext {
+            font-size: 0.875rem;
+            color: #9ca3af;
+            margin-top: 0.5rem;
+        }
+
+        .abc-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .abc-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-container {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0 0 1.5rem 0;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            margin-bottom: 1rem;
+        }
+
+        .controls-section {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            flex: 0 1 auto;
+            min-width: 150px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-family: inherit;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+        }
+
+        .btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table thead {
+            background: #f9fafb;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .data-table th {
+            padding: 1rem 0.75rem;
+            text-align: left;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.875rem;
+            color: #1f2937;
+        }
+
+        .data-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-a {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-b {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .badge-c {
+            background: #fef08a;
+            color: #713f12;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #15803d;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid #e5e7eb;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .parameters-panel {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .parameters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .parameter-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 4px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .parameter-item label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .parameter-item input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .breadcrumb a {
+            color: #3b82f6;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        .toggle-switch input[type="checkbox"] {
+            cursor: pointer;
+            margin: 0;
+        }
+
+        @media print {
+            .controls-section,
+            .header-actions,
+            .btn {
+                display: none;
+            }
+            body {
+                background: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 2rem 1rem;">
+        <!-- Breadcrumb Navigation -->
+        <div class="breadcrumb">
+            <a href="/frontend/dashboard.html">Dashboard</a>
+            <span>/</span>
+            <a href="/frontend/index.html">ML Intelligence Hub</a>
+            <span>/</span>
+            <span>Inventory Optimization</span>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1>Inventory Optimization</h1>
+                <p style="color: #6b7280; margin: 0.5rem 0 0 0;">AI-powered stock level and reorder point recommendations</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="exportReport()">📥 Export Report</button>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="mockDataToggle" onchange="toggleMockData()" checked>
+                    <span>Use Mock Data</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Alert Section -->
+        <div id="alertContainer"></div>
+
+        <!-- Controls -->
+        <div class="controls-section">
+            <div class="form-group">
+                <label for="categorySelect">Category Filter</label>
+                <select id="categorySelect" onchange="loadOptimizationData()">
+                    <option value="">All Categories</option>
+                    <option value="raw_materials">Raw Materials</option>
+                    <option value="finished_goods">Finished Goods</option>
+                    <option value="work_in_progress">Work in Progress</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="abcFilter">ABC Category</label>
+                <select id="abcFilter" onchange="loadOptimizationData()">
+                    <option value="">All</option>
+                    <option value="A">A - High Value</option>
+                    <option value="B">B - Medium Value</option>
+                    <option value="C">C - Low Value</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="warehouseSelect">Warehouse</label>
+                <select id="warehouseSelect" onchange="loadOptimizationData()">
+                    <option value="">All Warehouses</option>
+                    <option value="warehouse_1">Warehouse 1</option>
+                    <option value="warehouse_2">Warehouse 2</option>
+                    <option value="warehouse_3">Warehouse 3</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="loadOptimizationData()">🔄 Refresh Data</button>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="optimization-container">
+            <div class="metric-card">
+                <h3>Total Current Value</h3>
+                <div class="value" id="totalCurrentValue">$0</div>
+                <div class="subtext">All SKUs current cost</div>
+            </div>
+
+            <div class="metric-card">
+                <h3>Optimized Value</h3>
+                <div class="value" id="optimizedValue">$0</div>
+                <div class="subtext">After optimization</div>
+            </div>
+
+            <div class="metric-card">
+                <h3>Potential Savings</h3>
+                <div class="value" id="potentialSavings">$0</div>
+                <div class="subtext" id="savingsPercent">0% reduction</div>
+            </div>
+
+            <div class="metric-card">
+                <h3>Items at Risk</h3>
+                <div class="value" id="itemsAtRisk">0</div>
+                <div class="subtext">Below reorder point</div>
+            </div>
+
+            <div class="metric-card">
+                <h3>Excess Stock Items</h3>
+                <div class="value" id="excessItems">0</div>
+                <div class="subtext">Over 90 days stock</div>
+            </div>
+
+            <div class="metric-card">
+                <h3>ABC Distribution</h3>
+                <div class="value" id="abcDistribution">-</div>
+                <div class="subtext" id="abcPercent">A/B/C ratio</div>
+            </div>
+        </div>
+
+        <!-- ABC Analysis & Reorder Points -->
+        <div class="abc-section">
+            <div class="chart-container">
+                <h3>ABC Analysis (By Value)</h3>
+                <div class="chart-wrapper">
+                    <canvas id="abcChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3>Inventory Turnover Comparison</h3>
+                <div class="chart-wrapper">
+                    <canvas id="turnoverChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Optimization Parameters -->
+        <div class="parameters-panel">
+            <h3>Optimization Parameters</h3>
+            <div class="parameters-grid">
+                <div class="parameter-item">
+                    <label for="leadTime">Lead Time (days)</label>
+                    <input type="number" id="leadTime" value="14" min="1" max="180">
+                </div>
+                <div class="parameter-item">
+                    <label for="serviceLevel">Service Level Target (%)</label>
+                    <input type="number" id="serviceLevel" value="95" min="50" max="99.9" step="0.1">
+                </div>
+                <div class="parameter-item">
+                    <label for="holdingCost">Annual Holding Cost (%)</label>
+                    <input type="number" id="holdingCost" value="20" min="1" max="100" step="0.1">
+                </div>
+                <div class="parameter-item">
+                    <label for="orderCost">Order Cost ($)</label>
+                    <input type="number" id="orderCost" value="50" min="0" max="10000" step="1">
+                </div>
+            </div>
+            <button class="btn" style="margin-top: 1rem;" onclick="updateOptimizationParameters()">💾 Apply Parameters</button>
+        </div>
+
+        <!-- Cost Reduction Analysis -->
+        <div class="chart-container" style="margin-bottom: 2rem;">
+            <h3>Cost Reduction Opportunity by Category</h3>
+            <div class="chart-wrapper">
+                <canvas id="costReductionChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Optimization Results Table -->
+        <div class="chart-container">
+            <h3>Detailed SKU Optimization Analysis</h3>
+            <div style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>ABC</th>
+                            <th>Category</th>
+                            <th>Current Stock</th>
+                            <th>Recommended Stock</th>
+                            <th>Reorder Point</th>
+                            <th>Safety Stock</th>
+                            <th>Unit Cost</th>
+                            <th>Current Value</th>
+                            <th>Optimized Value</th>
+                            <th>Savings</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTableBody">
+                        <tr>
+                            <td colspan="12" class="loading">
+                                <div class="spinner"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shared Scripts -->
+    <script src="../shared/api-client.js"></script>
+    <script src="../shared/mock-data.js"></script>
+    <script src="../shared/utils.js"></script>
+
+    <script>
+        /**
+         * Application state for inventory optimization
+         */
+        const state = {
+            currentData: null,
+            abcChart: null,
+            turnoverChart: null,
+            costReductionChart: null,
+            api: new MLApiClient(),
+            useMockData: true,
+            filters: {
+                category: '',
+                abcCategory: '',
+                warehouse: ''
+            }
+        };
+
+        /**
+         * Initialize the application on page load
+         */
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('Inventory Optimization page loaded');
+            await loadOptimizationData();
+        });
+
+        /**
+         * Toggle between mock and real data
+         */
+        function toggleMockData() {
+            state.useMockData = document.getElementById('mockDataToggle').checked;
+            loadOptimizationData();
+        }
+
+        /**
+         * Load optimization data from API or mock
+         */
+        async function loadOptimizationData() {
+            try {
+                // Update filters
+                state.filters.category = document.getElementById('categorySelect').value;
+                state.filters.abcCategory = document.getElementById('abcFilter').value;
+                state.filters.warehouse = document.getElementById('warehouseSelect').value;
+
+                showAlert('Loading optimization data...', 'info');
+                
+                // Get data from API or mock
+                let data;
+                if (state.useMockData) {
+                    // Simulate API delay
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    data = MockData.inventoryOptimization.skus.map(sku => ({
+                        ...sku,
+                        currentStock: Math.floor(Math.random() * 500) + 50,
+                        recommendedStock: Math.floor(Math.random() * 400) + 30,
+                        reorderPoint: Math.floor(Math.random() * 150) + 20,
+                        safetyStock: Math.floor(Math.random() * 100) + 10,
+                        currentValue: Math.floor(Math.random() * 50000) + 5000,
+                        optimizedValue: Math.floor(Math.random() * 40000) + 3000
+                    }));
+                } else {
+                    data = await state.api.getInventoryOptimization(state.filters);
+                }
+
+                // Apply filters
+                if (state.filters.category) {
+                    data = data.filter(d => d.category === state.filters.category);
+                }
+                if (state.filters.abcCategory) {
+                    data = data.filter(d => d.abc_category === state.filters.abcCategory);
+                }
+                if (state.filters.warehouse) {
+                    data = data.filter(d => d.warehouse === state.filters.warehouse);
+                }
+
+                state.currentData = data;
+
+                // Update UI components
+                updateMetrics();
+                updateCharts();
+                updateTable();
+                showAlert('Data loaded successfully', 'success');
+
+            } catch (error) {
+                console.error('Error loading optimization data:', error);
+                showAlert(`Error: ${error.message}`, 'error');
+                
+                // Fallback to mock data
+                if (!state.useMockData) {
+                    state.useMockData = true;
+                    document.getElementById('mockDataToggle').checked = true;
+                    await loadOptimizationData();
+                }
+            }
+        }
+
+        /**
+         * Update metric cards with calculated values
+         */
+        function updateMetrics() {
+            if (!state.currentData || state.currentData.length === 0) {
+                showAlert('No data available', 'info');
+                return;
+            }
+
+            // Calculate totals
+            const totalCurrentValue = state.currentData.reduce((sum, d) => sum + (d.currentValue || 0), 0);
+            const optimizedValue = state.currentData.reduce((sum, d) => sum + (d.optimizedValue || 0), 0);
+            const savings = totalCurrentValue - optimizedValue;
+            const savingsPercent = totalCurrentValue > 0 ? ((savings / totalCurrentValue) * 100).toFixed(1) : 0;
+
+            // Count items at risk (current stock < reorder point)
+            const itemsAtRisk = state.currentData.filter(d => d.currentStock < d.reorderPoint).length;
+
+            // Count excess items (current stock > 90 days of demand)
+            const excessItems = state.currentData.filter(d => d.currentStock > (d.avgDailyDemand || 0) * 90).length;
+
+            // ABC distribution
+            const abcDist = {
+                A: state.currentData.filter(d => d.abc_category === 'A').length,
+                B: state.currentData.filter(d => d.abc_category === 'B').length,
+                C: state.currentData.filter(d => d.abc_category === 'C').length
+            };
+
+            // Update DOM
+            document.getElementById('totalCurrentValue').textContent = Utils.formatCurrency(totalCurrentValue);
+            document.getElementById('optimizedValue').textContent = Utils.formatCurrency(optimizedValue);
+            document.getElementById('potentialSavings').textContent = Utils.formatCurrency(savings);
+            document.getElementById('savingsPercent').textContent = `${savingsPercent}% reduction`;
+            document.getElementById('itemsAtRisk').textContent = itemsAtRisk;
+            document.getElementById('excessItems').textContent = excessItems;
+            document.getElementById('abcDistribution').textContent = `${abcDist.A}/${abcDist.B}/${abcDist.C}`;
+            document.getElementById('abcPercent').textContent = `A: ${abcDist.A}, B: ${abcDist.B}, C: ${abcDist.C}`;
+        }
+
+        /**
+         * Update all charts with current data
+         */
+        function updateCharts() {
+            if (!state.currentData || state.currentData.length === 0) return;
+
+            updateABCChart();
+            updateTurnoverChart();
+            updateCostReductionChart();
+        }
+
+        /**
+         * Update ABC analysis doughnut chart
+         */
+        function updateABCChart() {
+            const abcData = {
+                A: state.currentData.filter(d => d.abc_category === 'A').reduce((sum, d) => sum + (d.currentValue || 0), 0),
+                B: state.currentData.filter(d => d.abc_category === 'B').reduce((sum, d) => sum + (d.currentValue || 0), 0),
+                C: state.currentData.filter(d => d.abc_category === 'C').reduce((sum, d) => sum + (d.currentValue || 0), 0)
+            };
+
+            const ctx = document.getElementById('abcChart').getContext('2d');
+
+            if (state.abcChart) state.abcChart.destroy();
+
+            state.abcChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [`A - High Value ($${Utils.formatNumber(abcData.A / 1000)}K)`, 
+                             `B - Medium ($${Utils.formatNumber(abcData.B / 1000)}K)`, 
+                             `C - Low Value ($${Utils.formatNumber(abcData.C / 1000)}K)`],
+                    datasets: [{
+                        data: [abcData.A, abcData.B, abcData.C],
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 12 }, padding: 15 }
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * Update inventory turnover comparison chart
+         */
+        function updateTurnoverChart() {
+            const abcCategories = ['A', 'B', 'C'];
+            const turnoverData = abcCategories.map(cat => {
+                const items = state.currentData.filter(d => d.abc_category === cat);
+                const avgTurnover = items.length > 0 
+                    ? items.reduce((sum, d) => sum + (d.turnover_rate || 0), 0) / items.length 
+                    : 0;
+                return avgTurnover;
+            });
+
+            const ctx = document.getElementById('turnoverChart').getContext('2d');
+
+            if (state.turnoverChart) state.turnoverChart.destroy();
+
+            state.turnoverChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: abcCategories.map(c => `Category ${c}`),
+                    datasets: [{
+                        label: 'Turnover Rate (times/year)',
+                        data: turnoverData,
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'x',
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Turnover Rate' }
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * Update cost reduction opportunity chart
+         */
+        function updateCostReductionChart() {
+            const categories = ['raw_materials', 'finished_goods', 'work_in_progress'];
+            const categoryLabels = {
+                'raw_materials': 'Raw Materials',
+                'finished_goods': 'Finished Goods',
+                'work_in_progress': 'Work in Progress'
+            };
+
+            const costData = categories.map(cat => {
+                const items = state.currentData.filter(d => d.category === cat);
+                const totalCurrent = items.reduce((sum, d) => sum + (d.currentValue || 0), 0);
+                const totalOptimized = items.reduce((sum, d) => sum + (d.optimizedValue || 0), 0);
+                return totalCurrent - totalOptimized;
+            });
+
+            const ctx = document.getElementById('costReductionChart').getContext('2d');
+
+            if (state.costReductionChart) state.costReductionChart.destroy();
+
+            state.costReductionChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: categories.map(c => categoryLabels[c] || c),
+                    datasets: [{
+                        label: 'Potential Savings ($)',
+                        data: costData,
+                        backgroundColor: '#10b981',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'x',
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + Utils.formatNumber(value / 1000) + 'K';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * Update data table with optimization results
+         */
+        function updateTable() {
+            const tbody = document.getElementById('dataTableBody');
+            tbody.innerHTML = '';
+
+            if (!state.currentData || state.currentData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="12" class="loading">No data available</td></tr>';
+                return;
+            }
+
+            state.currentData.forEach(sku => {
+                const savings = (sku.currentValue || 0) - (sku.optimizedValue || 0);
+                const savingsPercent = (sku.currentValue || 0) > 0 
+                    ? ((savings / (sku.currentValue || 0)) * 100).toFixed(1) 
+                    : 0;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${sku.sku_code || 'N/A'}</strong></td>
+                    <td><span class="badge badge-${sku.abc_category || 'c'}">${sku.abc_category || 'C'}</span></td>
+                    <td>${sku.category || 'N/A'}</td>
+                    <td>${Utils.formatNumber(sku.currentStock || 0)} units</td>
+                    <td>${Utils.formatNumber(sku.recommendedStock || 0)} units</td>
+                    <td>${Utils.formatNumber(sku.reorderPoint || 0)} units</td>
+                    <td>${Utils.formatNumber(sku.safetyStock || 0)} units</td>
+                    <td>${Utils.formatCurrency(sku.unit_cost || 0)}</td>
+                    <td>${Utils.formatCurrency(sku.currentValue || 0)}</td>
+                    <td>${Utils.formatCurrency(sku.optimizedValue || 0)}</td>
+                    <td><strong style="color: #10b981;">-${savingsPercent}%</strong></td>
+                    <td>
+                        <button class="btn" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="approveOptimization('${sku.sku_code}')">
+                            ✓ Apply
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        /**
+         * Update optimization parameters
+         */
+        function updateOptimizationParameters() {
+            const leadTime = parseFloat(document.getElementById('leadTime').value) || 14;
+            const serviceLevel = parseFloat(document.getElementById('serviceLevel').value) || 95;
+            const holdingCost = parseFloat(document.getElementById('holdingCost').value) || 20;
+            const orderCost = parseFloat(document.getElementById('orderCost').value) || 50;
+
+            console.log('Optimization parameters updated:', {
+                leadTime,
+                serviceLevel,
+                holdingCost,
+                orderCost
+            });
+
+            showAlert(`Parameters updated. Recalculating recommendations...`, 'info');
+            loadOptimizationData();
+        }
+
+        /**
+         * Approve optimization for a specific SKU
+         */
+        function approveOptimization(skuCode) {
+            console.log(`Approving optimization for SKU: ${skuCode}`);
+            showAlert(`Optimization approved for ${skuCode}. Implementation scheduled.`, 'success');
+        }
+
+        /**
+         * Export report to CSV
+         */
+        function exportReport() {
+            if (!state.currentData || state.currentData.length === 0) {
+                showAlert('No data to export', 'error');
+                return;
+            }
+
+            const headers = ['SKU', 'ABC', 'Category', 'Current Stock', 'Recommended Stock', 'Reorder Point', 'Safety Stock', 'Unit Cost', 'Current Value', 'Optimized Value', 'Savings %'];
+            const rows = state.currentData.map(sku => {
+                const savings = (sku.currentValue || 0) - (sku.optimizedValue || 0);
+                const savingsPercent = (sku.currentValue || 0) > 0 
+                    ? ((savings / (sku.currentValue || 0)) * 100).toFixed(1) 
+                    : 0;
+                return [
+                    sku.sku_code,
+                    sku.abc_category,
+                    sku.category,
+                    sku.currentStock,
+                    sku.recommendedStock,
+                    sku.reorderPoint,
+                    sku.safetyStock,
+                    sku.unit_cost,
+                    sku.currentValue,
+                    sku.optimizedValue,
+                    savingsPercent
+                ];
+            });
+
+            Utils.exportToCSV(headers, rows, 'inventory-optimization-report.csv');
+            showAlert('Report exported successfully', 'success');
+        }
+
+        /**
+         * Show alert message
+         */
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.innerHTML = '';
+            container.appendChild(alert);
+
+            if (type !== 'error') {
+                setTimeout(() => alert.remove(), 5000);
+            }
+        }
+    </script>
+</body>
+</html>

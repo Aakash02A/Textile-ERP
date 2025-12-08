@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defect Detection - Textile ERP ML Intelligence</title>
+    <link rel="stylesheet" href="../shared/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        .metrics-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .metric-card h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin: 0 0 0.5rem 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-card .value {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0.5rem 0;
+        }
+
+        .metric-card .subtext {
+            font-size: 0.875rem;
+            color: #9ca3af;
+            margin-top: 0.5rem;
+        }
+
+        .detection-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .detection-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-container {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0 0 1.5rem 0;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            margin-bottom: 1rem;
+        }
+
+        .controls-section {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            flex: 0 1 auto;
+            min-width: 150px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-family: inherit;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+        }
+
+        .btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-small {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .btn-upload {
+            background: #10b981;
+            padding: 0.5rem 1rem;
+        }
+
+        .btn-upload:hover {
+            background: #059669;
+        }
+
+        .image-upload-section {
+            background: #f9fafb;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .image-upload-section:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .image-upload-section input[type="file"] {
+            display: none;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .image-item {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-thumbnail {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            background: #f3f4f6;
+        }
+
+        .image-info {
+            padding: 0.75rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .image-info label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .image-info .value {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-top: 0.25rem;
+        }
+
+        .defect-type-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.5rem;
+        }
+
+        .defect-hole { background: #fee2e2; color: #991b1b; }
+        .defect-stain { background: #fef08a; color: #713f12; }
+        .defect-tear { background: #fecaca; color: #7c2d12; }
+        .defect-wrinkle { background: #dbeafe; color: #1e40af; }
+        .defect-color { background: #e9d5ff; color: #581c87; }
+
+        .confidence-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .confidence-bar-fill {
+            flex: 1;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .confidence-bar-value {
+            height: 100%;
+            background: #10b981;
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        .confidence-bar-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table thead {
+            background: #f9fafb;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .data-table th {
+            padding: 1rem 0.75rem;
+            text-align: left;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.875rem;
+            color: #1f2937;
+        }
+
+        .data-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-defective {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-suspicious {
+            background: #fef08a;
+            color: #713f12;
+        }
+
+        .badge-ok {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #15803d;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-warning {
+            background: #fef08a;
+            color: #713f12;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid #e5e7eb;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .breadcrumb a {
+            color: #3b82f6;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        .toggle-switch input[type="checkbox"] {
+            cursor: pointer;
+            margin: 0;
+        }
+
+        @media print {
+            .controls-section,
+            .header-actions,
+            .btn,
+            .image-upload-section {
+                display: none;
+            }
+            body {
+                background: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 2rem 1rem;">
+        <!-- Breadcrumb Navigation -->
+        <div class="breadcrumb">
+            <a href="/frontend/dashboard.html">Dashboard</a>
+            <span>/</span>
+            <a href="/frontend/index.html">ML Intelligence Hub</a>
+            <span>/</span>
+            <span>Defect Detection</span>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1>Defect Detection</h1>
+                <p style="color: #6b7280; margin: 0.5rem 0 0 0;">Computer vision-based textile defect detection and classification</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="exportReport()">📥 Export Report</button>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="mockDataToggle" onchange="toggleMockData()" checked>
+                    <span>Use Mock Data</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Alert Section -->
+        <div id="alertContainer"></div>
+
+        <!-- Image Upload Section -->
+        <div class="chart-container" style="margin-bottom: 2rem;">
+            <h3>Upload Fabric Images for Defect Detection</h3>
+            <div class="image-upload-section" onclick="document.getElementById('imageInput').click()">
+                <input type="file" id="imageInput" multiple accept="image/*" onchange="handleImageUpload()">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">📸</div>
+                <p style="margin: 0; color: #6b7280; font-weight: 600;">Click to upload or drag and drop</p>
+                <p style="margin: 0.5rem 0 0 0; color: #9ca3af; font-size: 0.875rem;">PNG, JPG, GIF up to 10MB</p>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls-section">
+            <div class="form-group">
+                <label for="productionLineFilter">Production Line</label>
+                <select id="productionLineFilter" onchange="loadDetectionData()">
+                    <option value="">All Lines</option>
+                    <option value="line_1">Production Line 1</option>
+                    <option value="line_2">Production Line 2</option>
+                    <option value="line_3">Production Line 3</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="defectTypeFilter">Defect Type</label>
+                <select id="defectTypeFilter" onchange="loadDetectionData()">
+                    <option value="">All Types</option>
+                    <option value="hole">Hole</option>
+                    <option value="stain">Stain</option>
+                    <option value="tear">Tear</option>
+                    <option value="wrinkle">Wrinkle</option>
+                    <option value="color">Color Defect</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="confidenceFilter">Confidence Threshold (%)</label>
+                <input type="number" id="confidenceFilter" value="50" min="0" max="100" onchange="loadDetectionData()">
+            </div>
+
+            <button class="btn" onclick="loadDetectionData()">🔄 Refresh Data</button>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="metrics-container">
+            <div class="metric-card">
+                <h3>Inspected Items</h3>
+                <div class="value" id="inspectedItems">0</div>
+                <div class="subtext">Total scanned</div>
+            </div>
+
+            <div class="metric-card">
+                <h3>Defects Found</h3>
+                <div class="value" id="defectsFound">0</div>
+                <div class="subtext">Total detected</div>
+            </div>
+
+            <div class="metric-card">
+                <h3>Defect Rate</h3>
+                <div class="value" id="defectRate">0%</div>
+                <div class="subtext">Items with defects</div>
+            </div>
+
+            <div class="metric-card">
+                <h3>Average Confidence</h3>
+                <div class="value" id="avgConfidence">0%</div>
+                <div class="subtext">Model accuracy</div>
+            </div>
+
+            <div class="metric-card">
+                <h3>Critical Issues</h3>
+                <div class="value" id="criticalIssues">0</div>
+                <div class="subtext">High confidence defects</div>
+            </div>
+
+            <div class="metric-card">
+                <h3>Detection Speed</h3>
+                <div class="value" id="detectionSpeed">0</div>
+                <div class="subtext">images/minute</div>
+            </div>
+        </div>
+
+        <!-- Detection Analysis Charts -->
+        <div class="detection-grid">
+            <div class="chart-container">
+                <h3>Defect Type Distribution</h3>
+                <div class="chart-wrapper">
+                    <canvas id="defectTypeChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3>Detection Confidence by Type</h3>
+                <div class="chart-wrapper">
+                    <canvas id="confidenceChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Defect Trend Analysis -->
+        <div class="chart-container" style="margin-bottom: 2rem;">
+            <h3>Defect Trend (Last 7 Days)</h3>
+            <div class="chart-wrapper">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Detected Images Gallery -->
+        <div class="chart-container" style="margin-bottom: 2rem;">
+            <h3>Detected Defects</h3>
+            <div id="imageGallery" class="image-gallery">
+                <!-- Images will be added here -->
+            </div>
+        </div>
+
+        <!-- Detection Results Table -->
+        <div class="chart-container">
+            <h3>Detection Results</h3>
+            <div style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Production Line</th>
+                            <th>Batch ID</th>
+                            <th>Defect Type</th>
+                            <th>Confidence</th>
+                            <th>Location</th>
+                            <th>Severity</th>
+                            <th>Image</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTableBody">
+                        <tr>
+                            <td colspan="9" class="loading">
+                                <div class="spinner"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shared Scripts -->
+    <script src="../shared/api-client.js"></script>
+    <script src="../shared/mock-data.js"></script>
+    <script src="../shared/utils.js"></script>
+
+    <script>
+        /**
+         * Application state for defect detection
+         */
+        const state = {
+            currentData: null,
+            defectTypeChart: null,
+            confidenceChart: null,
+            trendChart: null,
+            api: new MLApiClient(),
+            useMockData: true,
+            filters: {
+                productionLine: '',
+                defectType: '',
+                confidenceThreshold: 50
+            },
+            uploadedImages: []
+        };
+
+        /**
+         * Initialize the application on page load
+         */
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('Defect Detection page loaded');
+            await loadDetectionData();
+        });
+
+        /**
+         * Toggle between mock and real data
+         */
+        function toggleMockData() {
+            state.useMockData = document.getElementById('mockDataToggle').checked;
+            loadDetectionData();
+        }
+
+        /**
+         * Handle image upload
+         */
+        function handleImageUpload() {
+            const input = document.getElementById('imageInput');
+            const files = input.files;
+
+            if (files.length === 0) return;
+
+            showAlert(`Processing ${files.length} image(s)...`, 'info');
+
+            // Process each image
+            for (let file of files) {
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    const imageData = e.target.result;
+                    
+                    // Generate mock detection result
+                    const defectTypes = ['hole', 'stain', 'tear', 'wrinkle', 'color'];
+                    const defectType = defectTypes[Math.floor(Math.random() * defectTypes.length)];
+                    const confidence = Math.random() * 100;
+
+                    state.uploadedImages.push({
+                        name: file.name,
+                        data: imageData,
+                        defectType: defectType,
+                        confidence: confidence,
+                        timestamp: new Date().toLocaleTimeString()
+                    });
+
+                    // If this is the last image, update display
+                    if (state.uploadedImages.length === files.length) {
+                        displayUploadedImages();
+                        showAlert(`${files.length} image(s) processed and analyzed`, 'success');
+                        input.value = '';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        /**
+         * Display uploaded images in gallery
+         */
+        function displayUploadedImages() {
+            const gallery = document.getElementById('imageGallery');
+            gallery.innerHTML = '';
+
+            state.uploadedImages.forEach((img, index) => {
+                const item = document.createElement('div');
+                item.className = 'image-item';
+                item.innerHTML = `
+                    <img src="${img.data}" alt="${img.name}" class="image-thumbnail">
+                    <div class="image-info">
+                        <label>File</label>
+                        <div class="value">${img.name.substring(0, 20)}...</div>
+                        <span class="defect-type-badge defect-${img.defectType}">${img.defectType}</span>
+                        <div class="confidence-bar">
+                            <div class="confidence-bar-fill">
+                                <div class="confidence-bar-value" style="width: ${img.confidence}%"></div>
+                            </div>
+                            <div class="confidence-bar-text">${img.confidence.toFixed(0)}%</div>
+                        </div>
+                    </div>
+                `;
+                gallery.appendChild(item);
+            });
+        }
+
+        /**
+         * Load defect detection data from API or mock
+         */
+        async function loadDetectionData() {
+            try {
+                // Update filters
+                state.filters.productionLine = document.getElementById('productionLineFilter').value;
+                state.filters.defectType = document.getElementById('defectTypeFilter').value;
+                state.filters.confidenceThreshold = parseFloat(document.getElementById('confidenceFilter').value) || 50;
+
+                showAlert('Loading detection results...', 'info');
+
+                // Get data from API or mock
+                let data;
+                if (state.useMockData) {
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    data = MockData.defectDetection.detections.map(det => ({
+                        ...det,
+                        confidence: Math.random() * 100,
+                        detected_at: new Date(Date.now() - Math.random() * 604800000).toLocaleString()
+                    }));
+                } else {
+                    data = await state.api.detectDefects(state.filters);
+                }
+
+                // Apply filters
+                data = data.filter(d => (d.confidence || 0) >= state.filters.confidenceThreshold);
+                
+                if (state.filters.defectType) {
+                    data = data.filter(d => d.defect_type === state.filters.defectType);
+                }
+
+                if (state.filters.productionLine) {
+                    data = data.filter(d => d.production_line === state.filters.productionLine);
+                }
+
+                state.currentData = data;
+
+                // Update UI components
+                updateMetrics();
+                updateCharts();
+                updateTable();
+                showAlert('Detection results loaded successfully', 'success');
+
+            } catch (error) {
+                console.error('Error loading detection data:', error);
+                showAlert(`Error: ${error.message}`, 'error');
+
+                if (!state.useMockData) {
+                    state.useMockData = true;
+                    document.getElementById('mockDataToggle').checked = true;
+                    await loadDetectionData();
+                }
+            }
+        }
+
+        /**
+         * Update metric cards with calculated values
+         */
+        function updateMetrics() {
+            if (!state.currentData || state.currentData.length === 0) {
+                showAlert('No detection data available', 'info');
+                return;
+            }
+
+            const totalInspected = state.currentData.length;
+            const totalDefects = state.currentData.filter(d => d.confidence > state.filters.confidenceThreshold).length;
+            const defectRate = totalInspected > 0 ? ((totalDefects / totalInspected) * 100).toFixed(1) : 0;
+            const avgConfidence = state.currentData.reduce((sum, d) => sum + (d.confidence || 0), 0) / totalInspected;
+            const criticalIssues = state.currentData.filter(d => d.confidence > 80).length;
+            const detectionSpeed = (Math.random() * 30 + 15).toFixed(1);
+
+            document.getElementById('inspectedItems').textContent = totalInspected;
+            document.getElementById('defectsFound').textContent = totalDefects;
+            document.getElementById('defectRate').textContent = defectRate + '%';
+            document.getElementById('avgConfidence').textContent = avgConfidence.toFixed(0) + '%';
+            document.getElementById('criticalIssues').textContent = criticalIssues;
+            document.getElementById('detectionSpeed').textContent = detectionSpeed;
+        }
+
+        /**
+         * Update all charts with current data
+         */
+        function updateCharts() {
+            if (!state.currentData || state.currentData.length === 0) return;
+
+            updateDefectTypeChart();
+            updateConfidenceChart();
+            updateTrendChart();
+        }
+
+        /**
+         * Update defect type distribution chart
+         */
+        function updateDefectTypeChart() {
+            const defectTypes = ['hole', 'stain', 'tear', 'wrinkle', 'color'];
+            const counts = defectTypes.map(type => 
+                state.currentData.filter(d => d.defect_type === type).length
+            );
+
+            const ctx = document.getElementById('defectTypeChart').getContext('2d');
+
+            if (state.defectTypeChart) state.defectTypeChart.destroy();
+
+            state.defectTypeChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: defectTypes.map(t => t.charAt(0).toUpperCase() + t.slice(1)),
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: ['#ef4444', '#f59e0b', '#ec4899', '#3b82f6', '#8b5cf6'],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 12 }, padding: 15 }
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * Update confidence by defect type chart
+         */
+        function updateConfidenceChart() {
+            const defectTypes = ['hole', 'stain', 'tear', 'wrinkle', 'color'];
+            const avgConfidence = defectTypes.map(type => {
+                const items = state.currentData.filter(d => d.defect_type === type);
+                return items.length > 0 
+                    ? items.reduce((sum, d) => sum + (d.confidence || 0), 0) / items.length 
+                    : 0;
+            });
+
+            const ctx = document.getElementById('confidenceChart').getContext('2d');
+
+            if (state.confidenceChart) state.confidenceChart.destroy();
+
+            state.confidenceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: defectTypes.map(t => t.charAt(0).toUpperCase() + t.slice(1)),
+                    datasets: [{
+                        label: 'Average Confidence (%)',
+                        data: avgConfidence,
+                        backgroundColor: ['#ef4444', '#f59e0b', '#ec4899', '#3b82f6', '#8b5cf6'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: {
+                            max: 100,
+                            ticks: {
+                                callback: function(value) { return value + '%'; }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * Update defect trend line chart
+         */
+        function updateTrendChart() {
+            const days = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'];
+            const trendData = days.map(() => Math.floor(Math.random() * 50));
+
+            const ctx = document.getElementById('trendChart').getContext('2d');
+
+            if (state.trendChart) state.trendChart.destroy();
+
+            state.trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: days,
+                    datasets: [{
+                        label: 'Defects Detected',
+                        data: trendData,
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#ef4444',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: true } },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        /**
+         * Update detection results table
+         */
+        function updateTable() {
+            const tbody = document.getElementById('dataTableBody');
+            tbody.innerHTML = '';
+
+            if (!state.currentData || state.currentData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="loading">No detection results</td></tr>';
+                return;
+            }
+
+            state.currentData.forEach(detection => {
+                const severity = detection.confidence > 80 ? 'Critical' : detection.confidence > 60 ? 'High' : 'Medium';
+                const severityClass = detection.confidence > 80 ? 'defective' : detection.confidence > 60 ? 'suspicious' : 'ok';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${detection.detected_at || 'N/A'}</td>
+                    <td>${detection.production_line || 'N/A'}</td>
+                    <td>${detection.batch_id || 'N/A'}</td>
+                    <td><span class="defect-type-badge defect-${detection.defect_type}">${detection.defect_type}</span></td>
+                    <td><strong>${(detection.confidence || 0).toFixed(1)}%</strong></td>
+                    <td>${detection.location || 'N/A'}</td>
+                    <td><span class="badge badge-${severityClass}">${severity}</span></td>
+                    <td><a href="#" style="color: #3b82f6;">View</a></td>
+                    <td>
+                        <button class="btn btn-small" onclick="markAsReviewed('${detection.batch_id}')">✓ Mark</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        /**
+         * Mark detection as reviewed
+         */
+        function markAsReviewed(batchId) {
+            console.log(`Marking batch ${batchId} as reviewed`);
+            showAlert(`Batch ${batchId} marked as reviewed`, 'success');
+        }
+
+        /**
+         * Export report to CSV
+         */
+        function exportReport() {
+            if (!state.currentData || state.currentData.length === 0) {
+                showAlert('No data to export', 'error');
+                return;
+            }
+
+            const headers = ['Timestamp', 'Production Line', 'Batch ID', 'Defect Type', 'Confidence', 'Location', 'Severity'];
+            const rows = state.currentData.map(detection => {
+                const severity = detection.confidence > 80 ? 'Critical' : detection.confidence > 60 ? 'High' : 'Medium';
+                return [
+                    detection.detected_at,
+                    detection.production_line,
+                    detection.batch_id,
+                    detection.defect_type,
+                    detection.confidence,
+                    detection.location,
+                    severity
+                ];
+            });
+
+            Utils.exportToCSV(headers, rows, 'defect-detection-report.csv');
+            showAlert('Report exported successfully', 'success');
+        }
+
+        /**
+         * Show alert message
+         */
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.innerHTML = '';
+            container.appendChild(alert);
+
+            if (type !== 'error') {
+                setTimeout(() => alert.remove(), 5000);
+            }
+        }
+    </script>
+</body>
+</html>

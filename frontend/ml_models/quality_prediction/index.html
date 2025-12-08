@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quality Prediction - Textile ERP ML Intelligence</title>
+    <link rel="stylesheet" href="../shared/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        .quality-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quality-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .quality-card h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin: 0 0 0.5rem 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .quality-card .value {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0.5rem 0;
+        }
+
+        .quality-card .subtext {
+            font-size: 0.875rem;
+            color: #9ca3af;
+            margin-top: 0.5rem;
+        }
+
+        .quality-gauge {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .gauge-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: white;
+        }
+
+        .gauge-good { background: linear-gradient(135deg, #10b981, #059669); }
+        .gauge-warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .gauge-poor { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+        .quality-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .quality-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-container {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0 0 1.5rem 0;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            margin-bottom: 1rem;
+        }
+
+        .controls-section {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            flex: 0 1 auto;
+            min-width: 150px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-family: inherit;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+        }
+
+        .btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-small {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table thead {
+            background: #f9fafb;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .data-table th {
+            padding: 1rem 0.75rem;
+            text-align: left;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.875rem;
+            color: #1f2937;
+        }
+
+        .data-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-pass {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .badge-warning {
+            background: #fef08a;
+            color: #713f12;
+        }
+
+        .badge-fail {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .confidence-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .confidence-bar-fill {
+            flex: 1;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .confidence-bar-value {
+            height: 100%;
+            background: #3b82f6;
+            transition: width 0.3s;
+        }
+
+        .confidence-bar-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            min-width: 40px;
+        }
+
+        .root-cause-panel {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .root-cause-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .root-cause-item:last-child {
+            border-bottom: none;
+        }
+
+        .root-cause-label {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .root-cause-impact {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #15803d;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-warning {
+            background: #fef08a;
+            color: #713f12;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid #e5e7eb;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .breadcrumb a {
+            color: #3b82f6;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        .toggle-switch input[type="checkbox"] {
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .batch-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .batch-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .batch-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
+        }
+
+        .batch-card.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .batch-card label {
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .batch-card .id {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        @media print {
+            .controls-section,
+            .header-actions,
+            .btn {
+                display: none;
+            }
+            body {
+                background: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 2rem 1rem;">
+        <!-- Breadcrumb Navigation -->
+        <div class="breadcrumb">
+            <a href="/frontend/dashboard.html">Dashboard</a>
+            <span>/</span>
+            <a href="/frontend/index.html">ML Intelligence Hub</a>
+            <span>/</span>
+            <span>Quality Prediction</span>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1>Quality Prediction</h1>
+                <p style="color: #6b7280; margin: 0.5rem 0 0 0;">AI-powered batch quality score prediction and analysis</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="exportReport()">📥 Export Report</button>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="mockDataToggle" onchange="toggleMockData()" checked>
+                    <span>Use Mock Data</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Alert Section -->
+        <div id="alertContainer"></div>
+
+        <!-- Batch Selection -->
+        <div class="chart-container" style="margin-bottom: 2rem;">
+            <h3>Select Batch for Quality Prediction</h3>
+            <div class="batch-selector" id="batchSelector">
+                <!-- Batches will be populated here -->
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls-section">
+            <div class="form-group">
+                <label for="qualityFilter">Quality Threshold</label>
+                <select id="qualityFilter" onchange="loadQualityData()">
+                    <option value="">All Batches</option>
+                    <option value="pass">Pass (≥90%)</option>
+                    <option value="warning">Warning (70-89%)</option>
+                    <option value="fail">Fail (&lt;70%)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="lineFilter">Production Line</label>
+                <select id="lineFilter" onchange="loadQualityData()">
+                    <option value="">All Lines</option>
+                    <option value="line_1">Line 1</option>
+                    <option value="line_2">Line 2</option>
+                    <option value="line_3">Line 3</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="materialFilter">Material Type</label>
+                <select id="materialFilter" onchange="loadQualityData()">
+                    <option value="">All Materials</option>
+                    <option value="cotton">Cotton</option>
+                    <option value="polyester">Polyester</option>
+                    <option value="blend">Blend</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="loadQualityData()">🔄 Refresh Data</button>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="quality-container">
+            <div class="quality-card">
+                <h3>Average Quality Score</h3>
+                <div class="value" id="avgQualityScore">0%</div>
+                <div class="subtext">Current batch average</div>
+            </div>
+
+            <div class="quality-card">
+                <h3>Pass Rate</h3>
+                <div class="value" id="passRate">0%</div>
+                <div class="subtext">Batches passing QC</div>
+            </div>
+
+            <div class="quality-card">
+                <h3>At Risk Batches</h3>
+                <div class="value" id="atRiskCount">0</div>
+                <div class="subtext">Below 70% quality</div>
+            </div>
+
+            <div class="quality-card">
+                <h3>Prediction Confidence</h3>
+                <div class="value" id="predictionConfidence">0%</div>
+                <div class="subtext">Model accuracy</div>
+            </div>
+
+            <div class="quality-card">
+                <h3>Total Batches</h3>
+                <div class="value" id="totalBatches">0</div>
+                <div class="subtext">Analyzed</div>
+            </div>
+
+            <div class="quality-card">
+                <h3>Quality Trend</h3>
+                <div class="value" id="qualityTrend">→</div>
+                <div class="subtext" id="trendText">Stable</div>
+            </div>
+        </div>
+
+        <!-- Quality Analysis Charts -->
+        <div class="quality-grid">
+            <div class="chart-container">
+                <h3>Feature Importance for Quality</h3>
+                <div class="chart-wrapper">
+                    <canvas id="featureImportanceChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3>Quality Score Distribution</h3>
+                <div class="chart-wrapper">
+                    <canvas id="qualityDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Root Cause Analysis -->
+        <div class="root-cause-panel">
+            <h3>Root Cause Analysis for Low Quality</h3>
+            <div id="rootCauseContainer">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quality Trend -->
+        <div class="chart-container" style="margin-bottom: 2rem;">
+            <h3>Quality Score Trend (Last 30 Days)</h3>
+            <div class="chart-wrapper">
+                <canvas id="qualityTrendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Batch Comparison -->
+        <div class="chart-container" style="margin-bottom: 2rem;">
+            <h3>Material Type Quality Comparison</h3>
+            <div class="chart-wrapper">
+                <canvas id="materialComparisonChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Quality Prediction Results -->
+        <div class="chart-container">
+            <h3>Batch Quality Predictions</h3>
+            <div style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Batch ID</th>
+                            <th>Production Line</th>
+                            <th>Material Type</th>
+                            <th>Quality Score</th>
+                            <th>Confidence</th>
+                            <th>Prediction</th>
+                            <th>Production Date</th>
+                            <th>Last Updated</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTableBody">
+                        <tr>
+                            <td colspan="9" class="loading">
+                                <div class="spinner"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shared Scripts -->
+    <script src="../shared/api-client.js"></script>
+    <script src="../shared/mock-data.js"></script>
+    <script src="../shared/utils.js"></script>
+
+    <script>
+        /**
+         * Application state for quality prediction
+         */
+        const state = {
+            currentData: null,
+            featureImportanceChart: null,
+            qualityDistributionChart: null,
+            qualityTrendChart: null,
+            materialComparisonChart: null,
+            api: new MLApiClient(),
+            useMockData: true,
+            selectedBatch: null,
+            filters: {
+                qualityThreshold: '',
+                line: '',
+                material: ''
+            }
+        };
+
+        /**
+         * Initialize the application on page load
+         */
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('Quality Prediction page loaded');
+            await loadQualityData();
+            populateBatchSelector();
+        });
+
+        /**
+         * Toggle between mock and real data
+         */
+        function toggleMockData() {
+            state.useMockData = document.getElementById('mockDataToggle').checked;
+            loadQualityData();
+        }
+
+        /**
+         * Populate batch selector cards
+         */
+        function populateBatchSelector() {
+            const selector = document.getElementById('batchSelector');
+            const batches = MockData.qualityPrediction.batches.slice(0, 6);
+
+            batches.forEach(batch => {
+                const card = document.createElement('div');
+                card.className = 'batch-card';
+                card.onclick = function() {
+                    document.querySelectorAll('.batch-card').forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    state.selectedBatch = batch.batch_id;
+                    loadQualityData();
+                };
+                card.innerHTML = `
+                    <label>Batch</label>
+                    <div class="id">${batch.batch_id}</div>
+                `;
+                selector.appendChild(card);
+            });
+        }
+
+        /**
+         * Load quality prediction data from API or mock
+         */
+        async function loadQualityData() {
+            try {
+                // Update filters
+                state.filters.qualityThreshold = document.getElementById('qualityFilter').value;
+                state.filters.line = document.getElementById('lineFilter').value;
+                state.filters.material = document.getElementById('materialFilter').value;
+
+                showAlert('Loading quality predictions...', 'info');
+
+                // Get data from API or mock
+                let data;
+                if (state.useMockData) {
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    data = MockData.qualityPrediction.batches.map(batch => ({
+                        ...batch,
+                        quality_score: Math.floor(Math.random() * 100),
+                        confidence: Math.random() * 100,
+                        predicted_at: new Date(Date.now() - Math.random() * 2592000000).toLocaleString()
+                    }));
+                } else {
+                    data = await state.api.predictBatchQuality(state.filters);
+                }
+
+                // Apply filters
+                if (state.filters.qualityThreshold === 'pass') {
+                    data = data.filter(d => (d.quality_score || 0) >= 90);
+                } else if (state.filters.qualityThreshold === 'warning') {
+                    data = data.filter(d => (d.quality_score || 0) >= 70 && (d.quality_score || 0) < 90);
+                } else if (state.filters.qualityThreshold === 'fail') {
+                    data = data.filter(d => (d.quality_score || 0) < 70);
+                }
+
+                if (state.filters.line) {
+                    data = data.filter(d => d.production_line === state.filters.line);
+                }
+
+                if (state.filters.material) {
+                    data = data.filter(d => d.material_type === state.filters.material);
+                }
+
+                state.currentData = data;
+
+                // Update UI components
+                updateMetrics();
+                updateCharts();
+                updateRootCauseAnalysis();
+                updateTable();
+                showAlert('Quality predictions loaded successfully', 'success');
+
+            } catch (error) {
+                console.error('Error loading quality predictions:', error);
+                showAlert(`Error: ${error.message}`, 'error');
+
+                if (!state.useMockData) {
+                    state.useMockData = true;
+                    document.getElementById('mockDataToggle').checked = true;
+                    await loadQualityData();
+                }
+            }
+        }
+
+        /**
+         * Update metric cards with calculated values
+         */
+        function updateMetrics() {
+            if (!state.currentData || state.currentData.length === 0) {
+                showAlert('No quality data available', 'info');
+                return;
+            }
+
+            const avgQualityScore = Math.round(state.currentData.reduce((sum, d) => sum + (d.quality_score || 0), 0) / state.currentData.length);
+            const passCount = state.currentData.filter(d => (d.quality_score || 0) >= 90).length;
+            const passRate = Math.round((passCount / state.currentData.length) * 100);
+            const atRiskCount = state.currentData.filter(d => (d.quality_score || 0) < 70).length;
+            const avgConfidence = Math.round(state.currentData.reduce((sum, d) => sum + (d.confidence || 0), 0) / state.currentData.length);
+
+            document.getElementById('avgQualityScore').textContent = avgQualityScore + '%';
+            document.getElementById('passRate').textContent = passRate + '%';
+            document.getElementById('atRiskCount').textContent = atRiskCount;
+            document.getElementById('predictionConfidence').textContent = avgConfidence + '%';
+            document.getElementById('totalBatches').textContent = state.currentData.length;
+
+            // Quality trend
+            const trendArrow = avgQualityScore > 85 ? '↑' : avgQualityScore < 75 ? '↓' : '→';
+            const trendText = avgQualityScore > 85 ? 'Improving' : avgQualityScore < 75 ? 'Declining' : 'Stable';
+            const trendColor = avgQualityScore > 85 ? '#10b981' : avgQualityScore < 75 ? '#ef4444' : '#f59e0b';
+
+            document.getElementById('qualityTrend').textContent = trendArrow;
+            document.getElementById('qualityTrend').style.color = trendColor;
+            document.getElementById('trendText').textContent = trendText;
+        }
+
+        /**
+         * Update all charts with current data
+         */
+        function updateCharts() {
+            if (!state.currentData || state.currentData.length === 0) return;
+
+            updateFeatureImportanceChart();
+            updateQualityDistributionChart();
+            updateQualityTrendChart();
+            updateMaterialComparisonChart();
+        }
+
+        /**
+         * Update feature importance chart
+         */
+        function updateFeatureImportanceChart() {
+            const features = ['Temperature Control', 'Tension Consistency', 'Dye Batch Uniformity', 'Humidity Level', 'Thread Count'];
+            const importance = [0.28, 0.22, 0.20, 0.18, 0.12];
+
+            const ctx = document.getElementById('featureImportanceChart').getContext('2d');
+
+            if (state.featureImportanceChart) state.featureImportanceChart.destroy();
+
+            state.featureImportanceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: features,
+                    datasets: [{
+                        label: 'Importance Score',
+                        data: importance.map(i => i * 100),
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: {
+                            max: 100,
+                            ticks: {
+                                callback: function(value) { return value + '%'; }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * Update quality distribution chart
+         */
+        function updateQualityDistributionChart() {
+            const pass = state.currentData.filter(d => (d.quality_score || 0) >= 90).length;
+            const warning = state.currentData.filter(d => (d.quality_score || 0) >= 70 && (d.quality_score || 0) < 90).length;
+            const fail = state.currentData.filter(d => (d.quality_score || 0) < 70).length;
+
+            const ctx = document.getElementById('qualityDistributionChart').getContext('2d');
+
+            if (state.qualityDistributionChart) state.qualityDistributionChart.destroy();
+
+            state.qualityDistributionChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [`Pass (${pass})`, `Warning (${warning})`, `Fail (${fail})`],
+                    datasets: [{
+                        data: [pass, warning, fail],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 12 }, padding: 15 }
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * Update quality trend line chart
+         */
+        function updateQualityTrendChart() {
+            const days = Array.from({length: 30}, (_, i) => `Day ${i + 1}`);
+            const trendData = days.map(() => Math.floor(Math.random() * 30) + 70);
+
+            const ctx = document.getElementById('qualityTrendChart').getContext('2d');
+
+            if (state.qualityTrendChart) state.qualityTrendChart.destroy();
+
+            state.qualityTrendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: days,
+                    datasets: [{
+                        label: 'Average Quality Score',
+                        data: trendData,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 2,
+                        pointBackgroundColor: '#3b82f6',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: true } },
+                    scales: {
+                        y: {
+                            min: 50,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) { return value + '%'; }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * Update material comparison chart
+         */
+        function updateMaterialComparisonChart() {
+            const materials = ['Cotton', 'Polyester', 'Blend'];
+            const scores = materials.map(() => Math.floor(Math.random() * 30) + 70);
+
+            const ctx = document.getElementById('materialComparisonChart').getContext('2d');
+
+            if (state.materialComparisonChart) state.materialComparisonChart.destroy();
+
+            state.materialComparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: materials,
+                    datasets: [{
+                        label: 'Average Quality Score (%)',
+                        data: scores,
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            max: 100,
+                            ticks: {
+                                callback: function(value) { return value + '%'; }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * Update root cause analysis
+         */
+        function updateRootCauseAnalysis() {
+            const causes = [
+                { factor: 'Temperature Fluctuations', impact: 32 },
+                { factor: 'Humidity Imbalance', impact: 28 },
+                { factor: 'Dye Consistency Issues', impact: 22 },
+                { factor: 'Thread Tension Variance', impact: 18 }
+            ];
+
+            const container = document.getElementById('rootCauseContainer');
+            container.innerHTML = '';
+
+            causes.forEach(cause => {
+                const item = document.createElement('div');
+                item.className = 'root-cause-item';
+                item.innerHTML = `
+                    <div class="root-cause-label">${cause.factor}</div>
+                    <div class="confidence-bar">
+                        <div class="confidence-bar-fill">
+                            <div class="confidence-bar-value" style="width: ${cause.impact}%"></div>
+                        </div>
+                        <div class="confidence-bar-text">${cause.impact}%</div>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        /**
+         * Update quality prediction results table
+         */
+        function updateTable() {
+            const tbody = document.getElementById('dataTableBody');
+            tbody.innerHTML = '';
+
+            if (!state.currentData || state.currentData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="loading">No quality predictions</td></tr>';
+                return;
+            }
+
+            state.currentData.forEach(batch => {
+                const score = batch.quality_score || 0;
+                const prediction = score >= 90 ? 'PASS' : score >= 70 ? 'WARNING' : 'FAIL';
+                const predictionClass = score >= 90 ? 'pass' : score >= 70 ? 'warning' : 'fail';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${batch.batch_id}</strong></td>
+                    <td>${batch.production_line || 'N/A'}</td>
+                    <td>${batch.material_type || 'N/A'}</td>
+                    <td><strong>${score}%</strong></td>
+                    <td>
+                        <div class="confidence-bar">
+                            <div class="confidence-bar-fill">
+                                <div class="confidence-bar-value" style="width: ${batch.confidence || 0}%"></div>
+                            </div>
+                            <div class="confidence-bar-text">${(batch.confidence || 0).toFixed(0)}%</div>
+                        </div>
+                    </td>
+                    <td><span class="badge badge-${predictionClass}">${prediction}</span></td>
+                    <td>${batch.production_date || 'N/A'}</td>
+                    <td>${batch.predicted_at || 'N/A'}</td>
+                    <td>
+                        <button class="btn btn-small" onclick="viewBatchDetails('${batch.batch_id}')">📋 Details</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        /**
+         * View batch details
+         */
+        function viewBatchDetails(batchId) {
+            console.log(`Viewing details for batch: ${batchId}`);
+            showAlert(`Detailed analysis for batch ${batchId} (feature coming soon)`, 'info');
+        }
+
+        /**
+         * Export report to CSV
+         */
+        function exportReport() {
+            if (!state.currentData || state.currentData.length === 0) {
+                showAlert('No data to export', 'error');
+                return;
+            }
+
+            const headers = ['Batch ID', 'Production Line', 'Material Type', 'Quality Score', 'Confidence', 'Prediction', 'Production Date'];
+            const rows = state.currentData.map(batch => {
+                const score = batch.quality_score || 0;
+                const prediction = score >= 90 ? 'PASS' : score >= 70 ? 'WARNING' : 'FAIL';
+                return [
+                    batch.batch_id,
+                    batch.production_line,
+                    batch.material_type,
+                    score,
+                    batch.confidence,
+                    prediction,
+                    batch.production_date
+                ];
+            });
+
+            Utils.exportToCSV(headers, rows, 'quality-prediction-report.csv');
+            showAlert('Report exported successfully', 'success');
+        }
+
+        /**
+         * Show alert message
+         */
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.innerHTML = '';
+            container.appendChild(alert);
+
+            if (type !== 'error') {
+                setTimeout(() => alert.remove(), 5000);
+            }
+        }
+    </script>
+</body>
+</html>

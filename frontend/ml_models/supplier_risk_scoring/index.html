@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier Risk Scoring - Textile ERP ML Intelligence</title>
+    <link rel="stylesheet" href="../shared/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        .risk-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .risk-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .risk-card h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin: 0 0 0.5rem 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .risk-card .value {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0.5rem 0;
+        }
+
+        .risk-card .subtext {
+            font-size: 0.875rem;
+            color: #9ca3af;
+            margin-top: 0.5rem;
+        }
+
+        .risk-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .risk-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-container {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0 0 1.5rem 0;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            margin-bottom: 1rem;
+        }
+
+        .controls-section {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            flex: 0 1 auto;
+            min-width: 150px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-family: inherit;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+        }
+
+        .btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-small {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table thead {
+            background: #f9fafb;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .data-table th {
+            padding: 1rem 0.75rem;
+            text-align: left;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.875rem;
+            color: #1f2937;
+        }
+
+        .data-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .risk-score {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+        }
+
+        .risk-low {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .risk-medium {
+            background: #fef08a;
+            color: #713f12;
+        }
+
+        .risk-high {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .badge-inactive {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #15803d;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-warning {
+            background: #fef08a;
+            color: #713f12;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid #e5e7eb;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .risk-factor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .risk-factor-item {
+            background: #f9fafb;
+            padding: 0.75rem;
+            border-radius: 4px;
+            border-left: 3px solid;
+        }
+
+        .risk-factor-item.low { border-left-color: #10b981; }
+        .risk-factor-item.medium { border-left-color: #f59e0b; }
+        .risk-factor-item.high { border-left-color: #ef4444; }
+
+        .risk-factor-item label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .risk-factor-item .score {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .breadcrumb a {
+            color: #3b82f6;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        .toggle-switch input[type="checkbox"] {
+            cursor: pointer;
+            margin: 0;
+        }
+
+        @media print {
+            .controls-section,
+            .header-actions,
+            .btn {
+                display: none;
+            }
+            body {
+                background: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 2rem 1rem;">
+        <!-- Breadcrumb Navigation -->
+        <div class="breadcrumb">
+            <a href="/frontend/dashboard.html">Dashboard</a>
+            <span>/</span>
+            <a href="/frontend/index.html">ML Intelligence Hub</a>
+            <span>/</span>
+            <span>Supplier Risk Scoring</span>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1>Supplier Risk Scoring</h1>
+                <p style="color: #6b7280; margin: 0.5rem 0 0 0;">ML-based supplier risk assessment and performance monitoring</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="exportReport()">📥 Export Report</button>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="mockDataToggle" onchange="toggleMockData()" checked>
+                    <span>Use Mock Data</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Alert Section -->
+        <div id="alertContainer"></div>
+
+        <!-- Controls -->
+        <div class="controls-section">
+            <div class="form-group">
+                <label for="riskFilter">Risk Level Filter</label>
+                <select id="riskFilter" onchange="loadSupplierData()">
+                    <option value="">All Suppliers</option>
+                    <option value="low">Low Risk (&lt;30)</option>
+                    <option value="medium">Medium Risk (30-60)</option>
+                    <option value="high">High Risk (&gt;60)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="categoryFilter">Category Filter</label>
+                <select id="categoryFilter" onchange="loadSupplierData()">
+                    <option value="">All Categories</option>
+                    <option value="raw_material">Raw Material</option>
+                    <option value="machinery">Machinery & Equipment</option>
+                    <option value="chemicals">Chemicals & Dyes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="regionFilter">Region Filter</label>
+                <select id="regionFilter" onchange="loadSupplierData()">
+                    <option value="">All Regions</option>
+                    <option value="asia">Asia</option>
+                    <option value="europe">Europe</option>
+                    <option value="americas">Americas</option>
+                    <option value="africa">Africa</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="loadSupplierData()">🔄 Refresh Data</button>
+        </div>
+
+        <!-- Key Risk Metrics -->
+        <div class="risk-container">
+            <div class="risk-card">
+                <h3>Total Suppliers</h3>
+                <div class="value" id="totalSuppliers">0</div>
+                <div class="subtext">Active suppliers</div>
+            </div>
+
+            <div class="risk-card">
+                <h3>High Risk Suppliers</h3>
+                <div class="value" id="highRiskCount">0</div>
+                <div class="subtext">Require immediate attention</div>
+            </div>
+
+            <div class="risk-card">
+                <h3>Medium Risk Suppliers</h3>
+                <div class="value" id="mediumRiskCount">0</div>
+                <div class="subtext">Monitor closely</div>
+            </div>
+
+            <div class="risk-card">
+                <h3>Average Risk Score</h3>
+                <div class="value" id="avgRiskScore">0</div>
+                <div class="subtext" id="riskTrend">of 100</div>
+            </div>
+
+            <div class="risk-card">
+                <h3>Suppliers at Alert</h3>
+                <div class="value" id="alertCount">0</div>
+                <div class="subtext">Performance degradation</div>
+            </div>
+
+            <div class="risk-card">
+                <h3>Trend</h3>
+                <div class="value" id="riskTrendArrow">→</div>
+                <div class="subtext" id="riskTrendText">Stable</div>
+            </div>
+        </div>
+
+        <!-- Risk Analysis Charts -->
+        <div class="risk-grid">
+            <div class="chart-container">
+                <h3>Risk Factor Breakdown</h3>
+                <div class="chart-wrapper">
+                    <canvas id="riskFactorChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3>Supplier Risk Distribution</h3>
+                <div class="chart-wrapper">
+                    <canvas id="riskDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance History -->
+        <div class="chart-container" style="margin-bottom: 2rem;">
+            <h3>Risk Score Trend (Last 12 Months)</h3>
+            <div class="chart-wrapper">
+                <canvas id="riskTrendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Risk Threshold Configuration -->
+        <div class="chart-container" style="margin-bottom: 2rem; background: #f9fafb;">
+            <h3>Risk Threshold Configuration</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div>
+                    <label for="lowThreshold" style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Low Risk Threshold (0-X)</label>
+                    <input type="number" id="lowThreshold" value="30" min="0" max="100" style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px;">
+                </div>
+                <div>
+                    <label for="mediumThreshold" style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Medium Risk Threshold (X-Y)</label>
+                    <input type="number" id="mediumThreshold" value="60" min="0" max="100" style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px;">
+                </div>
+                <div>
+                    <label for="alertThreshold" style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Alert Threshold</label>
+                    <input type="number" id="alertThreshold" value="75" min="0" max="100" style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px;">
+                </div>
+                <div style="display: flex; align-items: flex-end;">
+                    <button class="btn" onclick="updateThresholds()">💾 Update Thresholds</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Supplier List & Risk Analysis -->
+        <div class="chart-container">
+            <h3>Supplier Risk Scorecard</h3>
+            <div style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Supplier Name</th>
+                            <th>Risk Score</th>
+                            <th>Status</th>
+                            <th>Delivery Risk</th>
+                            <th>Quality Risk</th>
+                            <th>Price Risk</th>
+                            <th>Days Late (Avg)</th>
+                            <th>Defect Rate</th>
+                            <th>Price Variance</th>
+                            <th>Last Assessment</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTableBody">
+                        <tr>
+                            <td colspan="11" class="loading">
+                                <div class="spinner"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Supplier Comparison -->
+        <div class="chart-container" style="margin-top: 2rem;">
+            <h3>Top Suppliers by Performance</h3>
+            <div class="chart-wrapper">
+                <canvas id="supplierComparisonChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shared Scripts -->
+    <script src="../shared/api-client.js"></script>
+    <script src="../shared/mock-data.js"></script>
+    <script src="../shared/utils.js"></script>
+
+    <script>
+        /**
+         * Application state for supplier risk scoring
+         */
+        const state = {
+            currentData: null,
+            riskFactorChart: null,
+            riskDistributionChart: null,
+            riskTrendChart: null,
+            supplierComparisonChart: null,
+            api: new MLApiClient(),
+            useMockData: true,
+            filters: {
+                riskLevel: '',
+                category: '',
+                region: ''
+            },
+            thresholds: {
+                low: 30,
+                medium: 60,
+                alert: 75
+            }
+        };
+
+        /**
+         * Initialize the application on page load
+         */
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('Supplier Risk Scoring page loaded');
+            await loadSupplierData();
+        });
+
+        /**
+         * Toggle between mock and real data
+         */
+        function toggleMockData() {
+            state.useMockData = document.getElementById('mockDataToggle').checked;
+            loadSupplierData();
+        }
+
+        /**
+         * Load supplier risk data from API or mock
+         */
+        async function loadSupplierData() {
+            try {
+                // Update filters
+                state.filters.riskLevel = document.getElementById('riskFilter').value;
+                state.filters.category = document.getElementById('categoryFilter').value;
+                state.filters.region = document.getElementById('regionFilter').value;
+
+                showAlert('Loading supplier risk data...', 'info');
+
+                // Get data from API or mock
+                let data;
+                if (state.useMockData) {
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    data = MockData.supplierRiskScoring.suppliers.map(supplier => ({
+                        ...supplier,
+                        risk_score: Math.floor(Math.random() * 100),
+                        delivery_risk: Math.floor(Math.random() * 100),
+                        quality_risk: Math.floor(Math.random() * 100),
+                        price_risk: Math.floor(Math.random() * 100),
+                        days_late_avg: Math.random() * 30,
+                        defect_rate: Math.random() * 5,
+                        price_variance: (Math.random() - 0.5) * 20
+                    }));
+                } else {
+                    data = await state.api.getSupplierRisks(state.filters);
+                }
+
+                // Apply filters
+                if (state.filters.riskLevel === 'low') {
+                    data = data.filter(s => s.risk_score < state.thresholds.low);
+                } else if (state.filters.riskLevel === 'medium') {
+                    data = data.filter(s => s.risk_score >= state.thresholds.low && s.risk_score < state.thresholds.medium);
+                } else if (state.filters.riskLevel === 'high') {
+                    data = data.filter(s => s.risk_score >= state.thresholds.medium);
+                }
+
+                if (state.filters.category) {
+                    data = data.filter(s => s.category === state.filters.category);
+                }
+
+                if (state.filters.region) {
+                    data = data.filter(s => s.region === state.filters.region);
+                }
+
+                state.currentData = data;
+
+                // Update UI components
+                updateMetrics();
+                updateCharts();
+                updateTable();
+                showAlert('Data loaded successfully', 'success');
+
+            } catch (error) {
+                console.error('Error loading supplier risk data:', error);
+                showAlert(`Error: ${error.message}`, 'error');
+
+                if (!state.useMockData) {
+                    state.useMockData = true;
+                    document.getElementById('mockDataToggle').checked = true;
+                    await loadSupplierData();
+                }
+            }
+        }
+
+        /**
+         * Update metric cards with calculated values
+         */
+        function updateMetrics() {
+            if (!state.currentData || state.currentData.length === 0) {
+                showAlert('No data available', 'info');
+                return;
+            }
+
+            const totalSuppliers = state.currentData.length;
+            const highRiskCount = state.currentData.filter(s => s.risk_score >= state.thresholds.medium).length;
+            const mediumRiskCount = state.currentData.filter(s => s.risk_score >= state.thresholds.low && s.risk_score < state.thresholds.medium).length;
+            const avgRiskScore = Math.round(state.currentData.reduce((sum, s) => sum + (s.risk_score || 0), 0) / totalSuppliers);
+            const alertCount = state.currentData.filter(s => s.risk_score >= state.thresholds.alert).length;
+
+            document.getElementById('totalSuppliers').textContent = totalSuppliers;
+            document.getElementById('highRiskCount').textContent = highRiskCount;
+            document.getElementById('mediumRiskCount').textContent = mediumRiskCount;
+            document.getElementById('avgRiskScore').textContent = avgRiskScore;
+            document.getElementById('alertCount').textContent = alertCount;
+
+            // Risk trend
+            const trendArrow = avgRiskScore > 50 ? '↑' : avgRiskScore < 40 ? '↓' : '→';
+            const trendText = avgRiskScore > 50 ? 'Increasing' : avgRiskScore < 40 ? 'Decreasing' : 'Stable';
+            const trendColor = avgRiskScore > 50 ? '#ef4444' : avgRiskScore < 40 ? '#10b981' : '#f59e0b';
+
+            document.getElementById('riskTrendArrow').textContent = trendArrow;
+            document.getElementById('riskTrendArrow').style.color = trendColor;
+            document.getElementById('riskTrendText').textContent = trendText;
+        }
+
+        /**
+         * Update all charts with current data
+         */
+        function updateCharts() {
+            if (!state.currentData || state.currentData.length === 0) return;
+
+            updateRiskFactorChart();
+            updateRiskDistributionChart();
+            updateRiskTrendChart();
+            updateSupplierComparisonChart();
+        }
+
+        /**
+         * Update risk factor breakdown chart
+         */
+        function updateRiskFactorChart() {
+            const avgDeliveryRisk = state.currentData.reduce((sum, s) => sum + (s.delivery_risk || 0), 0) / state.currentData.length;
+            const avgQualityRisk = state.currentData.reduce((sum, s) => sum + (s.quality_risk || 0), 0) / state.currentData.length;
+            const avgPriceRisk = state.currentData.reduce((sum, s) => sum + (s.price_risk || 0), 0) / state.currentData.length;
+
+            const ctx = document.getElementById('riskFactorChart').getContext('2d');
+
+            if (state.riskFactorChart) state.riskFactorChart.destroy();
+
+            state.riskFactorChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Delivery Risk', 'Quality Risk', 'Price Risk'],
+                    datasets: [{
+                        label: 'Average Risk Score',
+                        data: [avgDeliveryRisk, avgQualityRisk, avgPriceRisk],
+                        backgroundColor: ['#3b82f6', '#ef4444', '#f59e0b'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: {
+                            max: 100,
+                            ticks: {
+                                callback: function(value) { return value + '%'; }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * Update risk distribution doughnut chart
+         */
+        function updateRiskDistributionChart() {
+            const lowRisk = state.currentData.filter(s => s.risk_score < state.thresholds.low).length;
+            const mediumRisk = state.currentData.filter(s => s.risk_score >= state.thresholds.low && s.risk_score < state.thresholds.medium).length;
+            const highRisk = state.currentData.filter(s => s.risk_score >= state.thresholds.medium).length;
+
+            const ctx = document.getElementById('riskDistributionChart').getContext('2d');
+
+            if (state.riskDistributionChart) state.riskDistributionChart.destroy();
+
+            state.riskDistributionChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [`Low Risk (${lowRisk})`, `Medium Risk (${mediumRisk})`, `High Risk (${highRisk})`],
+                    datasets: [{
+                        data: [lowRisk, mediumRisk, highRisk],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 12 }, padding: 15 }
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * Update risk trend line chart
+         */
+        function updateRiskTrendChart() {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const trendData = months.map(() => Math.floor(Math.random() * 100));
+
+            const ctx = document.getElementById('riskTrendChart').getContext('2d');
+
+            if (state.riskTrendChart) state.riskTrendChart.destroy();
+
+            state.riskTrendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Average Risk Score',
+                        data: trendData,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#3b82f6',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: true } },
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) { return value + '%'; }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * Update supplier comparison chart
+         */
+        function updateSupplierComparisonChart() {
+            const topSuppliers = [...state.currentData]
+                .sort((a, b) => (a.risk_score || 0) - (b.risk_score || 0))
+                .slice(0, 8);
+
+            const ctx = document.getElementById('supplierComparisonChart').getContext('2d');
+
+            if (state.supplierComparisonChart) state.supplierComparisonChart.destroy();
+
+            state.supplierComparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: topSuppliers.map(s => s.supplier_name || 'Unknown'),
+                    datasets: [{
+                        label: 'Risk Score',
+                        data: topSuppliers.map(s => s.risk_score || 0),
+                        backgroundColor: topSuppliers.map(s => {
+                            const score = s.risk_score || 0;
+                            return score < state.thresholds.low ? '#10b981' : score < state.thresholds.medium ? '#f59e0b' : '#ef4444';
+                        }),
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: {
+                            max: 100,
+                            ticks: {
+                                callback: function(value) { return value + '%'; }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * Update supplier data table
+         */
+        function updateTable() {
+            const tbody = document.getElementById('dataTableBody');
+            tbody.innerHTML = '';
+
+            if (!state.currentData || state.currentData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" class="loading">No data available</td></tr>';
+                return;
+            }
+
+            state.currentData.forEach(supplier => {
+                const riskScore = supplier.risk_score || 0;
+                const riskClass = riskScore < state.thresholds.low ? 'low' : riskScore < state.thresholds.medium ? 'medium' : 'high';
+                const status = riskScore >= state.thresholds.alert ? '🚨 Alert' : '✓ Monitored';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${supplier.supplier_name || 'N/A'}</strong></td>
+                    <td><span class="risk-score risk-${riskClass}">${riskScore}%</span></td>
+                    <td>${status}</td>
+                    <td>
+                        <div class="risk-factor-item ${getRiskClass(supplier.delivery_risk)}">
+                            <label>Delivery</label>
+                            <div class="score">${supplier.delivery_risk || 0}%</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="risk-factor-item ${getRiskClass(supplier.quality_risk)}">
+                            <label>Quality</label>
+                            <div class="score">${supplier.quality_risk || 0}%</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="risk-factor-item ${getRiskClass(supplier.price_risk)}">
+                            <label>Price</label>
+                            <div class="score">${supplier.price_risk || 0}%</div>
+                        </div>
+                    </td>
+                    <td>${(supplier.days_late_avg || 0).toFixed(1)} days</td>
+                    <td>${(supplier.defect_rate || 0).toFixed(2)}%</td>
+                    <td>${(supplier.price_variance || 0).toFixed(1)}%</td>
+                    <td>${supplier.last_assessment || 'N/A'}</td>
+                    <td>
+                        <button class="btn btn-small" onclick="viewSupplierDetails('${supplier.supplier_name}')">📋 Details</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        /**
+         * Get risk class for color coding
+         */
+        function getRiskClass(score) {
+            if (score < state.thresholds.low) return 'low';
+            if (score < state.thresholds.medium) return 'medium';
+            return 'high';
+        }
+
+        /**
+         * Update risk thresholds
+         */
+        function updateThresholds() {
+            state.thresholds.low = parseFloat(document.getElementById('lowThreshold').value) || 30;
+            state.thresholds.medium = parseFloat(document.getElementById('mediumThreshold').value) || 60;
+            state.thresholds.alert = parseFloat(document.getElementById('alertThreshold').value) || 75;
+
+            showAlert('Thresholds updated. Recalculating risk metrics...', 'info');
+            loadSupplierData();
+        }
+
+        /**
+         * View supplier details
+         */
+        function viewSupplierDetails(supplierName) {
+            console.log(`Viewing details for supplier: ${supplierName}`);
+            showAlert(`Detailed view for ${supplierName} (feature coming soon)`, 'info');
+        }
+
+        /**
+         * Export report to CSV
+         */
+        function exportReport() {
+            if (!state.currentData || state.currentData.length === 0) {
+                showAlert('No data to export', 'error');
+                return;
+            }
+
+            const headers = ['Supplier Name', 'Risk Score', 'Delivery Risk', 'Quality Risk', 'Price Risk', 'Days Late', 'Defect Rate', 'Price Variance', 'Last Assessment'];
+            const rows = state.currentData.map(supplier => [
+                supplier.supplier_name,
+                supplier.risk_score,
+                supplier.delivery_risk,
+                supplier.quality_risk,
+                supplier.price_risk,
+                supplier.days_late_avg,
+                supplier.defect_rate,
+                supplier.price_variance,
+                supplier.last_assessment
+            ]);
+
+            Utils.exportToCSV(headers, rows, 'supplier-risk-report.csv');
+            showAlert('Report exported successfully', 'success');
+        }
+
+        /**
+         * Show alert message
+         */
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.innerHTML = '';
+            container.appendChild(alert);
+
+            if (type !== 'error') {
+                setTimeout(() => alert.remove(), 5000);
+            }
+        }
+    </script>
+</body>
+</html>
