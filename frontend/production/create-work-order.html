@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,6 +6,11 @@
     <title>Create Work Order - Textile ERP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../../js/erp-data-manager.js"></script>
+    <script src="../../js/mock-backend.js"></script>
+    <script src="../../js/erp-helper.js"></script>
+    <script src="../../js/erp-utilities.js"></script>
+    <script src="../../js/erp-handlers.js"></script>
 </head>
 <body class="bg-gray-50">
     <div class="p-8">
@@ -17,62 +22,33 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Main Form -->
             <div class="lg:col-span-2 bg-white rounded-lg shadow p-8">
-                <form id="woForm" onsubmit="handleSubmit(event)">
+                <form id="woForm" onsubmit="saveWorkOrder(event)">
                     <!-- Order Header Section -->
                     <div class="mb-8 pb-8 border-b">
                         <h2 class="text-2xl font-semibold text-gray-800 mb-6">Order Details</h2>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Work Order Number</label>
-                                <input type="text" id="woNumber" placeholder="Auto-generated" disabled class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">WO Date</label>
-                                <input type="date" id="woDate" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            </div>
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Product <span class="text-red-500">*</span></label>
-                                <select id="product" required onchange="updateProductInfo()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                    <option value="">Select Product</option>
-                                    <option value="PROD-001">Cotton T-Shirt - Size M</option>
-                                    <option value="PROD-002">Denim Jeans - Size 32</option>
-                                    <option value="PROD-003">Polyester Jacket - Size L</option>
-                                    <option value="PROD-004">Silk Scarf - Standard</option>
-                                    <option value="PROD-005">Cotton Bed Sheet - Queen</option>
-                                </select>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Product Name <span class="text-red-500">*</span></label>
+                                <input type="text" name="productName" required placeholder="Enter product name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Production Parameters -->
-                    <div class="mb-8 pb-8 border-b">
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Production Parameters</h2>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Quantity <span class="text-red-500">*</span></label>
-                                <input type="number" id="quantity" min="1" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Units to produce" onchange="calculateDates()">
+                                <input type="number" name="quantity" min="1" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Units to produce">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
-                                <input type="date" id="startDate" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Due Date <span class="text-red-500">*</span></label>
+                                <input type="date" name="dueDate" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Target Completion Date</label>
-                                <input type="date" id="completionDate" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Priority Level</label>
-                                <select id="priority" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                    <option value="LOW">Low</option>
-                                    <option value="MEDIUM" selected>Medium</option>
-                                    <option value="HIGH">High</option>
-                                    <option value="URGENT">Urgent</option>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Priority Level <span class="text-red-500">*</span></label>
+                                <select name="priority" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Select Priority</option>
+                                    <option value="Low">Low</option>
+                                    <option value="Medium" selected>Medium</option>
+                                    <option value="High">High</option>
                                 </select>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Production Line</label>
                                 <select id="productionLine" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                     <option value="LINE-01">Production Line 1</option>
                                     <option value="LINE-02">Production Line 2</option>
@@ -303,3 +279,4 @@
     </script>
 </body>
 </html>
+

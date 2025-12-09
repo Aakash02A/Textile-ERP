@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,6 +6,11 @@
     <title>Create Customer - Textile ERP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../../js/erp-data-manager.js"></script>
+    <script src="../../js/mock-backend.js"></script>
+    <script src="../../js/erp-helper.js"></script>
+    <script src="../../js/erp-utilities.js"></script>
+    <script src="../../js/erp-handlers.js"></script>
 </head>
 <body class="bg-gray-50">
     <div class="p-8">
@@ -17,82 +22,40 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Main Form -->
             <div class="lg:col-span-2 bg-white rounded-lg shadow p-8">
-                <form id="customerForm" onsubmit="handleSubmit(event)">
+                <form id="customerForm" onsubmit="saveCustomer(event)">
                     <!-- Basic Information Section -->
                     <div class="mb-8 pb-8 border-b">
                         <h2 class="text-2xl font-semibold text-gray-800 mb-6">Basic Information</h2>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Customer Type <span class="text-red-500">*</span></label>
-                                <select id="customerType" required onchange="updateCustomerTypeInfo()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                    <option value="">Select Type</option>
-                                    <option value="INDIVIDUAL">Individual</option>
-                                    <option value="BUSINESS">Business</option>
-                                    <option value="RETAILER">Retailer</option>
-                                    <option value="DISTRIBUTOR">Distributor</option>
-                                    <option value="CORPORATE">Corporate</option>
-                                </select>
-                            </div>
-                            <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Customer Name <span class="text-red-500">*</span></label>
-                                <input type="text" id="customerName" required placeholder="Full name or company name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <input type="text" name="name" required placeholder="Full name or company name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Email Address <span class="text-red-500">*</span></label>
-                                <input type="email" id="email" required placeholder="customer@example.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <input type="email" name="email" required placeholder="customer@example.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number <span class="text-red-500">*</span></label>
-                                <input type="tel" id="phone" required placeholder="+1 (555) 000-0000" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Tax ID / VAT Number</label>
-                                <input type="text" id="taxId" placeholder="Tax identification number" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Website</label>
-                                <input type="url" id="website" placeholder="https://example.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <input type="tel" name="phone" required placeholder="+1 (555) 000-0000" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Billing Address Section -->
+                    <!-- Address Section -->
                     <div class="mb-8 pb-8 border-b">
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Billing Address</h2>
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Address</h2>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Street Address <span class="text-red-500">*</span></label>
-                                <input type="text" id="billingStreet" required placeholder="Street address" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <input type="text" name="address" required placeholder="Street address" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">City <span class="text-red-500">*</span></label>
-                                <input type="text" id="billingCity" required placeholder="City" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <input type="text" name="city" required placeholder="City" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">State / Province <span class="text-red-500">*</span></label>
-                                <input type="text" id="billingState" required placeholder="State/Province" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">ZIP / Postal Code <span class="text-red-500">*</span></label>
-                                <input type="text" id="billingZip" required placeholder="ZIP code" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Country <span class="text-red-500">*</span></label>
-                                <select id="billingCountry" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                    <option value="">Select Country</option>
-                                    <option value="USA">United States</option>
-                                    <option value="CAN">Canada</option>
-                                    <option value="MEX">Mexico</option>
-                                    <option value="GBR">United Kingdom</option>
-                                    <option value="AUS">Australia</option>
-                                    <option value="IND">India</option>
-                                    <option value="CHN">China</option>
-                                    <option value="OTHER">Other</option>
-                                </select>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Shipping Address Section -->
@@ -363,3 +326,4 @@
     </script>
 </body>
 </html>
+

@@ -6,6 +6,11 @@
     <title>Create Purchase Order - Textile ERP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../../js/erp-data-manager.js"></script>
+    <script src="../../js/mock-backend.js"></script>
+    <script src="../../js/erp-helper.js"></script>
+    <script src="../../js/erp-utilities.js"></script>
+    <script src="../../js/erp-handlers.js"></script>
 </head>
 <body class="bg-gray-50">
     <div class="p-8">
@@ -29,11 +34,11 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">PO Date</label>
-                                <input type="date" id="poDate" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <input type="date" name="poDate" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Supplier <span class="text-red-500">*</span></label>
-                                <select id="supplier" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <select name="supplierId" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                     <option value="">Select Supplier</option>
                                     <option value="SUP-001">Textile Supplier Ltd</option>
                                     <option value="SUP-002">Fabric Wholesale Inc</option>
@@ -44,7 +49,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Required Delivery Date</label>
-                                <input type="date" id="deliveryDate" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <input type="date" name="dueDate" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             </div>
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Delivery Address</label>
@@ -58,11 +63,11 @@
                         <h2 class="text-2xl font-semibold text-gray-800 mb-6">Line Items</h2>
                         
                         <div id="lineItems" class="space-y-4 mb-6">
-                            <div class="line-item p-6 bg-gray-50 rounded-lg border border-gray-200">
+                            <div data-line-item class="line-item p-6 bg-gray-50 rounded-lg border border-gray-200">
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Material</label>
-                                        <select class="material-select w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                                        <select name="materialId" class="material-select w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
                                             <option value="">Select Material</option>
                                             <option value="MAT-001">Premium Cotton Fabric</option>
                                             <option value="MAT-002">Polyester Blend</option>
@@ -73,11 +78,11 @@
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
-                                        <input type="number" class="quantity-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0" min="1" required>
+                                        <input type="number" name="quantity" class="quantity-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0" min="1" required>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Unit Price ($)</label>
-                                        <input type="number" class="unit-price-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0.00" min="0" step="0.01" required>
+                                        <input type="number" name="unitPrice" class="unit-price-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0.00" min="0" step="0.01" required>
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -110,7 +115,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Tax Rate (%)</label>
-                                <input type="number" id="taxRate" value="8" min="0" max="100" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="calculateTotals()">
+                                <input type="number" name="taxRate" value="8" min="0" max="100" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="calculateTotals()">
                             </div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
@@ -150,7 +155,7 @@
                             </div>
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Special Instructions</label>
-                                <textarea id="instructions" rows="3" placeholder="Any special requests or instructions" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                                <textarea name="notes" rows="3" placeholder="Any special requests or instructions" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
                             </div>
                         </div>
                     </div>
@@ -217,10 +222,11 @@
         };
 
         // Set today's date as default
-        document.getElementById('poDate').valueAsDate = new Date();
+        document.querySelector('input[name="poDate"]').valueAsDate = new Date();
+        document.querySelector('input[name="dueDate"]').valueAsDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
         // Supplier selection change
-        document.getElementById('supplier').addEventListener('change', function() {
+        document.querySelector('select[name="supplierId"]').addEventListener('change', function() {
             const data = supplierData[this.value];
             if (data) {
                 document.getElementById('supplierInfo').innerHTML = `
@@ -259,29 +265,28 @@
         }
 
         function addLineItem() {
-            const template = document.querySelector('.line-item');
+            const template = document.querySelector('[data-line-item]');
             const newLine = template.cloneNode(true);
-            newLine.querySelector('.quantity-input').value = '';
-            newLine.querySelector('.unit-price-input').value = '';
-            newLine.querySelector('.notes-input').value = '';
+            newLine.querySelector('[name="quantity"]').value = '';
+            newLine.querySelector('[name="unitPrice"]').value = '';
             newLine.querySelector('.line-total').value = '$0.00';
             document.getElementById('lineItems').appendChild(newLine);
             attachLineItemListeners();
         }
 
         function removeLine(button) {
-            if (document.querySelectorAll('.line-item').length > 1) {
-                button.closest('.line-item').remove();
+            if (document.querySelectorAll('[data-line-item]').length > 1) {
+                button.closest('[data-line-item]').remove();
                 calculateTotals();
             } else {
-                alert('At least one line item is required');
+                notify.error('At least one line item is required');
             }
         }
 
         function attachLineItemListeners() {
-            document.querySelectorAll('.line-item').forEach(item => {
-                const qtyInput = item.querySelector('.quantity-input');
-                const priceInput = item.querySelector('.unit-price-input');
+            document.querySelectorAll('[data-line-item]').forEach(item => {
+                const qtyInput = item.querySelector('[name="quantity"]');
+                const priceInput = item.querySelector('[name="unitPrice"]');
                 qtyInput.addEventListener('change', calculateTotals);
                 priceInput.addEventListener('change', calculateTotals);
             });
@@ -289,15 +294,15 @@
 
         function calculateTotals() {
             let subtotal = 0;
-            document.querySelectorAll('.line-item').forEach(item => {
-                const qty = parseFloat(item.querySelector('.quantity-input').value) || 0;
-                const price = parseFloat(item.querySelector('.unit-price-input').value) || 0;
+            document.querySelectorAll('[data-line-item]').forEach(item => {
+                const qty = parseFloat(item.querySelector('[name="quantity"]').value) || 0;
+                const price = parseFloat(item.querySelector('[name="unitPrice"]').value) || 0;
                 const lineTotal = qty * price;
                 item.querySelector('.line-total').value = '$' + lineTotal.toFixed(2);
                 subtotal += lineTotal;
             });
 
-            const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+            const taxRate = parseFloat(document.querySelector('input[name="taxRate"]').value) || 0;
             const taxAmount = subtotal * (taxRate / 100);
             const grandTotal = subtotal + taxAmount;
 
@@ -308,22 +313,16 @@
 
         function resetForm() {
             document.getElementById('poForm').reset();
-            document.getElementById('poDate').valueAsDate = new Date();
+            document.querySelector('input[name="poDate"]').valueAsDate = new Date();
+            document.querySelector('input[name="dueDate"]').valueAsDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+            validator.clearErrors(document.getElementById('poForm'));
             calculateTotals();
         }
 
         function saveDraft() {
-            alert('Purchase Order draft saved successfully!');
-        }
-
-        function handleSubmit(event) {
-            event.preventDefault();
-            
-            // Generate PO Number
-            const poNumber = 'PO-' + new Date().getFullYear() + '-' + Math.floor(Math.random() * 10000).toString().padStart(5, '0');
-            
-            alert(`Purchase Order ${poNumber} created successfully!\n\nTotal: ${document.getElementById('grandTotal').textContent}`);
-            resetForm();
+            const formData = Utils.getFormData(document.getElementById('poForm'));
+            localStorage.setItem('po-draft', JSON.stringify(formData));
+            notify.success('Purchase Order draft saved to browser storage');
         }
 
         // Initialize

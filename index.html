@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Textile ERP - Dashboard</title>
+    <title>Textile ERP - Enterprise Resource Planning Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
         /* Reset */
         * {
@@ -23,13 +23,15 @@
 
         /* Custom styling for a professional look */
         .nav-link.active-link {
-            background-color: #10b981; 
+            background-color: #10b981;
             color: white;
             box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.1), 0 2px 4px -2px rgba(16, 185, 129, 0.1);
         }
+
         .nav-link.active-link:hover {
-             background-color: #059669;
+            background-color: #059669;
         }
+
         .nav-link {
             display: flex;
             align-items: center;
@@ -40,10 +42,12 @@
             color: #4b5563;
             transition: all 150ms ease-in-out;
         }
+
         .nav-link:hover:not(.active-link) {
             background-color: #f3f4f6;
             color: #10b981;
         }
+
         .nav-toggle {
             cursor: pointer;
             background-color: transparent;
@@ -51,15 +55,19 @@
             width: 100%;
             padding: 0.75rem;
         }
+
         .nav-submenu {
             transition: all 150ms ease-in-out;
         }
+
         .nav-submenu.show {
             display: block !important;
         }
+
         .nav-submenu.hidden {
             display: none;
         }
+
         .nav-sublink {
             display: flex;
             align-items: center;
@@ -71,27 +79,38 @@
             text-decoration: none;
             transition: all 150ms ease-in-out;
         }
+
         .nav-sublink:hover {
             background-color: #f0fdf4;
             color: #10b981;
             padding-left: 1rem;
         }
+
         .toggle-icon {
             transition: transform 300ms ease-in-out;
         }
+
         .toggle-icon.rotate {
-            transform: rotate(90deg);
+            transform: rotate(180deg);
         }
+
         .module-content {
             display: none;
         }
+
         .dashboard-card {
             background-color: white;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             padding: 1.5rem;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
+
+        .dashboard-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+
         .ml-card-icon {
             font-size: 24px;
             width: 50px;
@@ -102,10 +121,20 @@
             justify-content: center;
             color: white;
             margin-bottom: 1rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Button Styling */
+        button {
+            font-family: inherit;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
     </style>
-    
+
     <script>
         tailwind.config = {
             theme: {
@@ -122,9 +151,7 @@
         }
     </script>
 </head>
-
 <body class="bg-gray-50 flex h-screen overflow-hidden">
-
     <!-- Static Sidebar -->
     <aside id="sidebar" class="w-64 bg-white border-r border-gray-200 shadow-xl flex flex-col h-full">
         <!-- Sidebar Header with Logo -->
@@ -137,7 +164,7 @@
                 <p class="text-xs text-gray-500">Enterprise Resource Planning</p>
             </div>
         </div>
-        
+
         <!-- Navigation Menu -->
         <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
             <div class="text-xs font-semibold uppercase text-gray-400 px-3 pt-3 pb-1">Intelligent Hub</div>
@@ -146,7 +173,7 @@
                     <i class="fas fa-brain w-5 h-5"></i>
                     <span>ML Intelligence Hub</span>
                     <span class="ml-auto text-xs font-bold bg-white text-primary-smart px-2 py-0.5 rounded-full">AI</span>
-                    <i class="fas fa-chevron-right w-4 h-4 ml-auto toggle-icon transition-transform duration-200"></i>
+                    <i class="fas fa-chevron-right   ml-auto toggle-icon transition-transform duration-200"></i>
                 </button>
                 <div class="nav-submenu show pl-4 space-y-1">
                     <a href="#" data-operation="ml-demand-forecast" class="nav-sublink operation-link">
@@ -176,7 +203,7 @@
                 <i class="fas fa-tachometer-alt w-5 h-5"></i>
                 <span>ERP Overview</span>
             </a>
-            
+
             <!-- Procurement Module with Submenu -->
             <div class="nav-module-group">
                 <button class="nav-link nav-toggle w-full text-left" data-module="procurement">
@@ -319,9 +346,9 @@
                 </div>
             </div>
         </nav>
-        
+
         <!-- Sidebar Footer with User Profile -->
-        <div class="p-4 border-t border-gray-100">
+        <div class="p-4 border-t border-gray-200 bg-gray-50">
             <div class="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-100 transition duration-150 cursor-pointer">
                 <div class="w-10 h-10 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full flex items-center justify-center text-white font-bold text-sm">
                     U
@@ -341,25 +368,22 @@
     <!-- Main Content Area -->
     <div class="flex-1 flex flex-col overflow-hidden">
         <!-- Page Header -->
-        <header class="bg-white shadow-sm p-4 flex justify-between items-center h-[70px]">
+        <header class="bg-white shadow-sm p-4 flex justify-between items-center h-[70px] border-b border-gray-200">
             <div class="flex items-center space-x-4">
-                <h1 class="text-3xl font-bold text-gray-800" id="page-title">ML Intelligence Hub</h1>
+                <h1 class="text-3xl font-bold text-gray-900" id="page-title">ML Intelligence Hub</h1>
             </div>
             <div class="flex items-center space-x-4">
                 <div class="relative">
-                    <input type="text" placeholder="Search modules, reports, or data..." 
-                           class="py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:ring-primary-smart focus:border-primary-smart transition w-64" />
+                    <input type="text" placeholder="Search modules, reports, or data..." class="py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-smart focus:border-primary-smart transition w-64 text-sm">
                     <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 </div>
             </div>
         </header>
 
         <!-- Main Content -->
-        <main class="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-8 space-y-8">
+        <main class="flex-1 overflow-x-hidden overflow-y-auto p-6 md:p-8 space-y-8 bg-gray-50">
             <!-- ML Hub Content -->
             <section id="ml_hub_content" class="module-content">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">ML Intelligence Hub</h2> -->
-                
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" id="ml-summary-cards">
                     <div class="dashboard-card border-b-4 border-primary-smart">
                         <p class="text-sm font-medium text-gray-500">Demand Forecast Accuracy</p>
@@ -386,15 +410,17 @@
                 <div class="lg:grid lg:grid-cols-3 gap-8 mb-8">
                     <div class="lg:col-span-2 dashboard-card p-6">
                         <h3 class="text-xl font-semibold text-gray-800 mb-4">Demand Forecast (SKU: CFF234)</h3>
-                        <div class="h-80 bg-gray-50 p-4 rounded-lg flex items-center justify-center border border-dashed border-gray-300 mb-4">
-                            <canvas id="demandForecastChart"></canvas>
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4" style="height: 350px; position: relative;">
+                            <canvas id="demandForecastChart" style="display: block; max-height: 100%;" role="img" aria-label="Demand Forecast Chart"></canvas>
                         </div>
                         <div class="p-4 bg-blue-50 border-l-4 border-secondary-data rounded-lg">
-                            <p class="text-sm font-medium text-secondary-data mb-1">Dynamic API Insight (Action Required):</p>
-                            <p class="text-base text-gray-700 font-semibold" id="dynamic-insight">Fetching actionable insight...</p>
+                            <p class="text-sm font-medium text-secondary-data mb-1">Dynamic API Insight (Action
+                                Required):</p>
+                            <p class="text-base text-gray-700 font-semibold" id="dynamic-insight">Fetching actionable
+                                insight...</p>
                         </div>
                     </div>
-                    
+
                     <div class="lg:col-span-1 dashboard-card p-6 mt-8 lg:mt-0">
                         <h3 class="text-xl font-semibold text-gray-800 mb-4">Inventory Optimization</h3>
                         <p class="text-sm text-gray-500 mb-4">Top 3 RF recommendations:</p>
@@ -414,7 +440,8 @@
                             <i class="fas fa-chart-line"></i>
                         </div>
                         <div class="text-lg font-semibold mb-2">Demand Forecasting</div>
-                        <div class="text-sm text-gray-500 mb-4">LSTM-based model for predicting future demand patterns.</div>
+                        <div class="text-sm text-gray-500 mb-4">LSTM-based model for predicting future demand patterns.
+                        </div>
                         <button onclick="loadOperation('ml-demand-forecast')" class="w-full bg-secondary-data text-white p-2 rounded-lg font-medium hover:bg-blue-600 transition">View Forecast</button>
                     </div>
 
@@ -432,7 +459,8 @@
                             <i class="fas fa-search"></i>
                         </div>
                         <div class="text-lg font-semibold mb-2">Defect Detection</div>
-                        <div class="text-sm text-gray-500 mb-4">CNN/Logistic Regression for automated defect classification.</div>
+                        <div class="text-sm text-gray-500 mb-4">CNN/Logistic Regression for automated defect
+                            classification.</div>
                         <button onclick="loadOperation('ml-defect-detection')" class="w-full bg-risk-high text-white p-2 rounded-lg font-medium hover:bg-red-600 transition">Analyze Quality</button>
                     </div>
 
@@ -441,7 +469,8 @@
                             <i class="fas fa-star"></i>
                         </div>
                         <div class="text-lg font-semibold mb-2">Supplier Scoring</div>
-                        <div class="text-sm text-gray-500 mb-4">SVM for supplier performance prediction and evaluation.</div>
+                        <div class="text-sm text-gray-500 mb-4">SVM for supplier performance prediction and evaluation.
+                        </div>
                         <button onclick="loadOperation('ml-supplier-risk')" class="w-full bg-accent-ml text-white p-2 rounded-lg font-medium hover:bg-amber-600 transition">Score Suppliers</button>
                     </div>
                 </div>
@@ -449,8 +478,6 @@
 
             <!-- ERP Overview Content -->
             <section id="erp_overview_content" class="module-content">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">ERP Overview 📊</h2> -->
-                
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <div class="dashboard-card border-l-4 border-secondary-data">
                         <p class="text-sm font-medium text-gray-500">Active Work Orders</p>
@@ -488,16 +515,27 @@
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead>
                                 <tr class="bg-gray-50">
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deadline</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Order ID</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Product</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Quantity</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Deadline</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Status</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#PO-4821</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#PO-4821
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Cotton T-Shirt</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">5,000 units</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Nov 15, 2023</td>
@@ -506,7 +544,8 @@
                                     </td>
                                 </tr>
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#PO-4822</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#PO-4822
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Denim Jeans</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">2,500 units</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Nov 20, 2023</td>
@@ -515,7 +554,8 @@
                                     </td>
                                 </tr>
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#PO-4823</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#PO-4823
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Polyester Jacket</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1,800 units</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Nov 25, 2023</td>
@@ -529,62 +569,76 @@
                 </div>
             </section>
 
-            <!-- Other Module Contents -->
+            <!-- Procurement Module Content -->
             <section id="procurement_content" class="module-content">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Procurement & Suppliers 🤝</h2> -->
                 <div class="p-8 dashboard-card border-l-4 border-indigo-500">
                     <p class="text-xl font-medium text-indigo-700 mb-4">Purchase Order (PO) Management & Risk</p>
-                    <p class="text-gray-600">Manage supplier lifecycle, PO creation, and goods receipt. The ML Supplier Scoring model (SVM) is integrated here to flag high-risk suppliers before order placement.</p>
-                    <p class="mt-4 text-sm text-gray-600 font-semibold">API Endpoint Example: POST /api/procurement/new_po</p>
-                    <button class="mt-4 bg-indigo-500 text-white p-2 rounded-lg text-sm hover:bg-indigo-600 transition">Create New PO</button>
+                    <p class="text-gray-600">Manage supplier lifecycle, PO creation, and goods receipt. The ML Supplier
+                        Scoring model (SVM) is integrated here to flag high-risk suppliers before order placement.</p>
+                    <p class="mt-4 text-sm text-gray-600 font-semibold">API Endpoint Example: POST
+                        /api/procurement/new_po</p>
+                    <button class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 transition font-medium">Create New PO</button>
                 </div>
             </section>
 
+            <!-- Inventory Module Content -->
             <section id="inventory_content" class="module-content">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Inventory & Traceability 📦</h2> -->
                 <div class="p-8 dashboard-card border-l-4 border-yellow-500">
-                    <p class="text-xl font-medium text-yellow-700 mb-4">Raw Material Stock and Batch Traceability</p>
-                    <p class="text-gray-600">View real-time inventory levels, stock lot tracking, and warehouse locations. The **Random Forest Inventory Optimization** runs directly off this module's data, recommending optimal reorder points and quantities.</p>
-                    <p class="mt-4 text-sm text-gray-600 font-semibold">API Endpoint Example: GET /api/inventory/stock_level?sku=RC-S1</p>
-                    <button class="mt-4 bg-yellow-500 text-white p-2 rounded-lg text-sm hover:bg-yellow-600 transition">View Stock Lots</button>
+                    <p class="text-xl font-semibold text-yellow-700 mb-3">Raw Material & Batch Traceability</p>
+                    <p class="text-gray-700 leading-relaxed">View real-time inventory levels, stock lot tracking, and warehouse locations. The Random Forest Inventory Optimization model runs directly off this module's data, recommending optimal reorder points and quantities.</p>
+                    <p class="mt-4 text-sm text-gray-600 font-medium">API Endpoint: GET /api/inventory/stock_level?sku=RC-S1</p>
+                    <button class="mt-4 bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition font-medium text-sm">
+                        <i class="fas fa-box mr-2"></i>View Stock Lots
+                    </button>
                 </div>
             </section>
 
+            <!-- Production & BOM Module Content -->
             <section id="production_content" class="module-content">
-                <h2 class="text-3xl font-bold text-gray-800 mb-6">Production & BOM ⚙️</h2>
+                <h2 class="text-2xl font-semibold text-gray-900 mb-6 pb-3 border-b border-gray-200">Production & Bill-of-Materials</h2>
                 <div class="p-8 dashboard-card border-l-4 border-blue-500">
-                    <p class="text-xl font-medium text-blue-700 mb-4">Work Order and Bill-of-Materials (BOM) Tracking</p>
-                    <p class="text-gray-600">Manages production schedules, tracks work-in-progress (WIP), and defines product BOMs. Production targets are dynamically updated based on the **LSTM Demand Forecast** results.</p>
-                    <p class="mt-4 text-sm text-gray-600 font-semibold">API Endpoint Example: PUT /api/production/update_status?wo_id=WO-045</p>
-                    <button class="mt-4 bg-blue-500 text-white p-2 rounded-lg text-sm hover:bg-blue-600 transition">View Production Schedule</button>
+                    <p class="text-xl font-semibold text-blue-700 mb-3">Work Order and BOM Tracking</p>
+                    <p class="text-gray-700 leading-relaxed">Manages production schedules, tracks work-in-progress (WIP), and defines product BOMs. Production targets are dynamically updated based on the LSTM Demand Forecast results.</p>
+                    <p class="mt-4 text-sm text-gray-600 font-medium">API Endpoint: PUT /api/production/update_status?wo_id=WO-045</p>
+                    <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-medium text-sm">
+                        <i class="fas fa-calendar mr-2"></i>View Production Schedule
+                    </button>
                 </div>
             </section>
 
+            <!-- Quality Control Module Content -->
             <section id="qc_content" class="module-content">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Quality Control ✅</h2> -->
                 <div class="p-8 dashboard-card border-l-4 border-risk-high">
                     <p class="text-xl font-medium text-risk-high mb-4">Defect Logging and Automated Classification</p>
-                    <p class="text-gray-600">Interface for logging defects, viewing images from the line, and consuming real-time classification results from the **CNN/Logistic Regression Defect Detection** ML model.</p>
-                    <p class="mt-4 text-sm text-gray-600 font-semibold">API Endpoint Example: POST /api/qc/log_defect</p>
-                    <button class="mt-4 bg-risk-high text-white p-2 rounded-lg text-sm hover:bg-red-600 transition">Log New Defect</button>
+                    <p class="text-gray-600">Interface for logging defects, viewing images from the line, and consuming
+                        real-time classification results from the **CNN/Logistic Regression Defect Detection** ML model.
+                    </p>
+                    <p class="mt-4 text-sm text-gray-600 font-semibold">API Endpoint Example: POST /api/qc/log_defect
+                    </p>
+                    <button class="mt-4 bg-risk-high text-white p-2 rounded-lg text-sm hover:bg-red-600 transition">Log
+                        New Defect</button>
                 </div>
             </section>
 
+            <!-- Sales Module Content -->
             <section id="sales_content" class="module-content">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Sales & Orders 💰</h2> -->
                 <div class="p-8 dashboard-card border-l-4 border-fuchsia-500">
                     <p class="text-xl font-medium text-fuchsia-700 mb-4">Order Management and Customer Feedback</p>
-                    <p class="text-gray-600">Tracks customer orders and fulfillment rates. It heavily relies on the **Demand Forecasting ML** results to set sales quotas and prioritize high-demand product fulfillment.</p>
-                    <p class="mt-4 text-sm text-gray-600 font-semibold">API Endpoint Example: GET /api/sales/customer_orders?status=pending</p>
-                    <button class="mt-4 bg-fuchsia-500 text-white p-2 rounded-lg text-sm hover:bg-fuchsia-600 transition">Manage Sales Orders</button>
+                    <p class="text-gray-600">Tracks customer orders and fulfillment rates. It heavily relies on the
+                        **Demand Forecasting ML** results to set sales quotas and prioritize high-demand product
+                        fulfillment.</p>
+                    <p class="mt-4 text-sm text-gray-600 font-semibold">API Endpoint Example: GET
+                        /api/sales/customer_orders?status=pending</p>
+                    <button class="mt-4 bg-fuchsia-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-fuchsia-700 transition font-medium">Manage Sales Orders</button>
                 </div>
             </section>
 
             <section id="reports_content" class="module-content">
                 <h2 class="text-3xl font-bold text-gray-800 mb-6">Reports & Analytics 📊</h2>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    <div class="dashboard-card hover:shadow-lg transition duration-200 cursor-pointer" onclick="window.open('frontend/reports/reports-inventory.html')">
+                    <div class="dashboard-card hover:shadow-lg transition duration-200 cursor-pointer"
+                        onclick="window.open('frontend/reports/reports-inventory.html')">
                         <div class="flex items-center mb-4">
                             <div class="ml-card-icon" style="background: #10b981; margin-bottom: 0;">
                                 <i class="fas fa-chart-pie"></i>
@@ -594,11 +648,13 @@
                                 <p class="text-xs text-gray-500">Stock levels & trends</p>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-600 mb-4">Track inventory movements, stock value, and warehouse utilization metrics.</p>
+                        <p class="text-sm text-gray-600 mb-4">Track inventory movements, stock value, and warehouse
+                            utilization metrics.</p>
                         <button class="w-full bg-primary-smart text-white p-2 rounded-lg font-medium hover:bg-emerald-600 transition text-sm">View Report</button>
                     </div>
 
-                    <div class="dashboard-card hover:shadow-lg transition duration-200 cursor-pointer" onclick="window.open('frontend/reports/reports-procurement.html')">
+                    <div class="dashboard-card hover:shadow-lg transition duration-200 cursor-pointer"
+                        onclick="window.open('frontend/reports/reports-procurement.html')">
                         <div class="flex items-center mb-4">
                             <div class="ml-card-icon" style="background: #3b82f6; margin-bottom: 0;">
                                 <i class="fas fa-chart-column"></i>
@@ -608,11 +664,13 @@
                                 <p class="text-xs text-gray-500">PO & supplier data</p>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-600 mb-4">Analyze purchase orders, supplier performance, and procurement costs.</p>
+                        <p class="text-sm text-gray-600 mb-4">Analyze purchase orders, supplier performance, and
+                            procurement costs.</p>
                         <button class="w-full bg-secondary-data text-white p-2 rounded-lg font-medium hover:bg-blue-600 transition text-sm">View Report</button>
                     </div>
 
-                    <div class="dashboard-card hover:shadow-lg transition duration-200 cursor-pointer" onclick="window.open('frontend/reports/reports-production.html')">
+                    <div class="dashboard-card hover:shadow-lg transition duration-200 cursor-pointer"
+                        onclick="window.open('frontend/reports/reports-production.html')">
                         <div class="flex items-center mb-4">
                             <div class="ml-card-icon" style="background: #f59e0b; margin-bottom: 0;">
                                 <i class="fas fa-chart-line"></i>
@@ -622,11 +680,13 @@
                                 <p class="text-xs text-gray-500">Work orders & output</p>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-600 mb-4">Monitor production schedules, efficiency, and work order status.</p>
+                        <p class="text-sm text-gray-600 mb-4">Monitor production schedules, efficiency, and work order
+                            status.</p>
                         <button class="w-full bg-accent-ml text-white p-2 rounded-lg font-medium hover:bg-amber-600 transition text-sm">View Report</button>
                     </div>
 
-                    <div class="dashboard-card hover:shadow-lg transition duration-200 cursor-pointer" onclick="window.open('frontend/reports/reports-quality.html')">
+                    <div class="dashboard-card hover:shadow-lg transition duration-200 cursor-pointer"
+                        onclick="window.open('frontend/reports/reports-quality.html')">
                         <div class="flex items-center mb-4">
                             <div class="ml-card-icon" style="background: #ef4444; margin-bottom: 0;">
                                 <i class="fas fa-chart-bar"></i>
@@ -636,11 +696,13 @@
                                 <p class="text-xs text-gray-500">Defect & QC data</p>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-600 mb-4">Review defect rates, quality metrics, and compliance status.</p>
+                        <p class="text-sm text-gray-600 mb-4">Review defect rates, quality metrics, and compliance
+                            status.</p>
                         <button class="w-full bg-risk-high text-white p-2 rounded-lg font-medium hover:bg-red-600 transition text-sm">View Report</button>
                     </div>
 
-                    <div class="dashboard-card hover:shadow-lg transition duration-200 cursor-pointer" onclick="window.open('frontend/reports/reports-sales.html')">
+                    <div class="dashboard-card hover:shadow-lg transition duration-200 cursor-pointer"
+                        onclick="window.open('frontend/reports/reports-sales.html')">
                         <div class="flex items-center mb-4">
                             <div class="ml-card-icon" style="background: #8b5cf6; margin-bottom: 0;">
                                 <i class="fas fa-chart-area"></i>
@@ -650,16 +712,16 @@
                                 <p class="text-xs text-gray-500">Revenue & orders</p>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-600 mb-4">Track sales performance, customer orders, and revenue trends.</p>
+                        <p class="text-sm text-gray-600 mb-4">Track sales performance, customer orders, and revenue
+                            trends.</p>
                         <button class="w-full bg-purple-600 text-white p-2 rounded-lg font-medium hover:bg-purple-700 transition text-sm">View Report</button>
                     </div>
                 </div>
             </section>
 
             <!-- Embedded Operation Sections -->
-            <!-- PO List -->
+            <!-- PO List Section -->
             <section data-operation-content="po-list" data-operation-title="Purchase Orders List" class="module-content" style="display: none;">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Purchase Orders 📋</h2> -->
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
                     <div class="dashboard-card border-b-4 border-blue-500">
                         <p class="text-sm font-medium text-gray-500">Total POs</p>
@@ -691,7 +753,8 @@
                 <div class="dashboard-card p-6 mb-6">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-xl font-semibold text-gray-800">Recent POs</h3>
-                        <button class="bg-primary-smart text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition">
+                        <button
+                            class="bg-primary-smart text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition">
                             <i class="fas fa-plus"></i> New PO
                         </button>
                     </div>
@@ -699,30 +762,42 @@
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">PO Number</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Supplier</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">PO
+                                        Number</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Supplier
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#PO-2024-001</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Textile Supplier Ltd</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        #PO-2024-001</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Textile Supplier Ltd
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Dec 1, 2024</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">$15,000</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">$15,000
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Approved</span>
+                                        <span
+                                            class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Approved</span>
                                     </td>
                                 </tr>
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#PO-2024-002</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        #PO-2024-002</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Fabric Wholesale</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Dec 2, 2024</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">$8,500</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">$8,500
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Draft</span>
+                                        <span
+                                            class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Draft</span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -731,9 +806,15 @@
                 </div>
             </section>
 
-            <!-- Materials -->
+            <!-- PO Details -->
+            <section data-operation-content="po-details" data-operation-title="Purchase Order Details"
+                class="module-content" style="display: none;">
+                <iframe src="frontend/procurement/po-details.html"
+                    style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
+            </section>
+
+            <!-- Materials Section -->
             <section data-operation-content="materials" data-operation-title="Material Master" class="module-content" style="display: none;">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Materials 📦</h2> -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                     <div class="dashboard-card border-b-4 border-blue-500">
                         <p class="text-sm font-medium text-gray-500">Total Materials</p>
@@ -756,7 +837,8 @@
                 <div class="dashboard-card p-6">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-xl font-semibold text-gray-800">Material Inventory</h3>
-                        <button class="bg-primary-smart text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition">
+                        <button
+                            class="bg-primary-smart text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition">
                             <i class="fas fa-plus"></i> Add Material
                         </button>
                     </div>
@@ -764,21 +846,29 @@
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Material Code</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Unit Price</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Material
+                                        Code</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                        Description</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Unit
+                                        Price</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">MAT-001</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">MAT-001
+                                    </td>
                                     <td class="px-6 py-4 text-sm text-gray-700">Premium Cotton Fabric</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">500 m</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold">$12/m</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">In Stock</span>
+                                        <span
+                                            class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">In
+                                            Stock</span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -787,101 +877,114 @@
                 </div>
             </section>
 
-            <!-- Other operation sections (shortened for brevity) -->
+            <!-- Create Purchase Order Section -->
             <section data-operation-content="create-po" data-operation-title="Create Purchase Order" class="module-content" style="display: none;">
-                <iframe src="frontend/procurement/create-po.html" style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
+                <iframe src="frontend/procurement/create-po.html"
+                    style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
 
-            <section data-operation-content="supplier-list" data-operation-title="Supplier List" class="module-content" style="display: none;">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Supplier Management</h2> -->
-                <div class="dashboard-card p-6">
-                    <p class="text-gray-600 mb-4">Supplier List - Coming Soon</p>
-                </div>
+            <section data-operation-content="supplier-list" data-operation-title="Supplier List" class="module-content"
+                style="display: none;">
+                <iframe src="frontend/procurement/supplier-list.html"
+                    style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
 
-            <section data-operation-content="stock-dashboard" data-operation-title="Stock Dashboard" class="module-content" style="display: none;">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Stock Dashboard</h2> -->
-                <div class="dashboard-card p-6">
-                    <p class="text-gray-600 mb-4">Stock Dashboard - Coming Soon</p>
-                </div>
+            <section data-operation-content="stock-dashboard" data-operation-title="Stock Dashboard"
+                class="module-content" style="display: none;">
+                <iframe src="frontend/inventory/stock-dashboard.html"
+                    style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
 
-            <section data-operation-content="work-orders" data-operation-title="Work Orders" class="module-content" style="display: none;">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Work Orders ⚙️</h2> -->
-                <div class="dashboard-card p-6">
-                    <p class="text-gray-600 mb-4">Work Orders - Coming Soon</p>
-                </div>
+            <section data-operation-content="work-orders" data-operation-title="Work Orders" class="module-content"
+                style="display: none;">
+                <iframe src="frontend/production/work-orders.html"
+                    style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
 
-            <section data-operation-content="create-work-order" data-operation-title="Create Work Order" class="module-content" style="display: none;">
-                <iframe src="frontend/production/create-work-order.html" style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
+            <section data-operation-content="create-work-order" data-operation-title="Create Work Order"
+                class="module-content" style="display: none;">
+                <iframe src="frontend/production/create-work-order.html"
+                    style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
 
-            <section data-operation-content="production-log" data-operation-title="Production Log" class="module-content" style="display: none;">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Production Log</h2> -->
-                <div class="dashboard-card p-6">
-                    <p class="text-gray-600 mb-4">Production Log - Coming Soon</p>
-                </div>
+            <section data-operation-content="production-log" data-operation-title="Production Log"
+                class="module-content" style="display: none;">
+                <iframe src="frontend/production/production-log.html"
+                    style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
 
-            <section data-operation-content="qc-form" data-operation-title="Quality Control Form" class="module-content" style="display: none;">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Quality Control Form ✅</h2> -->
-                <div class="dashboard-card p-6">
-                    <p class="text-gray-600 mb-4">QC Form - Coming Soon</p>
-                </div>
+            <section data-operation-content="qc-form" data-operation-title="Quality Control Form" class="module-content"
+                style="display: none;">
+                <iframe src="frontend/quality/qc-form.html"
+                    style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
 
-            <section data-operation-content="sales-orders" data-operation-title="Sales Orders" class="module-content" style="display: none;">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Sales Orders 🛒</h2> -->
-                <div class="dashboard-card p-6">
-                    <p class="text-gray-600 mb-4">Sales Orders - Coming Soon</p>
-                </div>
+            <section data-operation-content="sales-orders" data-operation-title="Sales Orders" class="module-content"
+                style="display: none;">
+                <iframe src="frontend/sales/sales-orders.html"
+                    style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
 
-            <section data-operation-content="create-sales-order" data-operation-title="Create Sales Order" class="module-content" style="display: none;">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Create Sales Order</h2> -->
-                <div class="dashboard-card p-6">
-                    <p class="text-gray-600 mb-4">Create Sales Order Form - Coming Soon</p>
-                </div>
+            <section data-operation-content="create-sales-order" data-operation-title="Create Sales Order"
+                class="module-content" style="display: none;">
+                <iframe src="frontend/sales/create-sales-order.html"
+                    style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
 
-            <section data-operation-content="customers" data-operation-title="Customer Management" class="module-content" style="display: none;">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Customers</h2> -->
-                <div class="dashboard-card p-6">
-                    <p class="text-gray-600 mb-4">Customer List - Coming Soon</p>
-                </div>
+            <section data-operation-content="customers" data-operation-title="Customer Management"
+                class="module-content" style="display: none;">
+                <iframe src="frontend/sales/customers.html"
+                    style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
-            <section data-operation-content="create-customer" data-operation-title="Create Customer" class="module-content" style="display: none;">
-                <iframe src="frontend/sales/create-customer.html" style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
+            <section data-operation-content="create-customer" data-operation-title="Create Customer"
+                class="module-content" style="display: none;">
+                <iframe src="frontend/sales/create-customer.html"
+                    style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
 
             <!-- ML Model Sections -->
-            <section data-operation-content="ml-demand-forecast" data-operation-title="Demand Forecasting" class="module-content" style="display: none;">
-                <iframe src="frontend/ml_models/demand_forecasting/index.html" style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
+            <section data-operation-content="ml-demand-forecast" data-operation-title="Demand Forecasting"
+                class="module-content" style="display: none;">
+                <iframe src="frontend/ml_models/demand_forecasting/index.html"
+                    style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
 
-            <section data-operation-content="ml-inventory-opt" data-operation-title="Inventory Optimization" class="module-content" style="display: none;">
-                <iframe src="frontend/ml_models/inventory_optimization/index.html" style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
+            <section data-operation-content="ml-inventory-opt" data-operation-title="Inventory Optimization"
+                class="module-content" style="display: none;">
+                <iframe src="frontend/ml_models/inventory_optimization/index.html"
+                    style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
 
-            <section data-operation-content="ml-supplier-risk" data-operation-title="Supplier Risk Scoring" class="module-content" style="display: none;">
-                <iframe src="frontend/ml_models/supplier_risk_scoring/index.html" style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
+            <section data-operation-content="ml-supplier-risk" data-operation-title="Supplier Risk Scoring"
+                class="module-content" style="display: none;">
+                <iframe src="frontend/ml_models/supplier_risk_scoring/index.html"
+                    style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
 
-            <section data-operation-content="ml-defect-detection" data-operation-title="Defect Detection" class="module-content" style="display: none;">
-                <iframe src="frontend/ml_models/defect_detection/index.html" style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
+            <section data-operation-content="ml-defect-detection" data-operation-title="Defect Detection"
+                class="module-content" style="display: none;">
+                <iframe src="frontend/ml_models/defect_detection/index.html"
+                    style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
 
-            <section data-operation-content="ml-quality-predict" data-operation-title="Quality Prediction" class="module-content" style="display: none;">
-                <iframe src="frontend/ml_models/quality_prediction/index.html" style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
+            <section data-operation-content="ml-quality-predict" data-operation-title="Quality Prediction"
+                class="module-content" style="display: none;">
+                <iframe src="frontend/ml_models/quality_prediction/index.html"
+                    style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
         </main>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="frontend/js/erp-data-manager.js"></script>
+    <script src="frontend/js/mock-backend.js"></script>
+    <script src="frontend/js/erp-helper.js"></script>
+    <script src="frontend/js/erp-utilities.js"></script>
+    <script src="frontend/js/erp-handlers.js"></script>
+
     <script>
         const API_BASE_URL = 'http://127.0.0.1:5000/api/ml'; // Flask API base URL
-        
+
         // --- Navigation Logic ---
         const moduleMap = {
             'ml_hub': { title: 'ML Intelligence Hub', contentId: 'ml_hub_content' },
@@ -893,7 +996,7 @@
             'sales': { title: 'Sales & Orders', contentId: 'sales_content' },
             'reports': { title: 'Reports', contentId: 'reports_content' }
         };
-        
+
         const pageTitle = document.getElementById('page-title');
         const contentSections = document.querySelectorAll('.module-content');
         const navLinks = document.querySelectorAll('.nav-link');
@@ -907,7 +1010,7 @@
                 const moduleGroup = toggle.closest('.nav-module-group');
                 const submenu = moduleGroup.querySelector('.nav-submenu');
                 const toggleIcon = toggle.querySelector('.toggle-icon');
-                
+
                 // Close other submenus
                 document.querySelectorAll('.nav-submenu').forEach(menu => {
                     if (menu !== submenu) {
@@ -917,7 +1020,7 @@
                         icon.classList.remove('rotate');
                     }
                 });
-                
+
                 // Toggle current submenu
                 submenu.classList.toggle('hidden');
                 submenu.classList.toggle('show');
@@ -968,7 +1071,7 @@
             // Hide all module contents and operation contents
             contentSections.forEach(section => section.style.display = 'none');
             document.querySelectorAll('[data-operation-content]').forEach(el => el.style.display = 'none');
-            
+
             // Show the requested operation
             const operationContent = document.querySelector(`[data-operation-content="${operationId}"]`);
             if (operationContent) {
@@ -1030,11 +1133,11 @@
         async function fetchInventoryOptimization(showAlert = false) {
             const inventoryList = document.getElementById('inventory-list');
             inventoryList.innerHTML = `<li class="p-3 bg-gray-50 rounded-lg text-gray-500 flex items-center"><i class="fas fa-spinner fa-spin mr-2"></i> Fetching Optimization Data...</li>`;
-            
+
             try {
                 const response = await fetch(`${API_BASE_URL}/inventory_optimization`);
                 const data = await response.json();
-                
+
                 inventoryList.innerHTML = data.map(item => {
                     let badgeClass, statusColor;
                     if (item.status === 'CRITICAL LOW') {
@@ -1084,12 +1187,12 @@
             try {
                 const response = await fetch(`${API_BASE_URL}/defect_classification`);
                 const data = await response.json();
-                
+
                 let defectAlert = `Quality Control Summary:\n\nTotal Defects Found: ${data.total_defects}\nDefect Rate: ${data.defect_rate}\nModel Confidence: ${data.model_confidence}\n\nClassification Breakdown:\n`;
                 for (const [key, value] of Object.entries(data.classifications)) {
                     defectAlert += `- ${key}: ${value} instances\n`;
                 }
-                
+
                 alert(defectAlert);
             } catch (error) {
                 alert('Error fetching defect classification data.');
@@ -1110,12 +1213,13 @@
             if (demandChart) {
                 demandChart.destroy();
             }
-            
+
+            const chartContainer = document.getElementById('demandForecastChart').parentElement;
             const ctx = document.getElementById('demandForecastChart').getContext('2d');
             const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov (F)', 'Dec (F)'];
             const actualData = [120, 150, 130, 180, 210, 240, 200, 230, 250, 280, 300, 320];
             const forecastData = [null, null, null, null, null, null, null, null, null, 280, 340, 380];
-            
+
             demandChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -1150,15 +1254,22 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'top' },
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: { size: 12 },
+                                padding: 15
+                            }
+                        },
                         title: { display: false }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Units Sold (x100)'
+                            ticks: {
+                                callback: function(value) {
+                                    return value + ' units';
+                                }
                             }
                         }
                     }

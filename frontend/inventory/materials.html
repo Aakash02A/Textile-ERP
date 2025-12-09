@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -18,6 +18,11 @@
         .category-b { background: #fecaca; color: #7f1d1d; }
         .category-c { background: #fef3c7; color: #92400e; }
     </style>
+    <script src="../../js/erp-data-manager.js"></script>
+    <script src="../../js/mock-backend.js"></script>
+    <script src="../../js/erp-helper.js"></script>
+    <script src="../../js/erp-utilities.js"></script>
+    <script src="../../js/erp-handlers.js"></script>
 </head>
 <body class="bg-gray-50">
     <div class="p-8">
@@ -111,5 +116,23 @@
             </table>
         </div>
     </div>
+
+    <script>
+        async function initializeMaterials() {
+            try {
+                LoadingManager.showOverlay('Loading materials...');
+                const materials = await erp.loadInventory();
+                renderMaterialsTable(materials);
+                LoadingManager.hideOverlay();
+            } catch (error) {
+                LoadingManager.hideOverlay();
+                notify.error(`Error loading materials: ${error.message}`);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeMaterials();
+        });
+    </script>
 </body>
 </html>
