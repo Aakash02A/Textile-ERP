@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quality Control Form - Textile ERP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="p-8 max-w-2xl">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Quality Control Form</h1>
+        <p class="text-gray-600 mb-8">Log and track quality issues for textile production</p>
+
+        <form class="bg-white rounded-lg shadow p-8 space-y-6">
+            <!-- Work Order -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Work Order *</label>
+                <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option>Select Work Order</option>
+                    <option>WO-001 - Premium Cotton Shirt</option>
+                    <option>WO-002 - Polyester Blend Fabric</option>
+                    <option>WO-003 - Wool Blend Sweater</option>
+                </select>
+            </div>
+
+            <!-- Quality Parameters -->
+            <div class="border-t pt-6">
+                <h2 class="text-lg font-bold text-gray-800 mb-4">Quality Parameters</h2>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Color Consistency</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option>Pass</option>
+                                <option>Warning</option>
+                                <option>Fail</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Strength</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option>Pass</option>
+                                <option>Warning</option>
+                                <option>Fail</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Shrinkage</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option>Pass</option>
+                                <option>Warning</option>
+                                <option>Fail</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Pilling</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option>Pass</option>
+                                <option>Warning</option>
+                                <option>Fail</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Defects -->
+            <div class="border-t pt-6">
+                <h2 class="text-lg font-bold text-gray-800 mb-4">Detected Defects</h2>
+                <div class="space-y-3">
+                    <label class="flex items-center">
+                        <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600">
+                        <span class="ml-3 text-gray-700">Color bleeding</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600">
+                        <span class="ml-3 text-gray-700">Holes or tears</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600">
+                        <span class="ml-3 text-gray-700">Stains</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600">
+                        <span class="ml-3 text-gray-700">Weaving defects</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600">
+                        <span class="ml-3 text-gray-700">Size variations</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="border-t pt-6">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Notes/Comments</label>
+                <textarea rows="4" placeholder="Describe any issues found..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+
+            <!-- Submission -->
+            <div class="border-t pt-6 flex gap-4">
+                <button type="submit" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-medium">
+                    <i class="fas fa-check mr-2"></i> Submit QC Report
+                </button>
+                <button type="reset" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition font-medium">
+                    <i class="fas fa-redo mr-2"></i> Clear
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

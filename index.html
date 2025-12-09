@@ -141,11 +141,36 @@
         <!-- Navigation Menu -->
         <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
             <div class="text-xs font-semibold uppercase text-gray-400 px-3 pt-3 pb-1">Intelligent Hub</div>
-            <a href="#" data-module="ml_hub" class="nav-link active-link">
-                <i class="fas fa-brain w-5 h-5"></i>
-                <span>ML Intelligence Hub</span>
-                <span class="ml-auto text-xs font-bold bg-white text-primary-smart px-2 py-0.5 rounded-full">AI</span>
-            </a>
+            <div class="nav-module-group">
+                <button class="nav-link nav-toggle w-full text-left active-link" data-module="ml_hub">
+                    <i class="fas fa-brain w-5 h-5"></i>
+                    <span>ML Intelligence Hub</span>
+                    <span class="ml-auto text-xs font-bold bg-white text-primary-smart px-2 py-0.5 rounded-full">AI</span>
+                    <i class="fas fa-chevron-right w-4 h-4 ml-auto toggle-icon transition-transform duration-200"></i>
+                </button>
+                <div class="nav-submenu show pl-4 space-y-1">
+                    <a href="#" data-operation="ml-demand-forecast" class="nav-sublink operation-link">
+                        <i class="fas fa-chart-line w-4 h-4"></i>
+                        <span>Demand Forecasting</span>
+                    </a>
+                    <a href="#" data-operation="ml-inventory-opt" class="nav-sublink operation-link">
+                        <i class="fas fa-boxes w-4 h-4"></i>
+                        <span>Inventory Optimization</span>
+                    </a>
+                    <a href="#" data-operation="ml-supplier-risk" class="nav-sublink operation-link">
+                        <i class="fas fa-alert-circle w-4 h-4"></i>
+                        <span>Supplier Risk Scoring</span>
+                    </a>
+                    <a href="#" data-operation="ml-defect-detection" class="nav-sublink operation-link">
+                        <i class="fas fa-camera w-4 h-4"></i>
+                        <span>Defect Detection</span>
+                    </a>
+                    <a href="#" data-operation="ml-quality-predict" class="nav-sublink operation-link">
+                        <i class="fas fa-microscope w-4 h-4"></i>
+                        <span>Quality Prediction</span>
+                    </a>
+                </div>
+            </div>
             <div class="text-xs font-semibold uppercase text-gray-400 px-3 pt-6 pb-1">Core Modules</div>
             <a href="#" data-module="erp_overview" class="nav-link">
                 <i class="fas fa-tachometer-alt w-5 h-5"></i>
@@ -390,7 +415,7 @@
                         </div>
                         <div class="text-lg font-semibold mb-2">Demand Forecasting</div>
                         <div class="text-sm text-gray-500 mb-4">LSTM-based model for predicting future demand patterns.</div>
-                        <button class="w-full bg-secondary-data text-white p-2 rounded-lg font-medium hover:bg-blue-600 transition">View Forecast</button>
+                        <button onclick="loadOperation('ml-demand-forecast')" class="w-full bg-secondary-data text-white p-2 rounded-lg font-medium hover:bg-blue-600 transition">View Forecast</button>
                     </div>
 
                     <div class="dashboard-card flex flex-col items-center">
@@ -399,7 +424,7 @@
                         </div>
                         <div class="text-lg font-semibold mb-2">Inventory Optimization</div>
                         <div class="text-sm text-gray-500 mb-4">Random Forest Regression for optimal stock levels.</div>
-                        <button class="w-full bg-primary-smart text-white p-2 rounded-lg font-medium hover:bg-emerald-600 transition">Optimize Now</button>
+                        <button onclick="loadOperation('ml-inventory-opt')" class="w-full bg-primary-smart text-white p-2 rounded-lg font-medium hover:bg-emerald-600 transition">Optimize Now</button>
                     </div>
 
                     <div class="dashboard-card flex flex-col items-center">
@@ -408,7 +433,7 @@
                         </div>
                         <div class="text-lg font-semibold mb-2">Defect Detection</div>
                         <div class="text-sm text-gray-500 mb-4">CNN/Logistic Regression for automated defect classification.</div>
-                        <button onclick="showDefectData()" class="w-full bg-risk-high text-white p-2 rounded-lg font-medium hover:bg-red-600 transition">Analyze Quality</button>
+                        <button onclick="loadOperation('ml-defect-detection')" class="w-full bg-risk-high text-white p-2 rounded-lg font-medium hover:bg-red-600 transition">Analyze Quality</button>
                     </div>
 
                     <div class="dashboard-card flex flex-col items-center">
@@ -417,7 +442,7 @@
                         </div>
                         <div class="text-lg font-semibold mb-2">Supplier Scoring</div>
                         <div class="text-sm text-gray-500 mb-4">SVM for supplier performance prediction and evaluation.</div>
-                        <button onclick="fetchSupplierRisk()" class="w-full bg-accent-ml text-white p-2 rounded-lg font-medium hover:bg-amber-600 transition">Score Suppliers</button>
+                        <button onclick="loadOperation('ml-supplier-risk')" class="w-full bg-accent-ml text-white p-2 rounded-lg font-medium hover:bg-amber-600 transition">Score Suppliers</button>
                     </div>
                 </div>
             </section>
@@ -764,10 +789,7 @@
 
             <!-- Other operation sections (shortened for brevity) -->
             <section data-operation-content="create-po" data-operation-title="Create Purchase Order" class="module-content" style="display: none;">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Create Purchase Order</h2> -->
-                <div class="dashboard-card p-6">
-                    <p class="text-gray-600 mb-4">Create PO Form - Coming Soon</p>
-                </div>
+                <iframe src="frontend/procurement/create-po.html" style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
 
             <section data-operation-content="supplier-list" data-operation-title="Supplier List" class="module-content" style="display: none;">
@@ -792,10 +814,7 @@
             </section>
 
             <section data-operation-content="create-work-order" data-operation-title="Create Work Order" class="module-content" style="display: none;">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Create Work Order</h2> -->
-                <div class="dashboard-card p-6">
-                    <p class="text-gray-600 mb-4">Create Work Order Form - Coming Soon</p>
-                </div>
+                <iframe src="frontend/production/create-work-order.html" style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
 
             <section data-operation-content="production-log" data-operation-title="Production Log" class="module-content" style="display: none;">
@@ -832,12 +851,29 @@
                     <p class="text-gray-600 mb-4">Customer List - Coming Soon</p>
                 </div>
             </section>
-
             <section data-operation-content="create-customer" data-operation-title="Create Customer" class="module-content" style="display: none;">
-                <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Create Customer</h2> -->
-                <div class="dashboard-card p-6">
-                    <p class="text-gray-600 mb-4">Create Customer Form - Coming Soon</p>
-                </div>
+                <iframe src="frontend/sales/create-customer.html" style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
+            </section>
+
+            <!-- ML Model Sections -->
+            <section data-operation-content="ml-demand-forecast" data-operation-title="Demand Forecasting" class="module-content" style="display: none;">
+                <iframe src="frontend/ml_models/demand_forecasting/index.html" style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
+            </section>
+
+            <section data-operation-content="ml-inventory-opt" data-operation-title="Inventory Optimization" class="module-content" style="display: none;">
+                <iframe src="frontend/ml_models/inventory_optimization/index.html" style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
+            </section>
+
+            <section data-operation-content="ml-supplier-risk" data-operation-title="Supplier Risk Scoring" class="module-content" style="display: none;">
+                <iframe src="frontend/ml_models/supplier_risk_scoring/index.html" style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
+            </section>
+
+            <section data-operation-content="ml-defect-detection" data-operation-title="Defect Detection" class="module-content" style="display: none;">
+                <iframe src="frontend/ml_models/defect_detection/index.html" style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
+            </section>
+
+            <section data-operation-content="ml-quality-predict" data-operation-title="Quality Prediction" class="module-content" style="display: none;">
+                <iframe src="frontend/ml_models/quality_prediction/index.html" style="width: 100%; height: calc(100vh - 150px); border: none; border-radius: 8px;"></iframe>
             </section>
         </main>
     </div>

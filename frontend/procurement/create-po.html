@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Purchase Order - Textile ERP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="p-8">
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Create Purchase Order</h1>
+            <p class="text-gray-600">Create a new purchase order for supplier procurement</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Form -->
+            <div class="lg:col-span-2 bg-white rounded-lg shadow p-8">
+                <form id="poForm" onsubmit="handleSubmit(event)">
+                    <!-- Order Header Section -->
+                    <div class="mb-8 pb-8 border-b">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Order Header</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">PO Number</label>
+                                <input type="text" id="poNumber" placeholder="Auto-generated" disabled class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">PO Date</label>
+                                <input type="date" id="poDate" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Supplier <span class="text-red-500">*</span></label>
+                                <select id="supplier" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Select Supplier</option>
+                                    <option value="SUP-001">Textile Supplier Ltd</option>
+                                    <option value="SUP-002">Fabric Wholesale Inc</option>
+                                    <option value="SUP-003">Premium Fabrics Co</option>
+                                    <option value="SUP-004">Global Textiles</option>
+                                    <option value="SUP-005">Eco Fabrics Ltd</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Required Delivery Date</label>
+                                <input type="date" id="deliveryDate" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Delivery Address</label>
+                                <textarea id="deliveryAddress" rows="3" placeholder="Enter delivery address" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Line Items Section -->
+                    <div class="mb-8 pb-8 border-b">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Line Items</h2>
+                        
+                        <div id="lineItems" class="space-y-4 mb-6">
+                            <div class="line-item p-6 bg-gray-50 rounded-lg border border-gray-200">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Material</label>
+                                        <select class="material-select w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                                            <option value="">Select Material</option>
+                                            <option value="MAT-001">Premium Cotton Fabric</option>
+                                            <option value="MAT-002">Polyester Blend</option>
+                                            <option value="MAT-003">Silk Thread</option>
+                                            <option value="MAT-004">Denim Fabric</option>
+                                            <option value="MAT-005">Button - Medium</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                                        <input type="number" class="quantity-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0" min="1" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Unit Price ($)</label>
+                                        <input type="number" class="unit-price-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0.00" min="0" step="0.01" required>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                                        <input type="text" class="notes-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Special instructions">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Line Total</label>
+                                        <input type="text" class="line-total w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600" disabled placeholder="$0.00">
+                                    </div>
+                                </div>
+                                <button type="button" class="remove-line-btn text-red-600 hover:text-red-700 font-medium text-sm" onclick="removeLine(this)">
+                                    <i class="fas fa-trash mr-1"></i> Remove Line
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="button" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition font-medium" onclick="addLineItem()">
+                            <i class="fas fa-plus mr-2"></i> Add Line Item
+                        </button>
+                    </div>
+
+                    <!-- Summary Section -->
+                    <div class="mb-8 pb-8 border-b">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="p-6 bg-blue-50 rounded-lg border border-blue-200">
+                                <p class="text-gray-600 text-sm font-medium mb-2">Subtotal</p>
+                                <p class="text-3xl font-bold text-blue-600" id="subtotal">$0.00</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tax Rate (%)</label>
+                                <input type="number" id="taxRate" value="8" min="0" max="100" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="calculateTotals()">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            <div class="p-6 bg-yellow-50 rounded-lg border border-yellow-200">
+                                <p class="text-gray-600 text-sm font-medium mb-2">Tax Amount</p>
+                                <p class="text-2xl font-bold text-yellow-600" id="taxAmount">$0.00</p>
+                            </div>
+                            <div class="p-6 bg-green-50 rounded-lg border border-green-200">
+                                <p class="text-gray-600 text-sm font-medium mb-2">Grand Total</p>
+                                <p class="text-3xl font-bold text-green-600" id="grandTotal">$0.00</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Terms & Conditions -->
+                    <div class="mb-8 pb-8 border-b">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Terms & Conditions</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Payment Terms</label>
+                                <select id="paymentTerms" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="NET30">Net 30</option>
+                                    <option value="NET60">Net 60</option>
+                                    <option value="NET90">Net 90</option>
+                                    <option value="COD">Cash on Delivery</option>
+                                    <option value="PREPAID">Prepaid</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Freight Terms</label>
+                                <select id="freightTerms" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="FOB">FOB</option>
+                                    <option value="CIF">CIF</option>
+                                    <option value="PREPAID">Prepaid</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Special Instructions</label>
+                                <textarea id="instructions" rows="3" placeholder="Any special requests or instructions" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="flex gap-4">
+                        <button type="submit" class="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition font-semibold flex items-center gap-2">
+                            <i class="fas fa-save"></i> Create PO
+                        </button>
+                        <button type="button" class="bg-gray-300 text-gray-700 px-8 py-3 rounded-lg hover:bg-gray-400 transition font-semibold" onclick="resetForm()">
+                            <i class="fas fa-redo"></i> Clear Form
+                        </button>
+                        <button type="button" class="bg-blue-100 text-blue-700 px-8 py-3 rounded-lg hover:bg-blue-200 transition font-semibold" onclick="saveDraft()">
+                            <i class="fas fa-file-download"></i> Save Draft
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Sidebar - Quick Info & Risk Assessment -->
+            <div class="space-y-6">
+                <!-- Supplier Info Card -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Supplier Information</h3>
+                    <div id="supplierInfo" class="text-gray-600 text-sm space-y-3">
+                        <p class="text-gray-500">Select a supplier to view details</p>
+                    </div>
+                </div>
+
+                <!-- Risk Assessment -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Risk Assessment</h3>
+                        <span class="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-semibold">ML Powered</span>
+                    </div>
+                    <div id="riskAssessment" class="text-gray-600 text-sm">
+                        <p class="text-gray-500">Complete the form to assess risk</p>
+                    </div>
+                </div>
+
+                <!-- Helpful Tips -->
+                <div class="bg-blue-50 rounded-lg border border-blue-200 p-6">
+                    <h3 class="font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                        <i class="fas fa-lightbulb text-yellow-500"></i> Tips
+                    </h3>
+                    <ul class="text-xs text-blue-800 space-y-2">
+                        <li><i class="fas fa-check text-green-500 mr-2"></i> Review supplier ratings before creating</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i> Verify delivery address accuracy</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i> Check material availability</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i> Confirm payment terms with finance</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const supplierData = {
+            'SUP-001': { name: 'Textile Supplier Ltd', rating: 4.5, deliveryTime: '5-7 days', risk: 'Low' },
+            'SUP-002': { name: 'Fabric Wholesale Inc', rating: 4.0, deliveryTime: '7-10 days', risk: 'Low' },
+            'SUP-003': { name: 'Premium Fabrics Co', rating: 4.8, deliveryTime: '3-5 days', risk: 'Very Low' },
+            'SUP-004': { name: 'Global Textiles', rating: 3.5, deliveryTime: '14-21 days', risk: 'Medium' },
+            'SUP-005': { name: 'Eco Fabrics Ltd', rating: 4.2, deliveryTime: '10-14 days', risk: 'Low' }
+        };
+
+        // Set today's date as default
+        document.getElementById('poDate').valueAsDate = new Date();
+
+        // Supplier selection change
+        document.getElementById('supplier').addEventListener('change', function() {
+            const data = supplierData[this.value];
+            if (data) {
+                document.getElementById('supplierInfo').innerHTML = `
+                    <div>
+                        <p class="font-semibold text-gray-800">${data.name}</p>
+                        <p class="text-yellow-600"><i class="fas fa-star"></i> Rating: ${data.rating}/5.0</p>
+                        <p>Delivery: ${data.deliveryTime}</p>
+                    </div>
+                `;
+                updateRiskAssessment(data.risk);
+            }
+        });
+
+        function updateRiskAssessment(risk) {
+            let riskColor, riskIcon;
+            if (risk === 'Very Low') {
+                riskColor = 'text-green-600';
+                riskIcon = 'fa-check-circle';
+            } else if (risk === 'Low') {
+                riskColor = 'text-green-500';
+                riskIcon = 'fa-check-circle';
+            } else if (risk === 'Medium') {
+                riskColor = 'text-yellow-600';
+                riskIcon = 'fa-exclamation-circle';
+            } else {
+                riskColor = 'text-red-600';
+                riskIcon = 'fa-times-circle';
+            }
+            
+            document.getElementById('riskAssessment').innerHTML = `
+                <p class="${riskColor} font-semibold flex items-center gap-2">
+                    <i class="fas ${riskIcon}"></i> Risk Level: ${risk}
+                </p>
+                <p class="text-gray-600 mt-2 text-xs">Based on ML supplier scoring model</p>
+            `;
+        }
+
+        function addLineItem() {
+            const template = document.querySelector('.line-item');
+            const newLine = template.cloneNode(true);
+            newLine.querySelector('.quantity-input').value = '';
+            newLine.querySelector('.unit-price-input').value = '';
+            newLine.querySelector('.notes-input').value = '';
+            newLine.querySelector('.line-total').value = '$0.00';
+            document.getElementById('lineItems').appendChild(newLine);
+            attachLineItemListeners();
+        }
+
+        function removeLine(button) {
+            if (document.querySelectorAll('.line-item').length > 1) {
+                button.closest('.line-item').remove();
+                calculateTotals();
+            } else {
+                alert('At least one line item is required');
+            }
+        }
+
+        function attachLineItemListeners() {
+            document.querySelectorAll('.line-item').forEach(item => {
+                const qtyInput = item.querySelector('.quantity-input');
+                const priceInput = item.querySelector('.unit-price-input');
+                qtyInput.addEventListener('change', calculateTotals);
+                priceInput.addEventListener('change', calculateTotals);
+            });
+        }
+
+        function calculateTotals() {
+            let subtotal = 0;
+            document.querySelectorAll('.line-item').forEach(item => {
+                const qty = parseFloat(item.querySelector('.quantity-input').value) || 0;
+                const price = parseFloat(item.querySelector('.unit-price-input').value) || 0;
+                const lineTotal = qty * price;
+                item.querySelector('.line-total').value = '$' + lineTotal.toFixed(2);
+                subtotal += lineTotal;
+            });
+
+            const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+            const taxAmount = subtotal * (taxRate / 100);
+            const grandTotal = subtotal + taxAmount;
+
+            document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
+            document.getElementById('taxAmount').textContent = '$' + taxAmount.toFixed(2);
+            document.getElementById('grandTotal').textContent = '$' + grandTotal.toFixed(2);
+        }
+
+        function resetForm() {
+            document.getElementById('poForm').reset();
+            document.getElementById('poDate').valueAsDate = new Date();
+            calculateTotals();
+        }
+
+        function saveDraft() {
+            alert('Purchase Order draft saved successfully!');
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            // Generate PO Number
+            const poNumber = 'PO-' + new Date().getFullYear() + '-' + Math.floor(Math.random() * 10000).toString().padStart(5, '0');
+            
+            alert(`Purchase Order ${poNumber} created successfully!\n\nTotal: ${document.getElementById('grandTotal').textContent}`);
+            resetForm();
+        }
+
+        // Initialize
+        attachLineItemListeners();
+        calculateTotals();
+    </script>
+</body>
+</html>

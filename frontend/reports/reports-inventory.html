@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Reports - Textile ERP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="p-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">Inventory Reports</h1>
+
+        <!-- Report Filters -->
+        <div class="bg-white rounded-lg shadow p-4 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <select class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option>All Months</option>
+                    <option>January 2024</option>
+                    <option>February 2024</option>
+                    <option>December 2024</option>
+                </select>
+                <select class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option>All Categories</option>
+                    <option>Raw Materials</option>
+                    <option>Chemicals</option>
+                </select>
+                <select class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option>Sort By</option>
+                    <option>Quantity</option>
+                    <option>Value</option>
+                    <option>Turnover</option>
+                </select>
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Generate Report</button>
+            </div>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white rounded-lg shadow p-4">
+                <p class="text-gray-600 text-sm">Total Inventory Value</p>
+                <p class="text-3xl font-bold text-blue-600 mt-2">$540,000</p>
+                <p class="text-xs text-green-600 mt-2">↑ 8% from last month</p>
+            </div>
+            <div class="bg-white rounded-lg shadow p-4">
+                <p class="text-gray-600 text-sm">Avg Inventory Turnover</p>
+                <p class="text-3xl font-bold text-green-600 mt-2">4.2x</p>
+                <p class="text-xs text-gray-600 mt-2">Per quarter</p>
+            </div>
+            <div class="bg-white rounded-lg shadow p-4">
+                <p class="text-gray-600 text-sm">Slow Moving Items</p>
+                <p class="text-3xl font-bold text-yellow-600 mt-2">23</p>
+                <p class="text-xs text-gray-600 mt-2">Requiring attention</p>
+            </div>
+            <div class="bg-white rounded-lg shadow p-4">
+                <p class="text-gray-600 text-sm">Stock-out Events</p>
+                <p class="text-3xl font-bold text-red-600 mt-2">3</p>
+                <p class="text-xs text-red-600 mt-2">This month</p>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-lg font-bold text-gray-800 mb-4">Inventory Trend</h2>
+                <canvas id="trendChart"></canvas>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-lg font-bold text-gray-800 mb-4">Inventory Distribution</h2>
+                <canvas id="distributionChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Top Items -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Top 10 Materials by Value</h2>
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b border-gray-200">
+                        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Material</th>
+                        <th class="px-4 py-2 text-right text-sm font-semibold text-gray-700">Quantity</th>
+                        <th class="px-4 py-2 text-right text-sm font-semibold text-gray-700">Unit Value</th>
+                        <th class="px-4 py-2 text-right text-sm font-semibold text-gray-700">Total Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-gray-200 hover:bg-gray-50">
+                        <td class="px-4 py-2 text-sm text-gray-700">Cotton Yarn 20s</td>
+                        <td class="px-4 py-2 text-right text-sm text-gray-900">2,450 kg</td>
+                        <td class="px-4 py-2 text-right text-sm text-gray-900">$8.50</td>
+                        <td class="px-4 py-2 text-right text-sm font-medium text-gray-900">$20,825</td>
+                    </tr>
+                    <tr class="border-b border-gray-200 hover:bg-gray-50">
+                        <td class="px-4 py-2 text-sm text-gray-700">Polyester Blend 30s</td>
+                        <td class="px-4 py-2 text-right text-sm text-gray-900">1,200 kg</td>
+                        <td class="px-4 py-2 text-right text-sm text-gray-900">$12.50</td>
+                        <td class="px-4 py-2 text-right text-sm font-medium text-gray-900">$15,000</td>
+                    </tr>
+                    <tr class="border-b border-gray-200 hover:bg-gray-50">
+                        <td class="px-4 py-2 text-sm text-gray-700">Wool Blend 40s</td>
+                        <td class="px-4 py-2 text-right text-sm text-gray-900">890 kg</td>
+                        <td class="px-4 py-2 text-right text-sm text-gray-900">$18.75</td>
+                        <td class="px-4 py-2 text-right text-sm font-medium text-gray-900">$16,687</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Trend Chart
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Inventory Value ($K)',
+                    data: [450, 480, 520, 510, 545, 560, 575, 570, 580, 560, 545, 540],
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        // Distribution Chart
+        const distCtx = document.getElementById('distributionChart').getContext('2d');
+        new Chart(distCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Raw Materials', 'Chemicals', 'Auxiliaries', 'Packaging'],
+                datasets: [{
+                    data: [45, 25, 20, 10],
+                    backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    </script>
+</body>
+</html>

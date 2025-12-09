@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Log - Textile ERP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="p-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">Production Log</h1>
+
+        <!-- Date Filter -->
+        <div class="bg-white rounded-lg shadow p-4 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input type="date" class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="date" class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Filter</button>
+            </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="space-y-6">
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800">WO-002 Completed</h3>
+                        <p class="text-sm text-gray-600">Polyester Blend Fabric - 1000 m produced</p>
+                    </div>
+                    <span class="bg-green-100 text-green-800 text-xs font-medium px-3 py-1 rounded-full">COMPLETED</span>
+                </div>
+                <div class="mt-4 grid grid-cols-3 gap-4">
+                    <div>
+                        <p class="text-sm text-gray-600">Shift</p>
+                        <p class="font-medium text-gray-900">Morning (6:00 - 14:00)</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Machine</p>
+                        <p class="font-medium text-gray-900">Loom-03</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Operator</p>
+                        <p class="font-medium text-gray-900">John Mitchell</p>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-4"><i class="fas fa-clock mr-2"></i> Completed on 2024-12-08 at 14:30</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800">WO-001 In Progress</h3>
+                        <p class="text-sm text-gray-600">Premium Cotton Shirt - 500 pcs</p>
+                    </div>
+                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-3 py-1 rounded-full">IN PROGRESS</span>
+                </div>
+                <div class="mt-4 grid grid-cols-3 gap-4">
+                    <div>
+                        <p class="text-sm text-gray-600">Shift</p>
+                        <p class="font-medium text-gray-900">Morning (6:00 - 14:00)</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Machine</p>
+                        <p class="font-medium text-gray-900">Stitching-01</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Operator</p>
+                        <p class="font-medium text-gray-900">Maria Santos</p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <p class="text-sm text-gray-600 mb-2">Progress</p>
+                    <div class="w-full bg-gray-200 rounded-full h-3"><div class="bg-blue-600 h-3 rounded-full" style="width: 65%"></div></div>
+                    <p class="text-xs text-gray-500 mt-2">325 units completed out of 500</p>
+                </div>
+                <p class="text-xs text-gray-500 mt-4"><i class="fas fa-clock mr-2"></i> Started on 2024-12-08 at 06:00</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800">WO-003 Scheduled</h3>
+                        <p class="text-sm text-gray-600">Wool Blend Sweater - 300 pcs</p>
+                    </div>
+                    <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-3 py-1 rounded-full">SCHEDULED</span>
+                </div>
+                <div class="mt-4 grid grid-cols-3 gap-4">
+                    <div>
+                        <p class="text-sm text-gray-600">Expected Shift</p>
+                        <p class="font-medium text-gray-900">Afternoon (14:00 - 22:00)</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Machine</p>
+                        <p class="font-medium text-gray-900">Knitting-02</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Assigned To</p>
+                        <p class="font-medium text-gray-900">Pending</p>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-4"><i class="fas fa-calendar mr-2"></i> Scheduled for 2024-12-10</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

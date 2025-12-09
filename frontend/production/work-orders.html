@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Orders - Textile ERP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="p-8">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">Work Orders</h1>
+                <p class="text-gray-600 mt-2">Manage production schedules and work orders</p>
+            </div>
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                <i class="fas fa-plus mr-2"></i> New Work Order
+            </button>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white rounded-lg shadow p-4">
+                <p class="text-gray-600 text-sm">Active Orders</p>
+                <p class="text-3xl font-bold text-blue-600 mt-2">8</p>
+            </div>
+            <div class="bg-white rounded-lg shadow p-4">
+                <p class="text-gray-600 text-sm">Scheduled</p>
+                <p class="text-3xl font-bold text-yellow-600 mt-2">12</p>
+            </div>
+            <div class="bg-white rounded-lg shadow p-4">
+                <p class="text-gray-600 text-sm">Completed Today</p>
+                <p class="text-3xl font-bold text-green-600 mt-2">3</p>
+            </div>
+            <div class="bg-white rounded-lg shadow p-4">
+                <p class="text-gray-600 text-sm">Overdue</p>
+                <p class="text-3xl font-bold text-red-600 mt-2">1</p>
+            </div>
+        </div>
+
+        <!-- Work Orders Table -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <table class="w-full">
+                <thead class="bg-gray-100 border-b border-gray-200">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">WO Number</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Product</th>
+                        <th class="px-6 py-4 text-right text-sm font-semibold text-gray-700">Quantity</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Status</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Priority</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Due Date</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Progress</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-gray-200 hover:bg-gray-50">
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900">WO-001</td>
+                        <td class="px-6 py-4 text-sm text-gray-700">Premium Cotton Shirt</td>
+                        <td class="px-6 py-4 text-right text-sm text-gray-900">500 pcs</td>
+                        <td class="px-6 py-4"><span class="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">In Progress</span></td>
+                        <td class="px-6 py-4"><span class="inline-block px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded">High</span></td>
+                        <td class="px-6 py-4 text-sm text-gray-600">2024-12-10</td>
+                        <td class="px-6 py-4">
+                            <div class="w-24 bg-gray-200 rounded-full h-2"><div class="bg-blue-600 h-2 rounded-full" style="width: 65%"></div></div>
+                            <p class="text-xs text-gray-600 mt-1">65%</p>
+                        </td>
+                        <td class="px-6 py-4 text-sm"><button class="text-blue-600 hover:text-blue-900"><i class="fas fa-eye"></i></button></td>
+                    </tr>
+                    <tr class="border-b border-gray-200 hover:bg-gray-50">
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900">WO-002</td>
+                        <td class="px-6 py-4 text-sm text-gray-700">Polyester Blend Fabric</td>
+                        <td class="px-6 py-4 text-right text-sm text-gray-900">1000 m</td>
+                        <td class="px-6 py-4"><span class="inline-block px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">Completed</span></td>
+                        <td class="px-6 py-4"><span class="inline-block px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded">Medium</span></td>
+                        <td class="px-6 py-4 text-sm text-gray-600">2024-12-08</td>
+                        <td class="px-6 py-4">
+                            <div class="w-24 bg-gray-200 rounded-full h-2"><div class="bg-green-600 h-2 rounded-full" style="width: 100%"></div></div>
+                            <p class="text-xs text-gray-600 mt-1">100%</p>
+                        </td>
+                        <td class="px-6 py-4 text-sm"><button class="text-blue-600 hover:text-blue-900"><i class="fas fa-eye"></i></button></td>
+                    </tr>
+                    <tr class="border-b border-gray-200 hover:bg-gray-50">
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900">WO-003</td>
+                        <td class="px-6 py-4 text-sm text-gray-700">Wool Blend Sweater</td>
+                        <td class="px-6 py-4 text-right text-sm text-gray-900">300 pcs</td>
+                        <td class="px-6 py-4"><span class="inline-block px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded">Scheduled</span></td>
+                        <td class="px-6 py-4"><span class="inline-block px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded">Medium</span></td>
+                        <td class="px-6 py-4 text-sm text-gray-600">2024-12-15</td>
+                        <td class="px-6 py-4">
+                            <div class="w-24 bg-gray-200 rounded-full h-2"><div class="bg-yellow-600 h-2 rounded-full" style="width: 0%"></div></div>
+                            <p class="text-xs text-gray-600 mt-1">0%</p>
+                        </td>
+                        <td class="px-6 py-4 text-sm"><button class="text-blue-600 hover:text-blue-900"><i class="fas fa-eye"></i></button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

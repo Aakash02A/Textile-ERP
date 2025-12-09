@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Models Dashboard - Textile ERP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f5f7fa;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .tabs-container {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0 2rem;
+            display: flex;
+            gap: 0;
+            overflow-x: auto;
+            sticky: top: 0;
+            z-index: 100;
+        }
+
+        .tab-button {
+            padding: 1rem 1.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #6b7280;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-button:hover {
+            color: #3b82f6;
+            background: #f9fafb;
+        }
+
+        .tab-button.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+
+        .tab-button i {
+            font-size: 1.2rem;
+        }
+
+        .content-area {
+            padding: 2rem;
+            min-height: 600px;
+        }
+
+        .model-section {
+            display: none;
+        }
+
+        .model-section.active {
+            display: block;
+        }
+
+        .model-iframe {
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: white;
+        }
+
+        .info-bar {
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .info-bar i {
+            font-size: 1.5rem;
+            color: #3b82f6;
+        }
+
+        .info-bar div h3 {
+            margin: 0 0 0.25rem 0;
+            color: #1f2937;
+            font-size: 1rem;
+        }
+
+        .info-bar div p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .loading-spinner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 600px;
+            gap: 1rem;
+            color: #6b7280;
+        }
+
+        .loading-spinner i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .tabs-container {
+                padding: 0 1rem;
+            }
+
+            .tab-button {
+                padding: 0.75rem 1rem;
+                font-size: 0.875rem;
+            }
+
+            .tab-button i {
+                font-size: 1rem;
+            }
+
+            .content-area {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-brain"></i> ML Intelligence Models</h1>
+            <p>Advanced Analytics & Predictive Intelligence for Textile ERP</p>
+        </div>
+
+        <div class="tabs-container">
+            <button class="tab-button active" data-tab="demand" onclick="switchTab('demand')">
+                <i class="fas fa-chart-line"></i>
+                <span>Demand Forecasting</span>
+            </button>
+            <button class="tab-button" data-tab="inventory" onclick="switchTab('inventory')">
+                <i class="fas fa-boxes"></i>
+                <span>Inventory Optimization</span>
+            </button>
+            <button class="tab-button" data-tab="supplier" onclick="switchTab('supplier')">
+                <i class="fas fa-alert-circle"></i>
+                <span>Supplier Risk</span>
+            </button>
+            <button class="tab-button" data-tab="defect" onclick="switchTab('defect')">
+                <i class="fas fa-camera"></i>
+                <span>Defect Detection</span>
+            </button>
+            <button class="tab-button" data-tab="quality" onclick="switchTab('quality')">
+                <i class="fas fa-microscope"></i>
+                <span>Quality Prediction</span>
+            </button>
+        </div>
+
+        <div class="content-area">
+            <!-- Demand Forecasting -->
+            <div id="demand-section" class="model-section active">
+                <div class="info-bar">
+                    <i class="fas fa-chart-line"></i>
+                    <div>
+                        <h3>Demand Forecasting</h3>
+                        <p>LSTM-based time series forecasting for accurate demand predictions and inventory planning</p>
+                    </div>
+                </div>
+                <iframe id="demand-frame" class="model-iframe" src="demand_forecasting/index.html" style="height: 900px;"></iframe>
+            </div>
+
+            <!-- Inventory Optimization -->
+            <div id="inventory-section" class="model-section">
+                <div class="info-bar">
+                    <i class="fas fa-boxes"></i>
+                    <div>
+                        <h3>Inventory Optimization</h3>
+                        <p>Random Forest model with EOQ and ABC analysis for optimal stock level recommendations</p>
+                    </div>
+                </div>
+                <iframe id="inventory-frame" class="model-iframe" src="inventory_optimization/index.html" style="height: 900px;"></iframe>
+            </div>
+
+            <!-- Supplier Risk Scoring -->
+            <div id="supplier-section" class="model-section">
+                <div class="info-bar">
+                    <i class="fas fa-alert-circle"></i>
+                    <div>
+                        <h3>Supplier Risk Scoring</h3>
+                        <p>SVM-based multi-factor supplier risk assessment with predictive risk modeling</p>
+                    </div>
+                </div>
+                <iframe id="supplier-frame" class="model-iframe" src="supplier_risk_scoring/index.html" style="height: 900px;"></iframe>
+            </div>
+
+            <!-- Defect Detection -->
+            <div id="defect-section" class="model-section">
+                <div class="info-bar">
+                    <i class="fas fa-camera"></i>
+                    <div>
+                        <h3>Defect Detection</h3>
+                        <p>Computer vision CNN model for automated textile defect identification and classification</p>
+                    </div>
+                </div>
+                <iframe id="defect-frame" class="model-iframe" src="defect_detection/index.html" style="height: 900px;"></iframe>
+            </div>
+
+            <!-- Quality Prediction -->
+            <div id="quality-section" class="model-section">
+                <div class="info-bar">
+                    <i class="fas fa-microscope"></i>
+                    <div>
+                        <h3>Quality Prediction</h3>
+                        <p>Gradient Boosting model for batch quality scoring with root cause analysis</p>
+                    </div>
+                </div>
+                <iframe id="quality-frame" class="model-iframe" src="quality_prediction/index.html" style="height: 900px;"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.model-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show selected section
+            const sectionId = tabName + '-section';
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.add('active');
+            }
+
+            // Add active class to clicked button
+            const activeButton = document.querySelector(`[data-tab="${tabName}"]`);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default tab
+            switchTab('demand');
+        });
+    </script>
+</body>
+</html>

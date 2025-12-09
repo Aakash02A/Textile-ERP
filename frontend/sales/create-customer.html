@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Customer - Textile ERP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="p-8">
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Create Customer</h1>
+            <p class="text-gray-600">Add a new customer to your sales and order management system</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Form -->
+            <div class="lg:col-span-2 bg-white rounded-lg shadow p-8">
+                <form id="customerForm" onsubmit="handleSubmit(event)">
+                    <!-- Basic Information Section -->
+                    <div class="mb-8 pb-8 border-b">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Basic Information</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Customer Type <span class="text-red-500">*</span></label>
+                                <select id="customerType" required onchange="updateCustomerTypeInfo()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Select Type</option>
+                                    <option value="INDIVIDUAL">Individual</option>
+                                    <option value="BUSINESS">Business</option>
+                                    <option value="RETAILER">Retailer</option>
+                                    <option value="DISTRIBUTOR">Distributor</option>
+                                    <option value="CORPORATE">Corporate</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Customer Name <span class="text-red-500">*</span></label>
+                                <input type="text" id="customerName" required placeholder="Full name or company name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email Address <span class="text-red-500">*</span></label>
+                                <input type="email" id="email" required placeholder="customer@example.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number <span class="text-red-500">*</span></label>
+                                <input type="tel" id="phone" required placeholder="+1 (555) 000-0000" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tax ID / VAT Number</label>
+                                <input type="text" id="taxId" placeholder="Tax identification number" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Website</label>
+                                <input type="url" id="website" placeholder="https://example.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Billing Address Section -->
+                    <div class="mb-8 pb-8 border-b">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Billing Address</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Street Address <span class="text-red-500">*</span></label>
+                                <input type="text" id="billingStreet" required placeholder="Street address" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">City <span class="text-red-500">*</span></label>
+                                <input type="text" id="billingCity" required placeholder="City" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">State / Province <span class="text-red-500">*</span></label>
+                                <input type="text" id="billingState" required placeholder="State/Province" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ZIP / Postal Code <span class="text-red-500">*</span></label>
+                                <input type="text" id="billingZip" required placeholder="ZIP code" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Country <span class="text-red-500">*</span></label>
+                                <select id="billingCountry" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Select Country</option>
+                                    <option value="USA">United States</option>
+                                    <option value="CAN">Canada</option>
+                                    <option value="MEX">Mexico</option>
+                                    <option value="GBR">United Kingdom</option>
+                                    <option value="AUS">Australia</option>
+                                    <option value="IND">India</option>
+                                    <option value="CHN">China</option>
+                                    <option value="OTHER">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Address Section -->
+                    <div class="mb-8 pb-8 border-b">
+                        <div class="flex items-center gap-4 mb-6">
+                            <h2 class="text-2xl font-semibold text-gray-800">Shipping Address</h2>
+                            <label class="flex items-center gap-2 text-sm text-gray-700">
+                                <input type="checkbox" id="sameAsbilling" onchange="toggleShippingAddress()" class="rounded border-gray-300">
+                                <span>Same as Billing</span>
+                            </label>
+                        </div>
+                        
+                        <div id="shippingAddressForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Street Address</label>
+                                <input type="text" id="shippingStreet" placeholder="Street address" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">City</label>
+                                <input type="text" id="shippingCity" placeholder="City" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">State / Province</label>
+                                <input type="text" id="shippingState" placeholder="State/Province" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ZIP / Postal Code</label>
+                                <input type="text" id="shippingZip" placeholder="ZIP code" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                                <select id="shippingCountry" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Select Country</option>
+                                    <option value="USA">United States</option>
+                                    <option value="CAN">Canada</option>
+                                    <option value="MEX">Mexico</option>
+                                    <option value="GBR">United Kingdom</option>
+                                    <option value="AUS">Australia</option>
+                                    <option value="IND">India</option>
+                                    <option value="CHN">China</option>
+                                    <option value="OTHER">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sales Information -->
+                    <div class="mb-8 pb-8 border-b">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Sales Information</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Primary Sales Rep</label>
+                                <select id="salesRep" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Unassigned</option>
+                                    <option value="REP-001">Sarah Johnson</option>
+                                    <option value="REP-002">Michael Chen</option>
+                                    <option value="REP-003">Lisa Rodriguez</option>
+                                    <option value="REP-004">David Thompson</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Customer Segment</label>
+                                <select id="segment" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="STANDARD">Standard</option>
+                                    <option value="PREMIUM">Premium</option>
+                                    <option value="VIP">VIP</option>
+                                    <option value="STRATEGIC">Strategic Partner</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Payment Terms</label>
+                                <select id="paymentTerms" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="NET30">Net 30</option>
+                                    <option value="NET60">Net 60</option>
+                                    <option value="NET90">Net 90</option>
+                                    <option value="COD">Cash on Delivery</option>
+                                    <option value="PREPAID">Prepaid</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Credit Limit ($)</label>
+                                <input type="number" id="creditLimit" placeholder="0.00" min="0" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                                <textarea id="notes" rows="3" placeholder="Any special instructions or notes about this customer" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Preferences -->
+                    <div class="mb-8 pb-8 border-b">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Contact Preferences</h2>
+                        
+                        <div class="space-y-4">
+                            <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="checkbox" id="pref-email" class="rounded border-gray-300" checked>
+                                <span class="text-gray-700 font-medium">Email Communications</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="checkbox" id="pref-phone" class="rounded border-gray-300" checked>
+                                <span class="text-gray-700 font-medium">Phone Communications</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="checkbox" id="pref-sms" class="rounded border-gray-300">
+                                <span class="text-gray-700 font-medium">SMS Notifications</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="checkbox" id="pref-newsletter" class="rounded border-gray-300" checked>
+                                <span class="text-gray-700 font-medium">Marketing Newsletter</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="flex gap-4">
+                        <button type="submit" class="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition font-semibold flex items-center gap-2">
+                            <i class="fas fa-save"></i> Create Customer
+                        </button>
+                        <button type="button" class="bg-gray-300 text-gray-700 px-8 py-3 rounded-lg hover:bg-gray-400 transition font-semibold" onclick="resetForm()">
+                            <i class="fas fa-redo"></i> Clear Form
+                        </button>
+                        <button type="button" class="bg-blue-100 text-blue-700 px-8 py-3 rounded-lg hover:bg-blue-200 transition font-semibold" onclick="saveDraft()">
+                            <i class="fas fa-file-download"></i> Save Draft
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Sidebar - Customer Profile & Validation -->
+            <div class="space-y-6">
+                <!-- Customer Profile Preview -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Profile Preview</h3>
+                    <div id="profilePreview" class="text-gray-600 text-sm space-y-3">
+                        <p class="text-gray-500 italic">Fill in basic information to preview profile</p>
+                    </div>
+                </div>
+
+                <!-- Credit Assessment -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Credit Assessment</h3>
+                    <div id="creditAssessment" class="text-gray-600 text-sm space-y-3">
+                        <p class="text-gray-500 italic">Assessment will appear once credit limit is set</p>
+                    </div>
+                </div>
+
+                <!-- Validation Status -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Form Status</h3>
+                    <div id="validationStatus" class="text-gray-600 text-sm space-y-2">
+                        <p class="text-yellow-600 flex items-center gap-2">
+                            <i class="fas fa-info-circle"></i> Fill all required fields
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Helpful Tips -->
+                <div class="bg-blue-50 rounded-lg border border-blue-200 p-6">
+                    <h3 class="font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                        <i class="fas fa-lightbulb text-yellow-500"></i> Tips
+                    </h3>
+                    <ul class="text-xs text-blue-800 space-y-2">
+                        <li><i class="fas fa-check text-green-500 mr-2"></i> Use consistent naming conventions</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i> Verify contact information accuracy</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i> Set appropriate credit limits</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i> Assign a dedicated sales rep</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Real-time validation and preview
+        document.getElementById('customerName').addEventListener('input', updateProfilePreview);
+        document.getElementById('customerType').addEventListener('change', updateProfilePreview);
+        document.getElementById('email').addEventListener('input', updateProfilePreview);
+        document.getElementById('creditLimit').addEventListener('change', updateCreditAssessment);
+        document.getElementById('sameAsBilling').addEventListener('change', toggleShippingAddress);
+
+        function updateProfilePreview() {
+            const name = document.getElementById('customerName').value || '[Enter Customer Name]';
+            const type = document.getElementById('customerType').value || '[Select Type]';
+            const email = document.getElementById('email').value || '[Enter Email]';
+
+            document.getElementById('profilePreview').innerHTML = `
+                <div class="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <p class="font-semibold text-gray-800">${name}</p>
+                    <p class="text-xs text-gray-600 mt-1">Type: <span class="font-medium">${type}</span></p>
+                    <p class="text-xs text-gray-600">Email: <span class="font-medium">${email}</span></p>
+                </div>
+            `;
+        }
+
+        function updateCreditAssessment() {
+            const creditLimit = parseFloat(document.getElementById('creditLimit').value) || 0;
+            
+            let riskLevel, riskColor;
+            if (creditLimit === 0) {
+                riskLevel = 'Unspecified';
+                riskColor = 'text-gray-600';
+            } else if (creditLimit < 10000) {
+                riskLevel = 'Low Risk';
+                riskColor = 'text-green-600';
+            } else if (creditLimit < 50000) {
+                riskLevel = 'Medium Risk';
+                riskColor = 'text-yellow-600';
+            } else {
+                riskLevel = 'Review Required';
+                riskColor = 'text-orange-600';
+            }
+
+            document.getElementById('creditAssessment').innerHTML = `
+                <div>
+                    <p class="font-semibold text-gray-800">Credit Limit: $${creditLimit.toLocaleString('en-US', {minimumFractionDigits: 2})}</p>
+                    <p class="${riskColor} font-semibold mt-2"><i class="fas fa-shield-alt"></i> ${riskLevel}</p>
+                </div>
+            `;
+        }
+
+        function toggleShippingAddress() {
+            const form = document.getElementById('shippingAddressForm');
+            const checkbox = document.getElementById('sameAsBilling');
+            
+            if (checkbox.checked) {
+                form.style.display = 'none';
+                // Copy values from billing
+                document.getElementById('shippingStreet').value = document.getElementById('billingStreet').value;
+                document.getElementById('shippingCity').value = document.getElementById('billingCity').value;
+                document.getElementById('shippingState').value = document.getElementById('billingState').value;
+                document.getElementById('shippingZip').value = document.getElementById('billingZip').value;
+                document.getElementById('shippingCountry').value = document.getElementById('billingCountry').value;
+            } else {
+                form.style.display = 'grid';
+            }
+        }
+
+        function updateCustomerTypeInfo() {
+            const type = document.getElementById('customerType').value;
+            updateProfilePreview();
+        }
+
+        function resetForm() {
+            document.getElementById('customerForm').reset();
+            updateProfilePreview();
+            updateCreditAssessment();
+        }
+
+        function saveDraft() {
+            alert('Customer draft saved successfully!');
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const customerName = document.getElementById('customerName').value;
+            const customerId = 'CUST-' + new Date().getFullYear() + '-' + Math.floor(Math.random() * 10000).toString().padStart(5, '0');
+            
+            alert(`Customer ${customerId} created successfully!\n\nName: ${customerName}`);
+            resetForm();
+        }
+
+        // Initialize
+        updateProfilePreview();
+        updateCreditAssessment();
+    </script>
+</body>
+</html>
