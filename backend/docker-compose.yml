@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:18-alpine
+    container_name: textile_erp_postgres
+    environment:
+      POSTGRES_DB: textile_erp
+      POSTGRES_USER: textile_user
+      POSTGRES_PASSWORD: textile_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U textile_user -d textile_erp"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - textile_network
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: textile_erp_backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://textile_user:textile_password@postgres:5432/textile_erp
+      SECRET_KEY: your-secret-key-change-in-production-min-32-characters
+      APP_ENV: development
+      DEBUG: "True"
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    networks:
+      - textile_network
+    command: >
+      bash -c "pip install -r requirements.txt &&
+               python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+
+  # Optional: PgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: textile_erp_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - textile_network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  textile_network:
+    driver: bridge
