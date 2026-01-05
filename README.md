@@ -1,5 +1,3 @@
-![Textile ERP Banner](https://raw.githubusercontent.com/your-org/textile-erp/main/banner.png)
-
 # Textile ERP System
 
 A comprehensive Enterprise Resource Planning (ERP) solution for textile manufacturing businesses with integrated Machine Learning capabilities for predictive analytics and optimization.
